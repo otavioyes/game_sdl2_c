@@ -1,6 +1,5 @@
 // init.c
 #include "common.h"
-#include <SDL2/SDL_image.h>
 
 void initSDL(void) {
     int rendererFlags = SDL_RENDERER_ACCELERATED;

@@ -14,8 +14,13 @@ int main(int argc, char *argv[])
     atexit(cleanup);
 
     player.texture = loadTexture("gfx/player1.png");
-    player.x = 100;
-    player.y =100;
+
+    SDL_QueryTexture(player.texture, NULL, NULL, &player.width, &player.height);
+
+    player.scale = 0.2f;
+
+    player.x = 0;
+    player.y = 0;
 
 
     while (1) {
@@ -45,7 +50,27 @@ int main(int argc, char *argv[])
                 player.x += 4;
             }
 
-        blit(player.texture, player.x, player.y, 0.2f);
+        if(player.x + player.width * player.scale > SCREEN_WIDTH)
+        {
+            player.x = SCREEN_WIDTH - player.width * player.scale;
+        }
+
+        if(player.x < 0)
+        {
+            player.x = 0;
+        }
+
+        if(player.y + player.height * player.scale > SCREEN_HEIGHT)
+        {
+            player.y = SCREEN_HEIGHT - player.height * player.scale;
+        }
+
+        if(player.y < 0)
+        {
+            player.y = 0;
+        }
+
+        blit(player.texture, player.x, player.y, player.scale);
 
         presentScene();
 

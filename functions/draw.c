@@ -27,7 +27,7 @@ SDL_Texture *loadTexture(char *filename)
 }
 
 /* a funcao blit simplismente desenha a textura especificada na tela nas coodernadas
-x e y  */
+x, y e scale  */
 void blit(SDL_Texture *texture, int x, int y, float scale)
 {
      if (texture == NULL) {

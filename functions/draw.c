@@ -36,7 +36,9 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
     }
 
     int origW, origH;
+    int bulletW, bulletH;
     SDL_QueryTexture(texture, NULL, NULL, &origW, &origH);
+    SDL_QueryTexture(texture, NULL, NULL, &bulletW, &bulletH);
 
     /*calcula o retangulo de desino ja escalado*/
     SDL_Rect dest;

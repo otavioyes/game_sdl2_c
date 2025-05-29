@@ -44,6 +44,10 @@ void doKeyDown(SDL_KeyboardEvent *event)
             app.right = 1;
             printf("Tecla pressionada:{%s}\n", SDL_GetScancodeName(event->keysym.scancode));
         }
+        if(event-> keysym.scancode == SDL_SCANCODE_LCTRL)
+        {
+            app.fire = 1;
+        }
 
     }
 }
@@ -69,6 +73,11 @@ void doKeyUp(SDL_KeyboardEvent *event)
         {
             app.right = 0;
         }
+        if(event-> keysym.scancode == SDL_SCANCODE_LCTRL)
+        {
+            app.fire = 0;
+        }
+
     }
 }
 

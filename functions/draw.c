@@ -1,8 +1,11 @@
 // draw.c
 #include "common.h"
 
+static void drawPlayer(void);
+static void drawBullets(void);
+
 void prepareScene(void) {
-    SDL_SetRenderDrawColor(app.renderer, 46, 26, 71, 255);//r, g, b, a (alpha/opaco)
+    SDL_SetRenderDrawColor(app.renderer, 46, 26, 71, 255);
     SDL_RenderClear(app.renderer);
 }
 
@@ -10,45 +13,47 @@ void presentScene(void) {
     SDL_RenderPresent(app.renderer);
 }
 
-/* a funcao SDL_Texture e blit carregam uma imagem e exibe */
-SDL_Texture *loadTexture(char *filename)
-{
-    SDL_Texture *texture;
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
-
-    /*verificacao de erro ao carregar a textura*/
-    texture = IMG_LoadTexture(app.renderer, filename);
-    if(!texture){
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Error to open image: %s", IMG_GetError());
-        }
-
- return texture;
-
+void draw(void) {
+    drawPlayer();
+    drawBullets();
 }
 
-/* a funcao blit simplismente desenha a textura especificada na tela nas coodernadas
-x, y e scale  */
-void blit(SDL_Texture *texture, int x, int y, float scale)
-{
-     if (texture == NULL) {
-        SDL_Log("Tentou desenhar uma textura NULL!");
+// carrega uma textura da imagem no arquivo
+SDL_Texture *loadTexture(char *filename) {
+    SDL_Texture *texture = IMG_LoadTexture(app.renderer, filename);
+    if (!texture) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "IMG_LoadTexture failed: %s", IMG_GetError());
+        exit(1);
+    }
+    return texture;
+}
+
+// desenha uma textura escalada
+void blit(SDL_Texture *texture, int x, int y, float scale) {
+    if (texture == NULL) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "blit() called with NULL texture");
         return;
     }
+    int w, h;
+    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
 
-    int origW, origH;
-    int bulletW, bulletH;
-    SDL_QueryTexture(texture, NULL, NULL, &origW, &origH);
-    SDL_QueryTexture(texture, NULL, NULL, &bulletW, &bulletH);
-
-    /*calcula o retangulo de desino ja escalado*/
-    SDL_Rect dest;
-    dest.x = x;
-    dest.y = y;
-    dest.w = (int)(origW * scale);
-    dest.h = (int)(origH * scale);
-
-     SDL_Log("Desenhando textura com tamanho: %d x %d", dest.w, dest.h);
+    SDL_Rect dest = {
+        .x = x,
+        .y = y,
+        .w = (int)(w * scale),
+        .h = (int)(h * scale),
+    };
 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+}
+
+static void drawPlayer(void) {
+    blit(player->texture, player->x, player->y, 1.0f);
+}
+
+static void drawBullets(void) {
+    for (Entity *b = stage.bulletHead.next; b != NULL; b = b->next) {
+        blit(b->texture, b->x, b->y, 1.0f);
+    }
 }

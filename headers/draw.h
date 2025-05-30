@@ -4,8 +4,10 @@
 
 void prepareScene(void);
 void presentScene(void);
+void draw(void);
 
 SDL_Texture *loadTexture(char *filename);
 void blit(SDL_Texture *texture, int x, int y, float scale);
 
-#endif
+#endif // DRAW_H
+

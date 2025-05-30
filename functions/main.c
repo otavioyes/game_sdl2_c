@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
     SDL_QueryTexture(player.texture, NULL, NULL, &player.width, &player.height);
 
-    player.scale = 0.2f;
+    player.scale = 0.09f;
     player.speed = 4;
 
     player.x = 0;

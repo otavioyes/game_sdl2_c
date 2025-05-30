@@ -6,26 +6,37 @@
 
 #include <SDL2/SDL.h>
 
+typedef struct{
+    void (*logic)(void);
+    void (*draw)(void);
+}Delegate;
+
+
 typedef struct {
     SDL_Renderer *renderer;
     SDL_Window *window;
-    int up;
-    int down;
-    int left;
-    int right;
-    int fire;
-}App;
+    Delegate delegate;
+    int keyboard[MAX_KEYBOARD_KEYS];
+}App
 
 
 typedef struct{
-    int x, y;
+    float x, y;
     int width, height;
-    int speed;
-    float scale;
     int health;
-    int dx, dy;
+    int reload;
+    float scale;
+    float dx, dy;
     SDL_Texture *texture;
-}Entity;
+    Entity *next;
+};
+
+//usado para armazenar informacoes sobre lutas e balas
+typedef struct{
+    Entity fighterHead, *fighterTail;
+    Entity bulletHead, *bulletTail;
+}Stage;
 
 
 #endif
+

@@ -91,9 +91,8 @@ static void doBullet(void)
 
     for (b = stage.bulletHead.next ; b != NULL ; b = b->next)
     {
-        b->x     += b->dx;
-        b->y     += b->dy;
-        b->scale += 0.1f;
+        b->x    += b->dx;
+        b->y    += b->dy;
 
         if (b->x > SCREEN_WIDTH)
         {
@@ -122,14 +121,21 @@ static void fireBullet(void)
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-    bullet->x       = player->x;
-    bullet->y       = player->y;
-    bullet->dx = PLAYER_BULLET_SPEED;
-    bullet->health = 1;
+   // bullet->x       = player->x;
+   // bullet->y       = player->y;
+    bullet->scale   = 0.1f; //tamanho da bala
+
     bullet->texture = bulletTexture;
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
-    bullet->y += (player->height / 2) - (bullet->height / 2);
+    bullet->x   =   player->x + (player->width * player->scale / 2) - (bullet->x * bullet->scale / 2);
+    bullet->y   =   player->y + (player->height * player->scale / 2) - (bullet->y * bullet->scale / 2);
+
+    bullet->dx = PLAYER_BULLET_SPEED;
+    bullet->health = 1;
+
+   // bullet->y += (player->height / 2) - (bullet->height / 2);
+   // bullet->x += (player->width / 2) - (bullet->width / 2);
 
     player->reload = 8;
 }

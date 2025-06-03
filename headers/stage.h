@@ -3,6 +3,5 @@
 #define STAGE_H
 
 void initStage(void);
-void logic(void);
 
 #endif // STAGE_H

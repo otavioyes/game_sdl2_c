@@ -22,7 +22,7 @@ extern Stage       stage;
 extern Entity     *player;
 extern SDL_Texture *bulletTexture;
 
-void capFrameRate(long *then, float *remainder);
+static void capFrameRate(long *then, float *remainder);
 
 #endif // COMMON_H
 

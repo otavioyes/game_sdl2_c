@@ -3,6 +3,7 @@
 
 // protótipos internos
 static void initPlayer(void);
+static void logic(void);
 static void doPlayer(void);
 static void doBullet(void);
 static void fireBullet(void);
@@ -36,7 +37,7 @@ static void initPlayer(void)
 }
 
 
-void logic(void)
+static void logic(void)
 {
     doPlayer();
     doBullet();

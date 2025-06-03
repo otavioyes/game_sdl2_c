@@ -32,8 +32,7 @@ static void initPlayer(void)
     player->y       = 100; //posicao Y onde o player nasce
     player->scale   = 0.1f;//tamanho da imagem /scale
     player->texture = loadTexture("gfx/player1.png");
-    SDL_QueryTexture(player->texture, NULL, NULL,
-                     &player->width, &player->height);
+    SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 }
 
 
@@ -77,6 +76,29 @@ static void doPlayer(void)
     {
         fireBullet();
     }
+
+    //restigindo o jogador aos limites da tela
+    if(player->x + player->width * player->scale > SCREEN_WIDTH)
+    {
+        player->x = SCREEN_WIDTH - player->width * player->scale;
+    }
+
+
+    if(player->x < 0)
+    {
+        player->x = 0;
+    }
+
+    if(player->y + player->height * player->scale > SCREEN_HEIGHT)
+    {
+        player->y = SCREEN_HEIGHT - player->width * player->scale;
+    }
+
+    if(player->y < 0)
+    {
+        player->y = 0;
+    }
+
 
     player->x += player->dx;
     player->y += player->dy;

@@ -66,13 +66,13 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
 
-//chama o blit e desenha o player nas posicoes X e Y e o tamanho correto.
+//chama o blit e desenha o player nas posicoes X e Y e o tamanho(scale) correto.
 static void drawPlayer(void)
 {
     blit(player->texture, player->x, player->y, player->scale);
 }
 
-
+//chama a funcao que definem o tamanho das balas e desenha
 static void drawBullets(void)
 {
     for (Entity *b = stage.bulletHead.next; b != NULL; b = b->next)

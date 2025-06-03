@@ -24,7 +24,7 @@ void initStage(void)
 static void initPlayer(void)
 {
     player = malloc(sizeof(Entity));
-    memset(player, 0, sizeof(Entity));
+    memset(player, 0, sizeof(Entity));//inicializando os campos da strut com 0 S/lixo de mem.
     stage.fighterTail->next = player;
     stage.fighterTail = player;
 
@@ -53,27 +53,27 @@ static void doPlayer(void)
         player->reload--;
     }
 
-    if (app.keyboard[SDL_SCANCODE_UP])
+    if (app.keyboard[SDL_SCANCODE_W])
     {
         player->dy = -PLAYER_SPEED;
     }
 
-    if (app.keyboard[SDL_SCANCODE_DOWN])
+    if (app.keyboard[SDL_SCANCODE_S])
     {
         player->dy = PLAYER_SPEED;
     }
 
-    if (app.keyboard[SDL_SCANCODE_LEFT])
+    if (app.keyboard[SDL_SCANCODE_A])
     {
         player->dx = -PLAYER_SPEED;
     }
 
-    if (app.keyboard[SDL_SCANCODE_RIGHT])
+    if (app.keyboard[SDL_SCANCODE_D])
     {
         player->dx = PLAYER_SPEED;
     }
 
-    if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload == 0)
+    if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0)
     {
         fireBullet();
     }
@@ -111,7 +111,7 @@ static void doBullet(void)
 }
 
 
-//funcao que chama valocidade das balas e faz atirar
+//funcao que cria a bala
 static void fireBullet(void)
 {
     Entity *bullet;
@@ -121,11 +121,10 @@ static void fireBullet(void)
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-   // bullet->x       = player->x;
-   // bullet->y       = player->y;
     bullet->scale   = 0.1f; //tamanho da bala
 
     bullet->texture = bulletTexture;
+    //pego primeiro o tamanho orignal da bala
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
     bullet->x   =   player->x + (player->width * player->scale / 2) - (bullet->x * bullet->scale / 2);
@@ -133,9 +132,6 @@ static void fireBullet(void)
 
     bullet->dx = PLAYER_BULLET_SPEED;
     bullet->health = 1;
-
-   // bullet->y += (player->height / 2) - (bullet->height / 2);
-   // bullet->x += (player->width / 2) - (bullet->width / 2);
 
     player->reload = 8;
 }

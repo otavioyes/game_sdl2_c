@@ -1,5 +1,4 @@
 // init.c
-// init.c
 #include "common.h"
 
 void initSDL(void) {

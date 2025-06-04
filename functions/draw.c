@@ -2,8 +2,11 @@
 #include "common.h"
 
 //prototipos
-static void drawPlayer(void);
 static void drawBullets(void);
+
+/*prototipos para inimigos*/
+static void drawFighters(void);
+
 
 //funcao de desenhar a tela-ROXO MEIA NOITE
 void prepareScene(void)
@@ -12,6 +15,7 @@ void prepareScene(void)
     SDL_RenderClear(app.renderer); //limpa a tela com essa cor
 }
 
+
 //atualiza a janela com tudo que foi desenhado no redenrizador
 //e como a cortina de um teatro, quando tudo tiver pronto, a cortina abre.
 void presentScene(void)
@@ -19,10 +23,11 @@ void presentScene(void)
     SDL_RenderPresent(app.renderer);
 }
 
+
 //funcao que chama as funcoes de Stage.c
 void draw(void)
 {
-    drawPlayer();
+    drawFighters();
     drawBullets();
 }
 
@@ -58,6 +63,7 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
     {
         .x = x,
         .y = y,
+
         .w = (int)(w * scale),
         .h = (int)(h * scale),
     };
@@ -66,11 +72,28 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
 
+
 //chama o blit e desenha o player nas posicoes X e Y e o tamanho(scale) correto.
-static void drawPlayer(void)
+/*static void drawPlayer(void)
 {
     blit(player->texture, player->x, player->y, player->scale);
 }
+*/
+
+
+/*a funcao drawFighters percorre todos os lutadores na lista
+encadeada e desenha cada um deles, usando o comando blit.
+O jogador agora e desenhado como parte da funcao drawFighter.*/
+static void drawFighters(void)
+{
+    Entity *e;
+
+    for(e = stage.fighterHead.next; e != NULL; e = e->next)
+    {
+        blit(e->texture, e->x, e->y, e->scale);
+    }
+}
+
 
 //chama a funcao que definem o tamanho das balas e desenha
 static void drawBullets(void)

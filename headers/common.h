@@ -17,10 +17,12 @@
 #include "input.h"
 #include "stage.h"
 
-extern App         app;
-extern Stage       stage;
-extern Entity     *player;
-extern SDL_Texture *bulletTexture;
+extern App          app;
+extern Stage        stage;
+extern Entity       *player;
+extern SDL_Texture  *bulletTexture;
+extern SDL_Texture  *enemyTexture;
+
 
 static void capFrameRate(long *then, float *remainder);
 

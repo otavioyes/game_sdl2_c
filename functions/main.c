@@ -5,7 +5,7 @@ App         app;
 Stage       stage;
 Entity      *player;
 SDL_Texture *bulletTexture;
-
+SDL_Texture *enemyTexture;
 
 int main(int argc, char *argv[]) {
     long then      = SDL_GetTicks();

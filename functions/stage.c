@@ -8,6 +8,11 @@ static void doPlayer(void);
 static void doBullet(void);
 static void fireBullet(void);
 
+//novos prototipos sendo declarados para a criação de inimigos
+static void doFighters(void);
+static void spawnsEnemies(void);
+
+static int enemySpawnTimer;
 
 void initStage(void)
 {
@@ -19,9 +24,16 @@ void initStage(void)
     stage.bulletTail  = &stage.bulletHead;
 
     initPlayer();
+
     bulletTexture = loadTexture("gfx/playerBullet.png");
+    enemyTexture = loadTexture("gfx/enemy.png");
+
+    enemySpawnTimer = 0;
+
+
 }
 
+/*Iinicia o player com localizacao e tamanho*/
 static void initPlayer(void)
 {
     player = malloc(sizeof(Entity));
@@ -37,10 +49,40 @@ static void initPlayer(void)
 }
 
 
+/*Inicializando o inimigo */
+static void spawnEnemies(void)
+{
+    Entity *enemy;
+
+    if(--enemySpawnTimer <=0)
+    {
+        enemy = malloc(sizeof(Entity));
+        memset(enemy, 0, sizeof(Entity));
+        stage.fighterTail->next = enemy;
+        stage.fighterTail = enemy;
+
+        enemy->scale = 0.1f;
+
+        enemy->x = SCREEN_WIDTH;
+
+        //coordenada Y e escolhida aleatoriamente com base em SCREEN_HEIGHT
+        enemy->y = rand() % SCREEN_HEIGHT;
+        enemy->texture = enemyTexture;
+        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->width, &enemy->height);
+
+        enemy->dx = -(2 + (rand() % 4));
+
+        enemySpawnTimer = 30 + (rand() % 60);
+    }
+}
+
 static void logic(void)
 {
     doPlayer();
+    doFighters();
     doBullet();
+    spawnEnemies();
+
 }
 
 //funcao de  movimentacao do jogador
@@ -99,11 +141,38 @@ static void doPlayer(void)
     {
         player->y = 0;
     }
-
-
-    player->x += player->dx;
-    player->y += player->dy;
 }
+
+
+
+//funcao que lida com todos os lutadores da tela
+static void doFighters(void)
+{
+    Entity *e, *prev;
+
+    prev = &stage.fighterHead;
+
+    for (e = stage.fighterHead.next; e != NULL; e = e->next)
+    {
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if(e != player && (e->x +e->width < 0))
+        {
+            if(e == stage.fighterTail)
+            {
+                stage.fighterTail = prev;
+            }
+
+            prev->next = e->next;
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
+    }
+}
+
 
 
 static void doBullet(void)
@@ -147,6 +216,7 @@ static void fireBullet(void)
     bullet->scale   = 0.1f; //tamanho da bala
 
     bullet->texture = bulletTexture;
+
     //pego primeiro o tamanho orignal da bala
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 

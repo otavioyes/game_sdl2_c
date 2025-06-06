@@ -1,6 +1,8 @@
 //stage.c
 #include "common.h"
 
+//PROXIMO ARQUIVO A SER CRIADO -> util.c
+
 // protótipos internos
 static void initPlayer(void);
 static void logic(void);

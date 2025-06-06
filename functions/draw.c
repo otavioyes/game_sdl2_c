@@ -73,14 +73,6 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
 }
 
 
-//chama o blit e desenha o player nas posicoes X e Y e o tamanho(scale) correto.
-/*static void drawPlayer(void)
-{
-    blit(player->texture, player->x, player->y, player->scale);
-}
-*/
-
-
 /*a funcao drawFighters percorre todos os lutadores na lista
 encadeada e desenha cada um deles, usando o comando blit.
 O jogador agora e desenhado como parte da funcao drawFighter.*/

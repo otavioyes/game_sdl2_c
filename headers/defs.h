@@ -11,4 +11,11 @@
 #define MAX_MOUSE_BUTTONS   3 //botao esquerdo, direito e meio
 #define MAX_BULLETS         128
 
+//colisao
+/*
+#define SIDE_PLAYER     0
+#define SIDE_ALIEN      1
+*/
+
+
 #endif // DEFS_H

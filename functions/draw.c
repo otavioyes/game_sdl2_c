@@ -8,11 +8,14 @@ static void drawBullets(void);
 static void drawFighters(void);
 
 
-//funcao de desenhar a tela-ROXO MEIA NOITE
+// Função que prepara a cena antes de desenhar os elementos gráficos
 void prepareScene(void)
 {
-    SDL_SetRenderDrawColor(app.renderer, 46, 26, 71, 255);//define a cor de fundo
-    SDL_RenderClear(app.renderer); //limpa a tela com essa cor
+    // Define a cor de fundo da renderização (R=46, G=26, B=71, A=255)
+    SDL_SetRenderDrawColor(app.renderer, 46, 26, 71, 255);
+
+    // Limpa a tela com a cor definida acima
+    SDL_RenderClear(app.renderer);
 }
 
 
@@ -24,7 +27,7 @@ void presentScene(void)
 }
 
 
-//funcao que chama as funcoes de Stage.c
+// Função responsável por desenhar os lutadores e projéteis, chamando funções de Stage.c
 void draw(void)
 {
     drawFighters();
@@ -32,7 +35,7 @@ void draw(void)
 }
 
 
-// carrega uma textura da imagem no arquivo
+// Carrega uma imagem a partir de um arquivo e retorna uma textura pronta para renderização
 SDL_Texture *loadTexture(char *filename)
 {
     SDL_Texture *texture = IMG_LoadTexture(app.renderer, filename);
@@ -44,7 +47,7 @@ SDL_Texture *loadTexture(char *filename)
 }
 
 
-// desenha uma textura escalada
+// Renderiza uma textura na tela com escala e blending, usando coordenadas e tamanho ajustados
 void blit(SDL_Texture *texture, int x, int y, float scale)
 {
      if (texture == NULL)
@@ -53,8 +56,6 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
         return;
      }
 
-
-    //redenrizando o tamanho da imagem.
     int w, h;
 
     SDL_QueryTexture(texture, NULL, NULL, &w, &h);
@@ -73,9 +74,11 @@ void blit(SDL_Texture *texture, int x, int y, float scale)
 }
 
 
-/*a funcao drawFighters percorre todos os lutadores na lista
-encadeada e desenha cada um deles, usando o comando blit.
-O jogador agora e desenhado como parte da funcao drawFighter.*/
+/*
+ A função drawFighters percorre todos os lutadores na lista encadeada
+ e desenha cada um deles usando o comando blit().
+ O jogador agora é desenhado como parte dessa função.
+*/
 static void drawFighters(void)
 {
     Entity *e;
@@ -87,7 +90,7 @@ static void drawFighters(void)
 }
 
 
-//chama a funcao que definem o tamanho das balas e desenha
+// A função drawBullets percorre a lista encadeada de balas e desenha cada uma com sua textura e escala
 static void drawBullets(void)
 {
     for (Entity *b = stage.bulletHead.next; b != NULL; b = b->next)

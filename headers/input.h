@@ -1,7 +1,9 @@
 // input.h
-#ifndef INPUT_H
-#define INPUT_H
+//Cabecalho com funcoes responsaveis por capturar e processar entradas do jogador
 
-void doInput(void);
+#ifndef INPUT_H // Prevencao contra multiplas inclusoes do arquivo
+#define INPUT_H // Define a flag de inclusoes unicas
 
-#endif
+void doInput(void); // Captura e processa eventos de entradas (tecla, mouse, etc)usando SDL
+
+#endif // Finaliza a protecao contra multiplas inclusoes

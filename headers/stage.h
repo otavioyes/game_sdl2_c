@@ -1,7 +1,9 @@
 //stage.h
-#ifndef STAGE_H
-#define STAGE_H
+// Cabecalho que declara a funcao de inicializacao da fase ou estagio do jogo
 
-void initStage(void);
+#ifndef STAGE_H // Prevencao contra multiplas inclusoes do cabecalho
+#define STAGE_H // Define a flag para inclusao unica
 
-#endif // STAGE_H
+void initStage(void); // Inicializa os dados da fase, como entidades, balas, inimigos, e outros
+
+#endif // STAGE_H // Finaliza a protecao contra multiplas inclusoes

@@ -1,8 +1,10 @@
 // init.h
-#ifndef INIT_H
-#define INIT_H
+// Cabecalho com funcoes de inicializacao e finalizacao do SDL e do jogo
 
-void initSDL(void);
-void cleanup(void);
+#ifndef INIT_H // Prevencao contra multiplas inclusoes do arquivo
+#define INIT_H // Define a flag de inclusoes unica
 
-#endif
+void initSDL(void); // Inicializa a lib SDL, a janela, renderizador, e outros necessarios
+void cleanup(void); // Libera recursos e encerra corretamente a aplicacao (fecha janela, detroi texturas, etc)
+
+#endif // Finaliza a protecao contra multiplas inclusoes

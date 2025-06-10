@@ -1,11 +1,13 @@
 // structs.h
-#ifndef STRUCTS_H
-#define STRUCTS_H
+// Cabecalho que define as estruturas de dados principais usadas no jogo
 
-#include "defs.h"
-#include <SDL2/SDL.h>
+#ifndef STRUCTS_H // Prevencao contra multiplas inclusoes do cabecalho
+#define STRUCTS_H // Define a flag para inclusoes unica
 
-typedef struct Entity Entity;
+#include "defs.h" // Inclui definicoes e constantes como tamanho e limites
+#include <SDL2/SDL.h> // Inclui os tipos da lib SDL (ex: SDL_Windowm, SDL_Renderer, SDL_Texture)
+
+typedef struct Entity Entity; // Declaracao antecipadada struct Entity, permitindo o uso de ponteiros antes da definicao completa
 
 //encapsula funcoes de logicas de desenho
 typedef struct {

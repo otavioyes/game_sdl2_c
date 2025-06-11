@@ -28,12 +28,13 @@ typedef struct {
 /* Usado para representar objetos como jogadores, balas, inimigos etc..
 + encadeamento*/
 struct Entity {
-    float        x, y; // Posicao no mundo
-    int          width, height; // Dimensoes da entidade
-    int          health, reload; // Vida e tempo de recarga (usado para atirar, por exemplo)
-    float        scale, dx, dy; // Escala de desenho, velocidade nos eixos X e Y
-    SDL_Texture *texture; // Ponteiro para a textura usada na renderizacao da entidade
-    Entity      *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
+    float           x, y; // Posicao no mundo
+    int             width, height; // Dimensoes da entidade
+    int             health, reload; // Vida e tempo de recarga (usado para atirar, por exemplo)
+    float           scale, dx, dy; // Escala de desenho, velocidade nos eixos X e Y
+    SDL_Texture     *texture; // Ponteiro para a textura usada na renderizacao da entidade
+    Entity          *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
+    int             side;
 };
 
 // Representa o estado da fase do jogo com lista de entidade

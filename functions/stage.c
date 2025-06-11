@@ -16,6 +16,11 @@ static void spawnsEnemies(void);
 
 static int enemySpawnTimer;
 
+//prototipo da colisao
+static int bulletHitFighter(Entity *b);
+
+
+
 //Inicializa o estágio (fase) do jogo
 void initStage(void)
 {
@@ -43,7 +48,7 @@ void initStage(void)
 static void initPlayer(void)
 {
     player = malloc(sizeof(Entity));
-    memset(player, 0, sizeof(Entity));//inicializando os campos da strut com 0 S/lixo de mem.
+    memset(player, 0, sizeof(Entity));//inicializando os campos da strut com 0 S/lixo de mem
     stage.fighterTail->next = player;
     stage.fighterTail = player;
 
@@ -52,6 +57,8 @@ static void initPlayer(void)
     player->scale   = 0.1f;//tamanho da imagem /scale
     player->texture = loadTexture("gfx/player1.png");
     SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
+
+    player->side = SIDE_PLAYER;
 }
 
 
@@ -80,6 +87,10 @@ static void spawnEnemies(void)
         enemy->dx = -(2 + (rand() % 4));//velocidade para a esquerda negativa
         enemy->dy = rand() %5 - 2; //Movimentacao do eixo Y eleatoria
         enemySpawnTimer = 20  + (rand() % 60); //taxa de geracao do inimigo
+
+        enemy->side = SIDE_ALIEN;
+
+        enemy->health = 1;
     }
 }
 
@@ -90,7 +101,6 @@ static void logic(void)
     doFighters();
     doBullet();
     spawnEnemies();
-
 }
 
 //funcao de  movimentacao do jogador
@@ -103,52 +113,25 @@ static void doPlayer(void)
         player->reload--;
     }
 
-    if (app.keyboard[SDL_SCANCODE_W])
-    {
-        player->dy = -PLAYER_SPEED;
-    }
+    if (app.keyboard[SDL_SCANCODE_W]) { player->dy = -PLAYER_SPEED; }
 
-    if (app.keyboard[SDL_SCANCODE_S])
-    {
-        player->dy = PLAYER_SPEED;
-    }
+    if (app.keyboard[SDL_SCANCODE_S]) { player->dy = PLAYER_SPEED; }
 
-    if (app.keyboard[SDL_SCANCODE_A])
-    {
-        player->dx = -PLAYER_SPEED;
-    }
+    if (app.keyboard[SDL_SCANCODE_A]) { player->dx = -PLAYER_SPEED; }
 
-    if (app.keyboard[SDL_SCANCODE_D])
-    {
-        player->dx = PLAYER_SPEED;
-    }
+    if (app.keyboard[SDL_SCANCODE_D]) { player->dx = PLAYER_SPEED; }
 
-    if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0)
-    {
-        fireBullet();
-    }
+    if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0) { fireBullet(); }
 
     //restringindo o jogador aos limites da tela
-    if(player->x + player->width * player->scale > SCREEN_WIDTH)
-    {
-        player->x = SCREEN_WIDTH - player->width * player->scale;
-    }
+    if(player->x + player->width * player->scale > SCREEN_WIDTH) { player->x = SCREEN_WIDTH - player->width * player->scale; }
 
 
-    if(player->x < 0)
-    {
-        player->x = 0;
-    }
+    if(player->x < 0) { player->x = 0; }
 
-    if(player->y + player->height * player->scale > SCREEN_HEIGHT)
-    {
-        player->y = SCREEN_HEIGHT - player->width * player->scale;
-    }
+    if(player->y + player->height * player->scale > SCREEN_HEIGHT) { player->y = SCREEN_HEIGHT - player->width * player->scale; }
 
-    if(player->y < 0)
-    {
-        player->y = 0;
-    }
+    if(player->y < 0) { player->y = 0; }
 }
 
 
@@ -176,7 +159,7 @@ static void doFighters(void)
         }
 
         // Se não for o jogador e o lutador saiu completamente da tela à esquerda
-        if(e != player && (e->x +e->width < 0))
+        if(e != player && ( (e->x + e->width * e->scale) < 0 || e->health <= 0) )// Exclui um lutador se sua 'health'  for 0
         {
             // Se for o último da lista, atualiza o ponteiro do final
             if(e == stage.fighterTail)
@@ -194,6 +177,24 @@ static void doFighters(void)
 }
 
 
+static int bulletHitFighter(Entity *b)
+{
+    Entity *e;
+
+    for(e = stage.fighterHead.next; e != NULL; e = e->next)
+    {
+        if(e->side != b->side && collision(b->x, b->y, b->width, b->height, e->x, e->y, e->width, e->height))
+        {
+            b->health = 0;
+            e->health = 0;
+
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
 //Atualiza as balas e remove as que sairam da tela (lado direito)
 static void doBullet(void)
 {
@@ -207,7 +208,7 @@ static void doBullet(void)
         b->x    += b->dx; //atualiza a posicao X da bala
         b->y    += b->dy; //atualiza a posicao y da bala
 
-        if (b->x > SCREEN_WIDTH) //Se a bala passou do limite direito da tela
+        if (bulletHitFighter(b) ||b->x > SCREEN_WIDTH) //Se a bala passou do limite direito da tela
         {
             //Se a bala era ultima da lista, atualiza o ponteiro
             if (b == stage.bulletTail)
@@ -217,7 +218,7 @@ static void doBullet(void)
 
             prev->next = b->next; //Remove a bala da lista
             free(b); //Libera a memoria da bala
-            b = prev; //Volta a uma posição da lista para manter o loop seguro 
+            b = prev; //Volta a uma posição da lista para manter o loop seguro
         }
 
         prev = b;//Avanca o ponteiro anterior
@@ -252,4 +253,6 @@ static void fireBullet(void)
     bullet->dx = PLAYER_BULLET_SPEED; //Velocidade da bala no eixo Y
     bullet->health = 1; //A bala esta ativa (vida util)
     player->reload = 8; //Tempo de recarga antes de atirar novamente.
+
+    bullet->side = SIDE_PLAYER;
 }

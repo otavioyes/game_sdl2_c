@@ -17,6 +17,7 @@
 #include "init.h" // Inclui funcoes de inicilizacao do jogo e SDL
 #include "input.h" // Inclui funcoes relacionadas a entrada do teclado/mouse
 #include "stage.h" // Inclui logica especifica da fase (como atualizacao e controle de entidades)
+#include "util.h" // Inclui funcoes utilitarias
 
 extern App          app; // Declara a variavel global 'app', que contem o estado principal da aplicacao
 extern Stage        stage; // Declara a variavel global 'stage', que armazena os dados da fase (inimigo, tiros)

@@ -123,13 +123,19 @@ static void doPlayer(void)
 
     if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0) { fireBullet(); }
 
-    //restringindo o jogador aos limites da tela
-    if(player->x + player->width * player->scale > SCREEN_WIDTH) { player->x = SCREEN_WIDTH - player->width * player->scale; }
 
+    // restringindo o jogador aos limites da tela
+    if(player->x + player->width * player->scale > SCREEN_WIDTH)
+    {
+        player->x = SCREEN_WIDTH - player->width * player->scale;
+    }
 
     if(player->x < 0) { player->x = 0; }
 
-    if(player->y + player->height * player->scale > SCREEN_HEIGHT) { player->y = SCREEN_HEIGHT - player->width * player->scale; }
+    if(player->y + player->height * player->scale > SCREEN_HEIGHT)
+    {
+        player->y = SCREEN_HEIGHT - player->height * player->scale;
+    }
 
     if(player->y < 0) { player->y = 0; }
 }
@@ -247,8 +253,8 @@ static void fireBullet(void)
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
     //Define a posição inicial da bala no centro do jogador
-    bullet->x   =   player->x + (player->width * player->scale / 2) - (bullet->x * bullet->scale / 2);
-    bullet->y   =   player->y + (player->height * player->scale / 2) - (bullet->y * bullet->scale / 2);
+    bullet->x   =   player->x + (player->width * player->scale / 2) - (bullet->width * bullet->scale / 2);
+    bullet->y   =   player->y + (player->height * player->scale / 2) - (bullet->height * bullet->scale / 2);
 
     bullet->dx = PLAYER_BULLET_SPEED; //Velocidade da bala no eixo Y
     bullet->health = 1; //A bala esta ativa (vida util)

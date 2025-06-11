@@ -9,36 +9,38 @@
 
 typedef struct Entity Entity; // Declaracao antecipadada struct Entity, permitindo o uso de ponteiros antes da definicao completa
 
-//encapsula funcoes de logicas de desenho
+// Encapsula funcoes de logicas de desenho
 typedef struct {
-    void (*logic)(void);
-    void (*draw) (void);
+    void (*logic)(void); // Ponteiro para funcao que trata a logica (atualizacao)
+    void (*draw) (void); // Ponteiro para funcao que trata desenho (renderizacao)
 } Delegate;
 
-//dados globais do sistema(janela/renderder, input).
+// Dados globais do sistema (janela/renderder, entradas)
 typedef struct {
-    SDL_Renderer    *renderer;
-    SDL_Window      *window;
-    Delegate        delegate;
-    int             keyboard[MAX_KEYBOARD_KEYS];
-    int             mouse[MAX_MOUSE_BUTTONS];
+    SDL_Renderer    *renderer; // Ponteiros para renderizaacao SDL
+    SDL_Window      *window; // Ponteiros para janela SDL
+    Delegate        delegate; // Estruturas com ponteiros para funcao de logica e desenho
+    int             keyboard[MAX_KEYBOARD_KEYS]; // Estado das teclas do teclado
+    int             mouse[MAX_MOUSE_BUTTONS]; // EStado dos botoes do mouse
 } App;
 
 
-/*Usado para representar objetos como jogadores, balas, inimigos etc..
+/* Usado para representar objetos como jogadores, balas, inimigos etc..
 + encadeamento*/
 struct Entity {
-    float        x, y;
-    int          width, height;
-    int          health, reload;
-    float        scale, dx, dy;
-    SDL_Texture *texture;
-    Entity      *next; //ponteiro que liga ao próximo nó
+    float        x, y; // Posicao no mundo
+    int          width, height; // Dimensoes da entidade
+    int          health, reload; // Vida e tempo de recarga (usado para atirar, por exemplo)
+    float        scale, dx, dy; // Escala de desenho, velocidade nos eixos X e Y
+    SDL_Texture *texture; // Ponteiro para a textura usada na renderizacao da entidade
+    Entity      *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
 };
 
-typedef struct {
-    Entity  fighterHead, *fighterTail;
-    Entity  bulletHead,  *bulletTail;
+// Representa o estado da fase do jogo com lista de entidade
+typedef struct
+{
+    Entity  fighterHead, *fighterTail; // Lista de entidades do tipo lutador (jogador, inimigo)
+    Entity  bulletHead,  *bulletTail; // Lista de projeteis (balas)
 } Stage;
 
-#endif // STRUCTS_H
+#endif // STRUCTS_H // Finaliza a protecao contra multiplas inclusoes

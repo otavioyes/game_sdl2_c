@@ -4,16 +4,18 @@
 #ifndef DEFS_H // Prevencao contra multiplas inclusoes do cabecalho
 #define DEFS_H // Define o identificador para a protecao contra multiplas inclusoes
 
-#define SCREEN_WIDTH        1200 // Largura da janela do jogo em pixels
-#define SCREEN_HEIGHT       720 // Altura da janela do jogo em pixels
+static const int SCREEN_WIDTH           = 1200; // Largura da janela do jogo em pixels
+static const int SCREEN_HEIGHT          = 720; // Altura da janela do jogo em pixels
 
-#define PLAYER_SPEED        4 // Velocidade de movimento do jogador (pixel por frame)
-#define PLAYER_BULLET_SPEED 16 // Velocidade dos projeteis disparados pelo jogador
+static const int PLAYER_SPEED           = 4; // Velocidade de movimento do jogador (pixel por frame)
+static const int PLAYER_BULLET_SPEED    = 16; // Velocidade dos projeteis disparados pelo jogador
 
-#define MAX_KEYBOARD_KEYS   350 //Numero maximo de teclas do teclado que podem ser rastreados
-#define MAX_MOUSE_BUTTONS   3 // Numero maximo de botoes do mouse (esquerdo, direito e meio)
-
-#define MAX_BULLETS         128 //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
+enum
+{
+        MAX_KEYBOARD_KEYS      = 350, //Numero maximo de teclas do teclado que podem ser rastreados
+        MAX_MOUSE_BUTTONS      = 3  // Numero maximo de botoes do mouse (esquerdo, direito e meio)
+};
+static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
 
 //colisao
 

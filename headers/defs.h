@@ -15,6 +15,7 @@ enum
         MAX_KEYBOARD_KEYS      = 350, //Numero maximo de teclas do teclado que podem ser rastreados
         MAX_MOUSE_BUTTONS      = 3  // Numero maximo de botoes do mouse (esquerdo, direito e meio)
 };
+
 static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
 
 //colisao

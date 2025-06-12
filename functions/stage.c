@@ -56,6 +56,7 @@ static void initPlayer(void)
     player->y       = 100; //posicao Y onde o player nasce
     player->scale   = 0.1f;//tamanho da imagem /scale
     player->texture = loadTexture("gfx/player1.png");
+
     SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 
     player->side = SIDE_PLAYER;

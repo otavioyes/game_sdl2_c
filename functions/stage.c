@@ -191,12 +191,19 @@ static int bulletHitFighter(Entity *b)
     // Para cada fighter na lista encadeada de inimigos…
     for(e = stage.fighterHead.next; e != NULL; e = e->next)
     {
-        if(e->side != b->side && collision (b->x, b->y, b->width, b->height, // retângulo da bala
-                                            e->x, e->y, e->width, e->height)) // retângulo do fighter
+        if(e->side != b->side && collision(
+                                          (int) (b->x),
+                                          (int) (b->y),
+                                          (int) (b->width   *   b->scale),
+                                          (int) (b->height  *   b->scale), // retângulo da bala
+                                          /*inimigo*/
+                                          (int) (e->x),
+                                          (int) (e->y),
+                                          (int) (e->width   *   e->scale),
+                                          (int) (e->height  *   e->scale))) // retângulo do fighter
         {
             b->health = 0; // Marca a bala para a remocao
             e->health = 0; // Marca o inimigo para a remocao
-
             return 1; // Marca um "hit" (colisao bem sucedida)
         }
     }
@@ -264,4 +271,5 @@ static void fireBullet(void)
     player->reload = 8; //Tempo de recarga antes de atirar novamente.
 
     bullet->side = SIDE_PLAYER;
+
 }

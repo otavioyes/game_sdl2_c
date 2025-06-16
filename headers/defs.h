@@ -12,8 +12,8 @@ static const int PLAYER_BULLET_SPEED    = 16; // Velocidade dos projeteis dispar
 
 enum
 {
-        MAX_KEYBOARD_KEYS      = 350, //Numero maximo de teclas do teclado que podem ser rastreados
-        MAX_MOUSE_BUTTONS      = 3  // Numero maximo de botoes do mouse (esquerdo, direito e meio)
+                MAX_KEYBOARD_KEYS      = 350, //Numero maximo de teclas do teclado que podem ser rastreados
+                MAX_MOUSE_BUTTONS      = 3  // Numero maximo de botoes do mouse (esquerdo, direito e meio)
 };
 
 static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
@@ -24,7 +24,7 @@ static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bu
 #define SIDE_ALIEN      1 // Identificador de lado para o inimigo em colisao
 
 // Macros utilitarias genericas
-#define MAX(a,b) ((a) > (b)) ? (a) : (b)
-#define MIN(a,b) ((a) < (b)) ? (a) : (b)
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 #endif // DEFS_H // Fim da protecao contra multiplas inclusoes

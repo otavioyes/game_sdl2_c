@@ -183,22 +183,24 @@ static void doFighters(void)
     }
 }
 
-
+// Função que testa se a bala `b` atingiu algum inimigo
 static int bulletHitFighter(Entity *b)
 {
-    Entity *e;
+    Entity *e; // Ponteiro para percorrer a lista de fighters
 
+    // Para cada fighter na lista encadeada de inimigos…
     for(e = stage.fighterHead.next; e != NULL; e = e->next)
     {
-        if(e->side != b->side && collision(b->x, b->y, b->width, b->height, e->x, e->y, e->width, e->height))
+        if(e->side != b->side && collision (b->x, b->y, b->width, b->height, // retângulo da bala
+                                            e->x, e->y, e->width, e->height)) // retângulo do fighter
         {
-            b->health = 0;
-            e->health = 0;
+            b->health = 0; // Marca a bala para a remocao
+            e->health = 0; // Marca o inimigo para a remocao
 
-            return 1;
+            return 1; // Marca um "hit" (colisao bem sucedida)
         }
     }
-    return 0;
+    return 0; //Nenhua colisao
 }
 
 

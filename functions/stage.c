@@ -170,8 +170,8 @@ static void doFighters(void)
                                 (int)(player->width     *   player->scale),
                                 (int)(player->height    *   player->scale)))
                                 {
-                                e->health -= 1;//inimigo morre 100% ao encontar no jogador
-                                player->health -= 1;// reduz a vida do jogador
+                                e->health = 0;//inimigo morre 100% ao encontar no jogador
+                               // player->health -= 1;// reduz a vida do jogador
                                 SDL_Log("Inimigo colidiu com o jogador"); // Log de colisao
                                 }
 
@@ -183,6 +183,8 @@ static void doFighters(void)
         // Se não for o jogador e o lutador saiu completamente da tela à esquerda
         if(e != player && ( (e->x + e->width * e->scale) < 0 || e->health <= 0) )// Exclui um lutador se sua 'health'  for 0
         {
+            SDL_Log("Inimigo removido! Vida = %d", e->health);
+
             // Se for o último da lista, atualiza o ponteiro do final
             if(e == stage.fighterTail)
             {

@@ -91,7 +91,7 @@ static void spawnEnemies(void)
 
         enemy->side = SIDE_ALIEN;
 
-        enemy->health = 1;
+        enemy->health = 3;
     }
 }
 
@@ -160,6 +160,21 @@ static void doFighters(void)
         {
             e->y = SCREEN_HEIGHT - e->width * e->scale;
         }
+
+            if(e != player && collision(
+                                (int)(e->x), (int)(e->y),
+                                (int)(e->width  *   e->scale),
+                                (int)(e->height *   e->scale),
+                                /*jogador*/
+                                (int)(player->x), (int)(player->y),
+                                (int)(player->width     *   player->scale),
+                                (int)(player->height    *   player->scale)))
+                                {
+                                e->health -= 1;//inimigo morre 100% ao encontar no jogador
+                                player->health -= 1;// reduz a vida do jogador
+                                SDL_Log("Inimigo colidiu com o jogador"); // Log de colisao
+                                }
+
         if(e->y < 0)
         {
             e->y = 0;
@@ -203,7 +218,7 @@ static int bulletHitFighter(Entity *b)
                                           (int) (e->height  *   e->scale))) // retângulo do fighter
         {
             b->health = 0; // Marca a bala para a remocao
-            e->health = 0; // Marca o inimigo para a remocao
+            e->health -= 1; // Marca o inimigo para a remocao
             return 1; // Marca um "hit" (colisao bem sucedida)
         }
     }

@@ -19,12 +19,15 @@ enum
 static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
 
 //colisao
-
 #define SIDE_PLAYER     0 // Identificador de lado para o jogador em colisao
 #define SIDE_ALIEN      1 // Identificador de lado para o inimigo em colisao
 
 // Macros utilitarias genericas
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
+
+// Inimigos revidando
+#define FPS 60 // Calculos de tempo
+#define ALIEN_BULLET_SPEED 8 // Velocidade das balas disparadas pelos inimigos
 
 #endif // DEFS_H // Fim da protecao contra multiplas inclusoes

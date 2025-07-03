@@ -19,7 +19,10 @@ static int enemySpawnTimer;
 //prototipo da colisao
 static int bulletHitFighter(Entity *b);
 
-
+//prototipo para inimigo disparando
+static void resetStage(void);
+static void doEnemies(void);
+static  void fireAlienBullet(Entity *e);
 
 //Inicializa o estágio (fase) do jogo
 void initStage(void)
@@ -41,6 +44,11 @@ void initStage(void)
     enemyTexture = loadTexture("gfx/enemy.png");//carrega texrtura do inimigo
     enemySpawnTimer = 0; //Zera o temporizador de geraçao de inimigos
 
+    // Inimigos revidando
+    alienBulletTexture = loadTexture("gfx/alienBullet.png");
+    playerTexture = loadTexture("gfx/player.png");
+
+    resetStage();
 
 }
 
@@ -60,6 +68,35 @@ static void initPlayer(void)
     SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 
     player->side = SIDE_PLAYER;
+}
+
+static void resetStage(void)
+{
+    Entity *e;
+
+    while (stage.fighterHead.next)
+    {
+        e = stage.fighterHead.next;
+        stage.fighterHead.next = e->next;
+        free(e);
+    }
+
+    while (stage.bulletHead.next)
+    {
+        e = stage.bulletHead.next;
+        stage.bulletHead.next = e->next;
+        free(e);
+    }
+
+    memset(&stage, 0, sizeof(Stage));
+    stage.fighterTail = &stage.fighterHead;
+    stage.bulletTail = &stage.bulletTail;
+
+    initplayer();
+
+    enemySpawnTimer 0;
+
+    stageResetTimer = FPS * 2;
 }
 
 
@@ -102,12 +139,24 @@ static void logic(void)
     doFighters();
     doBullet();
     spawnEnemies();
+
+    clipPlayer();
+
+    if (player == NULL && --stageResetTimer <= 0)
+    {
+        resetStage();
+        printf("Player morto");
+    }
 }
 
 //funcao de  movimentacao do jogador
 static void doPlayer(void)
 {
-    player->dx = player->dy = 0;
+
+    if (player != NULL)
+    {
+        player->dx = player->dy = 0;
+    }
 
     if (player->reload > 0)
     {
@@ -141,6 +190,19 @@ static void doPlayer(void)
     if(player->y < 0) { player->y = 0; }
 }
 
+
+static void doEnemies(void)
+{
+    Entity *e;
+
+    for (e = stage.fighterHead.next ; e != NULL ; e = e->next;
+    {
+        if (e != player && player != NULL && --e->reload <= 0)
+        {
+            fireAlienBullet(e);
+        }
+    }
+} 
 
 
 // Atualiza os lutadores e remove os que saíram da tela
@@ -290,3 +352,37 @@ static void fireBullet(void)
     bullet->side = SIDE_PLAYER;
 
 }
+
+static void fireAlienBullet(Entity *e)
+{
+    Entity *bullet;
+
+    bullet = malloc(sizeof(Entity));
+    memset(bullet, 0, sizeof(Entity));
+    stage.bulletTail->next = bullet;
+    stage.bulletTail = bullet;
+
+    bullet->x e->x;
+    bullet->y = e->y;
+    bullet->scale = 0.1f;
+    bullet->health = 1;
+    bullet->Texture = alienBulletTexture;
+    bullet->side = SIDE_ALIEN;
+    SQL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->hight);
+
+    bullet->x += (e->width / 2) - (bullet->width / 2);
+    bullet->y += (e->hight / 2) - (bullet->hight / 2);
+
+    calcSlop(player->x + (player->width / 2), player->y + (player->hight / 2),
+            e->x, e->y, &bullet->dx, &bullet->dy);
+
+    bullet->dx *= ALIEN_BULLET_SPEED;
+    bullet->dy *= ALIEN_BULLET_SPEED;
+
+    e->reload = (rand() % FPS *2);
+}
+
+
+
+
+

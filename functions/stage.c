@@ -223,6 +223,18 @@ static void doFighters(void)
             e->y = SCREEN_HEIGHT - e->width * e->scale;
         }
 
+        if (e != player && e->x < -e->width)
+        {
+            e->health = 0;
+        }
+
+        if (e->health == 0)
+        {
+            if (e == player)
+            {
+                player = NULL;
+            }
+
             if(e != player && collision(
                                 (int)(e->x), (int)(e->y),
                                 (int)(e->width  *   e->scale),
@@ -368,12 +380,12 @@ static void fireAlienBullet(Entity *e)
     bullet->health = 1;
     bullet->Texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;
-    SQL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->hight);
+    SQL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
-    bullet->x += (e->width / 2) - (bullet->width / 2);
-    bullet->y += (e->hight / 2) - (bullet->hight / 2);
+    bullet->x += (e->width / 2) - (bullet->width / 2) - (bullet->width * bullet->scale / 2);
+    bullet->y += (e->hight / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
 
-    calcSlop(player->x + (player->width / 2), player->y + (player->hight / 2),
+    calcSlop(player->x + (player->width / 2), player->y + (player->height / 2),
             e->x, e->y, &bullet->dx, &bullet->dy);
 
     bullet->dx *= ALIEN_BULLET_SPEED;

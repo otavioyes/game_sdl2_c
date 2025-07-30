@@ -27,7 +27,7 @@ static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bu
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 // Inimigos revidando
-#define FPS 60 // Calculos de tempo
+static const int  FPS   =   60; // Calculos de tempo
 #define ALIEN_BULLET_SPEED 8 // Velocidade das balas disparadas pelos inimigos
 
 #endif // DEFS_H // Fim da protecao contra multiplas inclusoes

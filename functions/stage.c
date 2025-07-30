@@ -22,7 +22,8 @@ static int bulletHitFighter(Entity *b);
 //prototipo para inimigo disparando
 static void resetStage(void);
 static void doEnemies(void);
-static  void fireAlienBullet(Entity *e);
+static void fireAlienBullet(Entity *e);
+static void clipPlayer(void);
 
 //Inicializa o estágio (fase) do jogo
 void initStage(void)
@@ -94,7 +95,7 @@ static void resetStage(void)
 
     initplayer();
 
-    enemySpawnTimer 0;
+    enemySpawnTimer =  0;
 
     stageResetTimer = FPS * 2;
 }
@@ -125,6 +126,7 @@ static void spawnEnemies(void)
         enemy->dx = -(2 + (rand() % 4));//velocidade para a esquerda negativa
         enemy->dy = rand() %5 - 2; //Movimentacao do eixo Y eleatoria
         enemySpawnTimer = 20  + (rand() % 60); //taxa de geracao do inimigo
+        enemy->reload = FPS * (1 + (rand() % 3));
 
         enemy->side = SIDE_ALIEN;
 
@@ -188,6 +190,33 @@ static void doPlayer(void)
     }
 
     if(player->y < 0) { player->y = 0; }
+}
+
+static void clipPlayer(void)
+{
+    if (player != NULL)
+    {
+        if (player->x < 0)
+        {
+            player->x = 0;
+        }
+
+        if (player->y < 0)
+        {
+            player->y = 0;
+        }
+
+        if (player->x > SCREEN_WIDTH / 2)
+        {
+            player->x = SCREEN_WIDTH /2;
+        }
+
+        if (player->y > SCREEN_HEIGHT / 2)
+        {
+            player->y = SCREEN_HEIGHT /2;
+        }
+
+    }
 }
 
 
@@ -315,7 +344,7 @@ static void doBullet(void)
         b->x    += b->dx; //atualiza a posicao X da bala
         b->y    += b->dy; //atualiza a posicao y da bala
 
-        if (bulletHitFighter(b) ||b->x > SCREEN_WIDTH) //Se a bala passou do limite direito da tela
+        if (bulletHitFighter(b) || b->x < -b->width || b->y < -b->height || b->x > SCREEN_WIDTH || b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
         {
             //Se a bala era ultima da lista, atualiza o ponteiro
             if (b == stage.bulletTail)
@@ -386,7 +415,7 @@ static void fireAlienBullet(Entity *e)
     bullet->y += (e->hight / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
 
     calcSlop(player->x + (player->width / 2), player->y + (player->height / 2),
-            e->x, e->y, &bullet->dx, &bullet->dy);
+             e->x, e->y, &bullet->dx, &bullet->dy);
 
     bullet->dx *= ALIEN_BULLET_SPEED;
     bullet->dy *= ALIEN_BULLET_SPEED;

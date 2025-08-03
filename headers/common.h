@@ -25,7 +25,7 @@ extern Entity       *player; // Declara um ponteiro global para a entidade do jo
 extern SDL_Texture  *bulletTexture; // Declara ponteiro global para a textura dos tiros
 extern SDL_Texture  *enemyTexture; // Declara ponteiro global para a textura do inimigo
 extern SDL_Texture  *alienBulletTexture;
-extern SDL_Texture  *playerTexture;
+extern SDL_Texture  *playerBullet;
 
 static void capFrameRate(long *then, float *remainder);
 //Declara uma funcao static para limitar o frame rate (usado no loop principal do jogo)

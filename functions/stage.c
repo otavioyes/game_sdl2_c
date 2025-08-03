@@ -24,6 +24,7 @@ static void resetStage(void);
 static void doEnemies(void);
 static void fireAlienBullet(Entity *e);
 static void clipPlayer(void);
+static void resetStage(void);
 
 //Inicializa o estágio (fase) do jogo
 void initStage(void)
@@ -91,9 +92,9 @@ static void resetStage(void)
 
     memset(&stage, 0, sizeof(Stage));
     stage.fighterTail = &stage.fighterHead;
-    stage.bulletTail = &stage.bulletTail;
+    stage.bulletTail = &stage.bulletHead;
 
-    initplayer();
+    initPlayer();
 
     enemySpawnTimer =  0;
 
@@ -224,14 +225,14 @@ static void doEnemies(void)
 {
     Entity *e;
 
-    for (e = stage.fighterHead.next ; e != NULL ; e = e->next;
+    for (e = stage.fighterHead.next ; e != NULL ; e = e->next);
     {
         if (e != player && player != NULL && --e->reload <= 0)
         {
             fireAlienBullet(e);
         }
     }
-} 
+}
 
 
 // Atualiza os lutadores e remove os que saíram da tela
@@ -403,7 +404,7 @@ static void fireAlienBullet(Entity *e)
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-    bullet->x e->x;
+    bullet->x =  e->x;
     bullet->y = e->y;
     bullet->scale = 0.1f;
     bullet->health = 1;

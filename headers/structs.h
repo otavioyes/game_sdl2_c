@@ -7,7 +7,7 @@
 #include "defs.h" // Inclui definicoes e constantes como tamanho e limites
 #include <SDL2/SDL.h> // Inclui os tipos da lib SDL (ex: SDL_Windowm, SDL_Renderer, SDL_Texture)
 
-typedef struct Entity Entity; // Declaracao antecipadada struct Entity, permitindo o uso de ponteiros antes da definicao completa
+//typedef struct Entity Entity; // Declaracao antecipadada struct Entity, permitindo o uso de ponteiros antes da definicao completa
 
 // Encapsula funcoes de logicas de desenho
 typedef struct {
@@ -27,15 +27,15 @@ typedef struct {
 
 /* Usado para representar objetos como jogadores, balas, inimigos etc..
 + encadeamento*/
-struct Entity {
+typedef struct Entity {
     float           x, y; // Posicao no mundo
     int             width, height; // Dimensoes da entidade
     int             health, reload; // Vida e tempo de recarga (usado para atirar, por exemplo)
     float           scale, dx, dy; // Escala de desenho, velocidade nos eixos X e Y
     SDL_Texture     *texture; // Ponteiro para a textura usada na renderizacao da entidade
-    Entity          *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
+    struct Entity   *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
     int             side;
-};
+} Entity;
 
 // Representa o estado da fase do jogo com lista de entidade
 typedef struct

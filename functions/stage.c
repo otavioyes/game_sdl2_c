@@ -16,6 +16,9 @@ static void spawnsEnemies(void);
 
 static int enemySpawnTimer;
 
+// Inimigo revidando
+static int stageResetTimer = 0;
+
 //prototipo da colisao
 static int bulletHitFighter(Entity *b);
 
@@ -75,6 +78,7 @@ static void initPlayer(void)
 static void resetStage(void)
 {
     Entity *e;
+
 
     while (stage.fighterHead.next)
     {
@@ -278,6 +282,7 @@ static void doFighters(void)
                                // player->health -= 1;// reduz a vida do jogador
                                 SDL_Log("Inimigo colidiu com o jogador"); // Log de colisao
                                 }
+        }
 
         if(e->y < 0)
         {
@@ -345,7 +350,9 @@ static void doBullet(void)
         b->x    += b->dx; //atualiza a posicao X da bala
         b->y    += b->dy; //atualiza a posicao y da bala
 
-        if (bulletHitFighter(b) || b->x < -b->width || b->y < -b->height || b->x > SCREEN_WIDTH || b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
+        if (bulletHitFighter(b) || b->x < -b->width ||
+        b->y < -b->height || b->x > SCREEN_WIDTH ||
+        b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
         {
             //Se a bala era ultima da lista, atualiza o ponteiro
             if (b == stage.bulletTail)
@@ -408,12 +415,12 @@ static void fireAlienBullet(Entity *e)
     bullet->y = e->y;
     bullet->scale = 0.1f;
     bullet->health = 1;
-    bullet->Texture = alienBulletTexture;
+    bullet->texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;
-    SQL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
     bullet->x += (e->width / 2) - (bullet->width / 2) - (bullet->width * bullet->scale / 2);
-    bullet->y += (e->hight / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
+    bullet->y += (e->height / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
 
     calcSlop(player->x + (player->width / 2), player->y + (player->height / 2),
              e->x, e->y, &bullet->dx, &bullet->dy);
@@ -423,8 +430,3 @@ static void fireAlienBullet(Entity *e)
 
     e->reload = (rand() % FPS *2);
 }
-
-
-
-
-

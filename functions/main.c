@@ -6,7 +6,8 @@ Stage       stage; // DEclara uma variavel global 'stage' do tipo 'Stage' geranc
 Entity      *player; // Declara um ponteiro global 'player' do tipo 'Entity'que aponta para o objeto do personagem do jogador
 SDL_Texture *bulletTexture; // Declara um ponteiro global 'bulletTexture' para um SDL_Texture', usado para as texturas dos tiros
 SDL_Texture *enemyTexture; // Declara um ponteiro global 'enenmyTexture' para um SDL_Texture', usado para texturas dos inimigos
-
+SDL_Texture *alienBulletTexture;
+SDL_Texture *playerTexture;
 
 int main(int argc, char *argv[]) // Funcao principal, o ponto de entrada do programa
 {

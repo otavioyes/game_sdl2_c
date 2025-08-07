@@ -51,7 +51,13 @@ void initStage(void)
 
     // Inimigos revidando
     alienBulletTexture = loadTexture("gfx/alienBullet.png");
-    playerTexture = loadTexture("gfx/player.png");
+    playerTexture = loadTexture("gfx/player1.png");
+    if(player->texture == NULL)
+    {
+        printf("Erro ao carregar imagem texture player1.png\n");
+        printf("FUNCAO initStage\n");
+        exit(1);
+    }
 
     resetStage();
 
@@ -68,7 +74,14 @@ static void initPlayer(void)
     player->x       = 100; //posicao X onde o player nasce
     player->y       = 100; //posicao Y onde o player nasce
     player->scale   = 0.1f;//tamanho da imagem /scale
+
     player->texture = loadTexture("gfx/player1.png");
+    if(player->texture == NULL)
+    {
+        printf("Erro ao carregar textura player1.png\n");
+        printf("FUNCAO initPlayer\n");
+        exit(1);
+    }
 
     SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 
@@ -269,7 +282,7 @@ static void doFighters(void)
                 player = NULL;
             }
 
-            if(e != player && collision(
+            if(player && e != player && collision(
                                 (int)(e->x), (int)(e->y),
                                 (int)(e->width  *   e->scale),
                                 (int)(e->height *   e->scale),
@@ -351,8 +364,8 @@ static void doBullet(void)
         b->y    += b->dy; //atualiza a posicao y da bala
 
         if (bulletHitFighter(b) || b->x < -b->width ||
-        b->y < -b->height || b->x > SCREEN_WIDTH ||
-        b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
+           b->y < -b->height || b->x > SCREEN_WIDTH ||
+           b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
         {
             //Se a bala era ultima da lista, atualiza o ponteiro
             if (b == stage.bulletTail)

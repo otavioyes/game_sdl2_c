@@ -169,14 +169,12 @@ static void logic(void)
     }
 }
 
-//funcao de  movimentacao do jogador
+
 static void doPlayer(void)
 {
+    if (player == NULL) return; // se não existe jogador, sai da função
 
-    if (player != NULL)
-    {
-        player->dx = player->dy = 0;
-    }
+    player->dx = player->dy = 0;
 
     if (player->reload > 0)
     {
@@ -184,58 +182,44 @@ static void doPlayer(void)
     }
 
     if (app.keyboard[SDL_SCANCODE_W]) { player->dy = -PLAYER_SPEED; }
-
     if (app.keyboard[SDL_SCANCODE_S]) { player->dy = PLAYER_SPEED; }
-
     if (app.keyboard[SDL_SCANCODE_A]) { player->dx = -PLAYER_SPEED; }
-
     if (app.keyboard[SDL_SCANCODE_D]) { player->dx = PLAYER_SPEED; }
 
     if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0) { fireBullet(); }
 
-
     // restringindo o jogador aos limites da tela
-    if(player->x + player->width * player->scale > SCREEN_WIDTH)
+    if (player->x + player->width * player->scale > SCREEN_WIDTH)
     {
         player->x = SCREEN_WIDTH - player->width * player->scale;
     }
-
-    if(player->x < 0) { player->x = 0; }
-
-    if(player->y + player->height * player->scale > SCREEN_HEIGHT)
+    if (player->x < 0) { player->x = 0; }
+    if (player->y + player->height * player->scale > SCREEN_HEIGHT)
     {
         player->y = SCREEN_HEIGHT - player->height * player->scale;
     }
-
-    if(player->y < 0) { player->y = 0; }
+    if (player->y < 0) { player->y = 0; }
 }
 
 static void clipPlayer(void)
 {
-    if (player != NULL)
-    {
-        if (player->x < 0)
-        {
-            player->x = 0;
-        }
+    if (player == NULL)
+        return;  // Sai se não existe player
 
-        if (player->y < 0)
-        {
-            player->y = 0;
-        }
+    // Limita a posição do player para dentro dos limites da tela
+    if (player->x < 0)
+        player->x = 0;
 
-        if (player->x > SCREEN_WIDTH / 2)
-        {
-            player->x = SCREEN_WIDTH /2;
-        }
+    if (player->y < 0)
+        player->y = 0;
 
-        if (player->y > SCREEN_HEIGHT / 2)
-        {
-            player->y = SCREEN_HEIGHT /2;
-        }
+    if (player->x > SCREEN_WIDTH / 2)
+        player->x = SCREEN_WIDTH / 2;
 
-    }
+    if (player->y > SCREEN_HEIGHT / 2)
+        player->y = SCREEN_HEIGHT / 2;
 }
+
 
 
 static void doEnemies(void)
@@ -252,29 +236,31 @@ static void doEnemies(void)
 }
 
 
-// Atualiza os lutadores e remove os que saíram da tela
+//Atualiza os lutadores e remove os que saíram da tela
 static void doFighters(void)
 {
-    Entity *e, *prev;
+    Entity *e = stage.fighterHead.next;
+    Entity *prev = &stage.fighterHead; // começo no cabeçalho da lista de lutadores
 
-    prev = &stage.fighterHead;//comeca no cabecalho da lista de lutadores
-
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next)
+    while (e != NULL)
     {
-        e->x += e->dx;//atualiza posicao x com base na velocidade
-        e->y += e->dy;//atualiza posica y com base na velocidade
+        // Atualiza posição com base na velocidade
+        e->x += e->dx;
+        e->y += e->dy;
 
-        if(e->y + e->height * e->scale > SCREEN_HEIGHT)
+        // Restringe o lutador ao limite inferior da tela (corrigido e usando altura)
+        if (e->y + e->height * e->scale > SCREEN_HEIGHT)
         {
-            e->y = SCREEN_HEIGHT - e->width * e->scale;
+            e->y = SCREEN_HEIGHT - e->height * e->scale;
         }
 
+        // Se o lutador não for o player e saiu da tela pela esquerda, marca vida como 0
         if (e != player && e->x < -e->width)
         {
             e->health = 0;
         }
 
+        // Se a vida for 0, trata remoção e colisão
         if (e->health == 0)
         {
             if (e == player)
@@ -282,45 +268,54 @@ static void doFighters(void)
                 player = NULL;
             }
 
-            if(player && e != player && collision(
-                                (int)(e->x), (int)(e->y),
-                                (int)(e->width  *   e->scale),
-                                (int)(e->height *   e->scale),
-                                /*jogador*/
-                                (int)(player->x), (int)(player->y),
-                                (int)(player->width     *   player->scale),
-                                (int)(player->height    *   player->scale)))
-                                {
-                                e->health = 0;//inimigo morre 100% ao encontar no jogador
-                               // player->health -= 1;// reduz a vida do jogador
-                                SDL_Log("Inimigo colidiu com o jogador"); // Log de colisao
-                                }
+            if (player && e != player && collision(
+                (int)(e->x), (int)(e->y),
+                (int)(e->width  * e->scale),
+                (int)(e->height * e->scale),
+                /* jogador */
+                (int)(player->x), (int)(player->y),
+                (int)(player->width  * player->scale),
+                (int)(player->height * player->scale)))
+            {
+                e->health = 0; // inimigo morre ao colidir com jogador
+                // player->health -= 1; // opcional: reduzir vida do jogador
+                SDL_Log("Inimigo colidiu com o jogador");
+            }
         }
 
-        if(e->y < 0)
+        // Restringe limite superior da tela
+        if (e->y < 0)
         {
             e->y = 0;
         }
 
-        // Se não for o jogador e o lutador saiu completamente da tela à esquerda
-        if(e != player && ( (e->x + e->width * e->scale) < 0 || e->health <= 0) )// Exclui um lutador se sua 'health'  for 0
+        // Condição para remover lutadores que saíram da tela à esquerda ou estão mortos
+        if (e != player && ((e->x + e->width * e->scale) < 0 || e->health <= 0))
         {
             SDL_Log("Inimigo removido! Vida = %d", e->health);
 
-            // Se for o último da lista, atualiza o ponteiro do final
-            if(e == stage.fighterTail)
+            // Se for o último da lista, atualiza ponteiro do final
+            if (e == stage.fighterTail)
             {
                 stage.fighterTail = prev;
             }
 
-            prev->next = e->next; //Remove da lista
-            free(e); // Libera da memória
-            e = prev; //Volta um passo para manter o loop consistente
+            prev->next = e->next; // remove da lista
+
+            Entity *toFree = e; // salva ponteiro para liberar depois
+            e = e->next;        // avança antes de liberar
+
+            free(toFree);       // libera memória
+
+            continue;           // pula o avanço de prev para manter a lista consistente
         }
 
-        prev = e; // Avança o ponteiro anterior
+        // Avança ponteiros normalmente
+        prev = e;
+        e = e->next;
     }
 }
+
 
 // Função que testa se a bala `b` atingiu algum inimigo
 static int bulletHitFighter(Entity *b)

@@ -27,7 +27,7 @@ static void resetStage(void);
 static void doEnemies(void);
 static void fireAlienBullet(Entity *e);
 static void clipPlayer(void);
-static void resetStage(void);
+
 
 //Inicializa o estágio (fase) do jogo
 void initStage(void)
@@ -120,7 +120,7 @@ static void resetStage(void)
 
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores
-static void spawnEnemies(void)
+static void spawnsEnemies(void)
 {
     Entity *enemy;
 
@@ -158,7 +158,7 @@ static void logic(void)
     doPlayer();
     doFighters();
     doBullet();
-    spawnEnemies();
+    spawnsEnemies();
 
     clipPlayer();
 
@@ -206,18 +206,21 @@ static void clipPlayer(void)
     if (player == NULL)
         return;  // Sai se não existe player
 
-    // Limita a posição do player para dentro dos limites da tela
+    // Limita X mínimo
     if (player->x < 0)
         player->x = 0;
 
+    // Limita Y mínimo
     if (player->y < 0)
         player->y = 0;
 
-    if (player->x > SCREEN_WIDTH / 2)
-        player->x = SCREEN_WIDTH / 2;
+    // Limita X máximo (até a borda da tela menos a largura do sprite)
+    if (player->x > SCREEN_WIDTH - player->width)
+        player->x = SCREEN_WIDTH - player->width;
 
-    if (player->y > SCREEN_HEIGHT / 2)
-        player->y = SCREEN_HEIGHT / 2;
+    // Limita Y máximo (até a borda da tela menos a altura do sprite)
+    if (player->y > SCREEN_HEIGHT - player->height)
+        player->y = SCREEN_HEIGHT - player->height;
 }
 
 
@@ -226,7 +229,7 @@ static void doEnemies(void)
 {
     Entity *e;
 
-    for (e = stage.fighterHead.next ; e != NULL ; e = e->next);
+    for (e = stage.fighterHead.next ; e != NULL ; e = e->next)
     {
         if (e != player && player != NULL && --e->reload <= 0)
         {

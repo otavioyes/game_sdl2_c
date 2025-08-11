@@ -1,0 +1,21 @@
+# Objetos e binários
+build/
+bin/
+*.o
+*.d
+*.exe
+game_compiled
+*.out
+
+# Arquivos temporários do editor
+*.swp
+*.swo
+*.bak
+*~
+
+# Diretórios do Git
+.git/
+
+# Outros
+.DS_Store
+

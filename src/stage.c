@@ -165,7 +165,7 @@ static void logic(void)
     if (player == NULL && --stageResetTimer <= 0)
     {
         resetStage();
-        printf("Player morto");
+        printf("Player morto\n");
     }
 }
 

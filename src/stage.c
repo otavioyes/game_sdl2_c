@@ -45,13 +45,13 @@ void initStage(void)
 
     initPlayer();//Cria e posiciona o jogador no cenario
 
-    bulletTexture = loadTexture("gfx/playerBullet.png");//Carrega textura da bala
-    enemyTexture = loadTexture("gfx/enemy.png");//carrega texrtura do inimigo
+    bulletTexture = loadTexture("assets/gfx/playerBullet.png");//Carrega textura da bala
+    enemyTexture = loadTexture("assets/gfx/enemy.png");//carrega texrtura do inimigo
     enemySpawnTimer = 0; //Zera o temporizador de geraçao de inimigos
 
     // Inimigos revidando
-    alienBulletTexture = loadTexture("gfx/alienBullet.png");
-    playerTexture = loadTexture("gfx/player1.png");
+    alienBulletTexture = loadTexture("assets/gfx/alienBullet.png");
+    playerTexture = loadTexture("assets/gfx/player1.png");
     if(player->texture == NULL)
     {
         printf("Erro ao carregar imagem texture player1.png\n");
@@ -75,7 +75,7 @@ static void initPlayer(void)
     player->y       = 100; //posicao Y onde o player nasce
     player->scale   = 0.1f;//tamanho da imagem /scale
 
-    player->texture = loadTexture("gfx/player1.png");
+    player->texture = loadTexture("assets/gfx/player1.png");
     if(player->texture == NULL)
     {
         printf("Erro ao carregar textura player1.png\n");

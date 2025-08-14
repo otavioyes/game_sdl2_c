@@ -28,58 +28,66 @@ static void doEnemies(void);
 static void fireAlienBullet(Entity *e);
 static void clipPlayer(void);
 
-
-//Inicializa o estágio (fase) do jogo
 void initStage(void)
 {
-    app.delegate.logic = logic;// Define qual função será chamada para atualizar a lógica do jogo
-    app.delegate.draw  = draw;// Define qual função será chamada para desenhar na tela
+    app.delegate.logic = logic;
+    app.delegate.draw  = draw;
 
-    memset(&stage, 0, sizeof(stage));//Zera toda a estrutura do estagio (Limpa memoria)
+    // Carrega texturas primeiro (uma só vez)
+    bulletTexture     = loadTexture("assets/gfx/playerBullet.png");
+    enemyTexture      = loadTexture("assets/gfx/enemy.png");
+    alienBulletTexture= loadTexture("assets/gfx/alienBullet.png");
+    playerTexture     = loadTexture("assets/gfx/player1.png");
 
-    // Inicializa os ponteiros das listas ligadas:
-    // Início e final da lista de lutadores (jogador e inimigos)
-    stage.fighterTail = &stage.fighterHead;
-
-    stage.bulletTail  = &stage.bulletHead;// Início e final da lista de balas
-
-    initPlayer();//Cria e posiciona o jogador no cenario
-
-    bulletTexture = loadTexture("assets/gfx/playerBullet.png");//Carrega textura da bala
-    enemyTexture = loadTexture("assets/gfx/enemy.png");//carrega texrtura do inimigo
-    enemySpawnTimer = 0; //Zera o temporizador de geraçao de inimigos
-
-    // Inimigos revidando
-    alienBulletTexture = loadTexture("assets/gfx/alienBullet.png");
-    playerTexture = loadTexture("assets/gfx/player1.png");
-    if(player->texture == NULL)
+    if (playerTexture == NULL)
     {
-        printf("Erro ao carregar imagem texture player1.png\n");
-        printf("FUNCAO initStage\n");
+        SDL_Log("Erro ao carregar texture player1.png (initStage)");
         exit(1);
     }
 
-    resetStage();
+    // Inicializa a estrutura do stage
+    memset(&stage, 0, sizeof(stage));
+    stage.fighterTail = &stage.fighterHead;
+    stage.bulletTail  = &stage.bulletHead;
 
+    // Usa resetStage para criar o player (evita duplicidade)
+    enemySpawnTimer = 0;
+    resetStage();
 }
+
 
 /*Iinicia o player com localizacao e tamanho*/
 static void initPlayer(void)
 {
     player = malloc(sizeof(Entity));
-    memset(player, 0, sizeof(Entity));//inicializando os campos da strut com 0 S/lixo de mem
+    if (player == NULL)
+    {
+        SDL_Log("malloc falhou em initPlayer");
+        exit(1);
+    }
+    memset(player, 0, sizeof(Entity));
+
     stage.fighterTail->next = player;
     stage.fighterTail = player;
 
-    player->x       = 100; //posicao X onde o player nasce
-    player->y       = 100; //posicao Y onde o player nasce
-    player->scale   = 0.1f;//tamanho da imagem /scale
+    player->x       = 100;
+    player->y       = 100;
+    player->scale   = 0.1f;
 
-    player->texture = loadTexture("assets/gfx/player1.png");
-    if(player->texture == NULL)
+    // Usa a textura já carregada globalmente
+    if (playerTexture == NULL)
     {
-        printf("Erro ao carregar textura player1.png\n");
-        printf("FUNCAO initPlayer\n");
+        player->texture = loadTexture("assets/gfx/player1.png");
+        playerTexture = player->texture;
+    }
+    else
+    {
+        player->texture = playerTexture;
+    }
+
+    if (player->texture == NULL)
+    {
+        SDL_Log("Erro ao carregar textura player1.png (initPlayer)");
         exit(1);
     }
 
@@ -87,7 +95,10 @@ static void initPlayer(void)
 
     player->side = SIDE_PLAYER;
     player->health = 3;
+
+    SDL_Log("Player inicializado em (%.1f, %.1f) size %dx%d", player->x, player->y, player->width, player->height);
 }
+
 
 static void resetStage(void)
 {
@@ -203,26 +214,22 @@ static void doPlayer(void)
     if (player->y < 0) { player->y = 0; }
 }
 
+/*
+    Essa função é muito importante!
+    Ela faz aparecer o personagem!
+*/
 static void clipPlayer(void)
 {
-    if (player == NULL)
-        return;  // Sai se não existe player
+    if (player == NULL) return;
 
-    // Limita X mínimo
-    if (player->x < 0)
-        player->x = 0;
+    // Usa largura/altura * scale para clipping consistente
+    float w = player->width * player->scale;
+    float h = player->height * player->scale;
 
-    // Limita Y mínimo
-    if (player->y < 0)
-        player->y = 0;
-
-    // Limita X máximo (até a borda da tela menos a largura do sprite)
-    if (player->x > SCREEN_WIDTH - player->width)
-        player->x = SCREEN_WIDTH - player->width;
-
-    // Limita Y máximo (até a borda da tela menos a altura do sprite)
-    if (player->y > SCREEN_HEIGHT - player->height)
-        player->y = SCREEN_HEIGHT - player->height;
+    if (player->x < 0) player->x = 0;
+    if (player->y < 0) player->y = 0;
+    if (player->x > SCREEN_WIDTH  - w) player->x = SCREEN_WIDTH  - w;
+    if (player->y > SCREEN_HEIGHT - h) player->y = SCREEN_HEIGHT - h;
 }
 
 
@@ -425,7 +432,7 @@ static void fireAlienBullet(Entity *e)
 
     bullet->x = e->x;
     bullet->y = e->y;
-    bullet->scale = 0.1f;
+    bullet->scale = 0.05f;
     bullet->health = 1;
     bullet->texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;

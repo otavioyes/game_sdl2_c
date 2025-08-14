@@ -86,6 +86,7 @@ static void initPlayer(void)
     SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 
     player->side = SIDE_PLAYER;
+    player->health = 3;
 }
 
 static void resetStage(void)
@@ -113,7 +114,7 @@ static void resetStage(void)
 
     initPlayer();
 
-    enemySpawnTimer =  0;
+    enemySpawnTimer =  60;
 
     stageResetTimer = FPS * 2;
 }
@@ -157,6 +158,7 @@ static void logic(void)
 {
     doPlayer();
     doFighters();
+    doEnemies(); //inimigo dispara aqui
     doBullet();
     spawnsEnemies();
 
@@ -222,7 +224,6 @@ static void clipPlayer(void)
     if (player->y > SCREEN_HEIGHT - player->height)
         player->y = SCREEN_HEIGHT - player->height;
 }
-
 
 
 static void doEnemies(void)
@@ -422,7 +423,7 @@ static void fireAlienBullet(Entity *e)
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-    bullet->x =  e->x;
+    bullet->x = e->x;
     bullet->y = e->y;
     bullet->scale = 0.1f;
     bullet->health = 1;
@@ -433,8 +434,12 @@ static void fireAlienBullet(Entity *e)
     bullet->x += (e->width / 2) - (bullet->width / 2) - (bullet->width * bullet->scale / 2);
     bullet->y += (e->height / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
 
-    calcSlop(player->x + (player->width / 2), player->y + (player->height / 2),
-             e->x, e->y, &bullet->dx, &bullet->dy);
+    calcSlop(player->x + (player->width / 2),
+             player->y + (player->height / 2),
+             e->x + (e->width * e->scale / 2),
+             e->y + (e->height * e->scale / 2),
+             &bullet->dx,
+             &bullet->dy);
 
     bullet->dx *= ALIEN_BULLET_SPEED;
     bullet->dy *= ALIEN_BULLET_SPEED;

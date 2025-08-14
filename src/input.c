@@ -47,24 +47,25 @@ void doInput(void) {
 // Função chamada quando uma tecla é pressionada
 void doKeyDown(SDL_KeyboardEvent *event)
 {
-    // Verifica se a tecla não está sendo repetida e se o scancode está dentro do limite
-    if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS)
+    int sc = (int) event->keysym.scancode;            /* cast seguro do enum para int */
+    if (event->repeat == 0 && sc >= 0 && sc < (int)MAX_KEYBOARD_KEYS)
     {
-        app.keyboard[event->keysym.scancode] = 1; // Marca tecla como pressionada
-        printf("KEY PRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode)); // Log
+        app.keyboard[sc] = 1; // Marca tecla como pressionada
+        printf("KEY PRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode));
     }
 }
 
 // Função chamada quando uma tecla é liberada
 void doKeyUp(SDL_KeyboardEvent *event)
 {
-    // Verifica se a tecla não está sendo repetida e se o scancode está dentro do limite
-    if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS)
+    int sc = (int) event->keysym.scancode;            /* cast seguro do enum para int */
+    if (event->repeat == 0 && sc >= 0 && sc < (int)MAX_KEYBOARD_KEYS)
     {
-        app.keyboard[event->keysym.scancode] = 0; // Marca o teclado como liberado
-        printf("KEY UNPRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode)); // Log
+        app.keyboard[sc] = 0; // Marca o teclado como liberado
+        printf("KEY UNPRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode));
     }
 }
+
 
 
 // Função chamada quando um botão do mouse é pressionado

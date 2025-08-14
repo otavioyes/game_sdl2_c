@@ -10,6 +10,14 @@
 #include <stdlib.h>// Inclui funcoes padrao de alocacao de memoria, conversao, etc
 #include <string.h>// Inclui funcoes para manipulacao de strings (strlen, strcpy, etc)
 
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#include <math.h>
+#include <time.h>
+
+
 #include "defs.h" // Inclui definicoes e constantes do projeto (macros e limites)
 #include "structs.h" // Inclui declaracoes de struct como App, Stage, Entity, Delegate
 
@@ -28,7 +36,7 @@ extern SDL_Texture  *alienBulletTexture;
 extern SDL_Texture  *playerBullet;
 extern SDL_Texture  *playerTexture;
 
-static void capFrameRate(long *then, float *remainder);
+void capFrameRate(long *then, float *remainder);
 //Declara uma funcao static para limitar o frame rate (usado no loop principal do jogo)
 
 #endif // COMMON_H // Fim da protecao contra multiplas inclusoes

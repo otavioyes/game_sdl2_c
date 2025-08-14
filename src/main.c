@@ -12,6 +12,9 @@ SDL_Texture *playerTexture;
 int main(int argc, char *argv[]) // Funcao principal, o ponto de entrada do programa
 {
 
+    (void)argc;
+    (void)argv;
+
     // Inicializa 'then' com a contagem atual de "ticks" (milissegundos desde a inicializacao do SDL), usado para limitar a taxa de quadros
     long then      = SDL_GetTicks();
     float remainder = 0.0f; // Inicializa 'remaider' com 0.0f, usado para acumular tempo fracionado para limite de taxa de quadros
@@ -36,7 +39,7 @@ int main(int argc, char *argv[]) // Funcao principal, o ponto de entrada do prog
 }
 
 // Define uma funcao auxiliar static para limitar a taxa de quadros, recebendo ponteiros para 'then' e 'remaider'
-static void capFrameRate(long *then, float *remainder)
+void capFrameRate(long *then, float *remainder)
 {
     long wait, frameTime; // Declara variaveis locais 'wait'(PARA O TEMPO DE ESPERA) e 'frameTime' (PARA O TEMPO QUE O QUADRO ATUAL LEVOU)
     wait = 16 + *remainder; // Calcula o tempo inicial de 'wait': 16 milissegundos (para ~60 FPS) mais qualquer 'remaider' acumulado

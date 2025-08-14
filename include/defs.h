@@ -1,33 +1,53 @@
 // defs.h
 // Arquivo de definicoes e constantes globais para o jogo
 
-#ifndef DEFS_H // Prevencao contra multiplas inclusoes do cabecalho
-#define DEFS_H // Define o identificador para a protecao contra multiplas inclusoes
+#ifndef DEFS_H
+#define DEFS_H
 
-static const int SCREEN_WIDTH           = 1200; // Largura da janela do jogo em pixels
-static const int SCREEN_HEIGHT          = 720; // Altura da janela do jogo em pixels
+/* --- Se possível, inclua SDL para garantir que SDL_NUM_SCANCODES exista --- */
+/* Usamos __has_include para ser mais tolerante; se o seu compilador não suportar,
+   pode incluí-lo via common.h antes de incluir defs.h */
+#if defined(__has_include)
+  #if __has_include(<SDL2/SDL.h>)
+    #include <SDL2/SDL.h>
+  #endif
+#endif
 
-static const int PLAYER_SPEED           = 4; // Velocidade de movimento do jogador (pixel por frame)
-static const int PLAYER_BULLET_SPEED    = 16; // Velocidade dos projeteis disparados pelo jogador
+/* Se SDL_NUM_SCANCODES não estiver definido (fallback), defina um valor razoável */
+#ifndef SDL_NUM_SCANCODES
+  #define SDL_NUM_SCANCODES 350
+#endif
 
-enum
-{
-                MAX_KEYBOARD_KEYS      = 350, //Numero maximo de teclas do teclado que podem ser rastreados
-                MAX_MOUSE_BUTTONS      = 3  // Numero maximo de botoes do mouse (esquerdo, direito e meio)
-};
+/* Número máximo de teclas e botões do mouse */
+#define MAX_KEYBOARD_KEYS   SDL_NUM_SCANCODES
+#define MAX_MOUSE_BUTTONS   3
 
-static const int MAX_BULLETS            = 128; //Numeros maximo de projeteis (bullets) ativos ao mesmo tempo
+/* Tamanho da janela (pixels) */
+#define SCREEN_WIDTH  1200
+#define SCREEN_HEIGHT  720
 
-//colisao
-#define SIDE_PLAYER     0 // Identificador de lado para o jogador em colisao
-#define SIDE_ALIEN      1 // Identificador de lado para o inimigo em colisao
+/* Velocidades e constantes de jogo */
+#define PLAYER_SPEED         4   /* pixels por frame */
+#define PLAYER_BULLET_SPEED 16   /* velocidade das balas do jogador (px/frame) */
 
-// Macros utilitarias genericas
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX_BULLETS 128 /* numero maximo de projeteis ativos */
 
-// Inimigos revidando
-static const int  FPS   =   60; // Calculos de tempo
-#define ALIEN_BULLET_SPEED 8 // Velocidade das balas disparadas pelos inimigos
+/* Lados para colisao */
+#define SIDE_PLAYER 0
+#define SIDE_ALIEN  1
 
-#endif // DEFS_H // Fim da protecao contra multiplas inclusoes
+/* Macros utilitárias - versão segura usando inline functions para evitar
+   dupla avaliação (side effects) quando possível. Essas funções tratam inteiros. */
+static inline int max_int(int a, int b) { return a > b ? a : b; }
+static inline int min_int(int a, int b) { return a < b ? a : b; }
+
+/* Mantemos as macros tradicionais para compatibilidade, mas delegando às inline funcs.
+   Evite passar expressões com efeitos colaterais (por ex. i++) para MAX/MIN. */
+#define MAX(a,b) (max_int((int)(a), (int)(b)))
+#define MIN(a,b) (min_int((int)(a), (int)(b)))
+
+/* FPS e velocidade de bala inimiga */
+#define FPS 60
+#define ALIEN_BULLET_SPEED 8
+
+#endif /* DEFS_H */

@@ -1,14 +1,16 @@
 CC := gcc
+
 SRCDIR := src
 OBJDIR := build
 BINDIR := bin
 
 CFLAGS := -Wall -Wextra -g -Iinclude -MMD -MP $(shell pkg-config --cflags sdl2 SDL2_image)
-LDLIBS := $(shell pkg-config --libs sdl2 SDL2_image)
+LDLIBS := $(shell pkg-config --libs sdl2 SDL2_image) -lm
 
 SRC := $(wildcard $(SRCDIR)/*.c)
 OBJ := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 DEP := $(OBJ:.o=.d)
+
 TARGET := $(BINDIR)/game
 
 .PHONY: all clean run

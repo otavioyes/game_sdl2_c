@@ -37,3 +37,16 @@ void calcSlop(int x1, int y1, int x2, int y2, float *dx, float *dy)
     *dy = (y1 - y2);
     *dy /= steps;
 }
+
+int checkCollisionEntities(Entity *a, Entity *b) {
+     return collision(
+         (int)(a->x),
+         (int)(a->y),
+         (int)(a->width  * a->scale),
+         (int)(a->height * a->scale),
+         (int)(b->x),
+         (int)(b->y),
+         (int)(b->width  * b->scale),
+         (int)(b->height * b->scale)
+     );
+

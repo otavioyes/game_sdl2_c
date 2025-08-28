@@ -279,14 +279,7 @@ static void doFighters(void)
                 player = NULL;
             }
 
-            if (player && e != player && collision(
-                (int)(e->x), (int)(e->y),
-                (int)(e->width  * e->scale),
-                (int)(e->height * e->scale),
-                /* jogador */
-                (int)(player->x), (int)(player->y),
-                (int)(player->width  * player->scale),
-                (int)(player->height * player->scale)))
+            if (player && e != player && checkCollisionEntities(e, player))
             {
                 e->health = 0; // inimigo morre ao colidir com jogador
                 // player->health -= 1; // opcional: reduzir vida do jogador
@@ -337,7 +330,7 @@ static int bulletHitFighter(Entity *b)
     for(e = stage.fighterHead.next; e != NULL; e = e->next)
     {
         if(e->side != b->side && collision(
-                                          (int) (b->x),
+                                              (int) (b->x),
                                           (int) (b->y),
                                           (int) (b->width   *   b->scale),
                                           (int) (b->height  *   b->scale), // retângulo da bala

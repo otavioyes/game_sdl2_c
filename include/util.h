@@ -1,7 +1,11 @@
 //util.h
 
+# include "common.h"
+
 #ifndef UTIL_H
 #define UTIL_H
+
+
 
 int collision(int x1, int y1,
               int w1, int h1,
@@ -9,6 +13,9 @@ int collision(int x1, int y1,
               int w2, int h2);
 
 void calcSlop(int x1, int y1, int x2, int y2, float *dx, float *dy);
+
+}
+
 
 #endif
 

@@ -37,6 +37,9 @@ typedef struct Entity {
     int             side;
 } Entity;
 
+int checkCollisionEntities(Entity *x, Entity *y);
+
+
 // Representa o estado da fase do jogo com lista de entidade
 typedef struct
 {

@@ -47,6 +47,6 @@ int checkCollisionEntities(Entity *a, Entity *b) {
          (int)(b->x),
          (int)(b->y),
          (int)(b->width  * b->scale),
-         (int)(b->height * b->scale)
-     );
+         (int)(b->height * b->scale));
 
+}

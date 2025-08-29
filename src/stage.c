@@ -72,7 +72,7 @@ static void initPlayer(void)
 
     player->x       = 100;
     player->y       = 100;
-    player->scale   = 0.1f;
+    player->scale   = 1;
 
     // Usa a textura já carregada globalmente
     if (playerTexture == NULL)
@@ -146,7 +146,7 @@ static void spawnsEnemies(void)
         stage.fighterTail->next = enemy;
         stage.fighterTail = enemy;
 
-        enemy->scale = 0.1f; // define o tamnho visual do inimigo(scale)
+        enemy->scale = 1; // define o tamnho visual do inimigo(scale)
 
         enemy->x = SCREEN_WIDTH; //Comeca fora da tela a direita
         enemy->y = rand() % SCREEN_HEIGHT;//coordenada Y e escolhida aleatoriamente com base em SCREEN_HEIGHT
@@ -329,16 +329,7 @@ static int bulletHitFighter(Entity *b)
     // Para cada fighter na lista encadeada de inimigos…
     for(e = stage.fighterHead.next; e != NULL; e = e->next)
     {
-        if(e->side != b->side && collision(
-                                              (int) (b->x),
-                                          (int) (b->y),
-                                          (int) (b->width   *   b->scale),
-                                          (int) (b->height  *   b->scale), // retângulo da bala
-                                          /*inimigo*/
-                                          (int) (e->x),
-                                          (int) (e->y),
-                                          (int) (e->width   *   e->scale),
-                                          (int) (e->height  *   e->scale))) // retângulo do fighter
+        if(e->side != b->side && checkCollisionEntities(b, e))
         {
             b->health = 0; // Marca a bala para a remocao
             e->health -= 1; // Marca o inimigo para a remocao
@@ -395,7 +386,7 @@ static void fireBullet(void)
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
-    bullet->scale   = 0.1f; // Define o tamanho (escala) da bala
+    bullet->scale   = 1; // Define o tamanho (escala) da bala
 
     bullet->texture = bulletTexture; // Usa a textura da bala
 
@@ -425,7 +416,7 @@ static void fireAlienBullet(Entity *e)
 
     bullet->x = e->x;
     bullet->y = e->y;
-    bullet->scale = 0.05f;
+    bullet->scale = 5;
     bullet->health = 1;
     bullet->texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;

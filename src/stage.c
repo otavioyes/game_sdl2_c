@@ -125,7 +125,7 @@ static void resetStage(void)
 
     initPlayer();
 
-    enemySpawnTimer =  60;
+    enemySpawnTimer =  0;
 
     stageResetTimer = FPS * 2;
 }
@@ -185,7 +185,7 @@ static void logic(void)
 
 static void doPlayer(void)
 {
-    if (player == NULL) return; // se não existe jogador, sai da função
+    if (player == NULL) // se não existe jogador, sai da função
 
     player->dx = player->dy = 0;
 
@@ -422,13 +422,13 @@ static void fireAlienBullet(Entity *e)
     bullet->side = SIDE_ALIEN;
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
 
-    bullet->x += (e->width / 2) - (bullet->width / 2) - (bullet->width * bullet->scale / 2);
-    bullet->y += (e->height / 2) - (bullet->height / 2) - (bullet->height * bullet->scale / 2);
+    bullet->x += (e->width / 2) - (bullet->width / 2);
+    bullet->y += (e->height / 2) - (bullet->height / 2);
 
     calcSlop(player->x + (player->width / 2),
              player->y + (player->height / 2),
-             e->x + (e->width * e->scale / 2),
-             e->y + (e->height * e->scale / 2),
+             e->x,
+             e->y,
              &bullet->dx,
              &bullet->dy);
 

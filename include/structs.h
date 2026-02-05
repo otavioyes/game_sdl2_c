@@ -1,5 +1,18 @@
-// structs.h
-// Cabecalho que define as estruturas de dados principais usadas no jogo
+
+//Cabecalho que define as estruturas de dados principais usadas no jogo
+
+
+typedef struct Entity       Entity;
+typedef struct Explosion    Explosion;
+typedef struct Debris       Debris;
+typedef struct Texture      Texture;
+
+typedef struct
+{
+    void (*logic) (void);
+    void (*draw) (void);
+}Delegate;
+
 
 #ifndef STRUCTS_H // Prevencao contra multiplas inclusoes do cabecalho
 #define STRUCTS_H // Define a flag para inclusoes unica

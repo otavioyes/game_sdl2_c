@@ -7,6 +7,7 @@ typedef struct Explosion    Explosion;
 typedef struct Debris       Debris;
 typedef struct Texture      Texture;
 
+
 typedef struct
 {
     void (*logic) (void);
@@ -14,50 +15,94 @@ typedef struct
 }Delegate;
 
 
-#ifndef STRUCTS_H // Prevencao contra multiplas inclusoes do cabecalho
-#define STRUCTS_H // Define a flag para inclusoes unica
-
-#include "defs.h" // Inclui definicoes e constantes como tamanho e limites
-#include <SDL2/SDL.h> // Inclui os tipos da lib SDL (ex: SDL_Windowm, SDL_Renderer, SDL_Texture)
-
-//typedef struct Entity Entity; // Declaracao antecipadada struct Entity, permitindo o uso de ponteiros antes da definicao completa
-
-// Encapsula funcoes de logicas de desenho
-typedef struct {
-    void (*logic)(void); // Ponteiro para funcao que trata a logica (atualizacao)
-    void (*draw) (void); // Ponteiro para funcao que trata desenho (renderizacao)
-} Delegate;
-
-// Dados globais do sistema (janela/renderder, entradas)
-typedef struct {
-    SDL_Renderer    *renderer; // Ponteiros para renderizaacao SDL
-    SDL_Window      *window; // Ponteiros para janela SDL
-    Delegate        delegate; // Estruturas com ponteiros para funcao de logica e desenho
-    int             keyboard[MAX_KEYBOARD_KEYS]; // Estado das teclas do teclado
-    int             mouse[MAX_MOUSE_BUTTONS]; // EStado dos botoes do mouse
-} App;
+struct Texture
+{
+    char            name[MAX_NAME_LENGTH];
+    SDL_Texture     *texture;
+    Texture         *next;
+};
 
 
-/* Usado para representar objetos como jogadores, balas, inimigos etc..
-+ encadeamento*/
-typedef struct Entity {
-    float           x, y; // Posicao no mundo
-    int             width, height; // Dimensoes da entidade
-    int             health, reload; // Vida e tempo de recarga (usado para atirar, por exemplo)
-    float           scale, dx, dy; // Escala de desenho, velocidade nos eixos X e Y
-    SDL_Texture     *texture; // Ponteiro para a textura usada na renderizacao da entidade
-    struct Entity   *next; // Ponteiro para a proxima entidade na lista (lista encadeada)
-    int             side;
-} Entity;
-
-int checkCollisionEntities(Entity *x, Entity *y);
-
-
-// Representa o estado da fase do jogo com lista de entidade
 typedef struct
 {
-    Entity  fighterHead, *fighterTail; // Lista de entidades do tipo lutador (jogador, inimigo)
-    Entity  bulletHead,  *bulletTail; // Lista de projeteis (balas)
-} Stage;
+    SDL_Renderer    *renderer;
+    SDL_Window      *window;
+    Delegate        delegate;
+    int             Keyboard[MAX_KEYBOARD_KEYS];
+    Texture         textureHead, *textureTail;
+    char            inputText[MAX_LINE_LENGTH];
+}App;
 
-#endif // STRUCTS_H // Finaliza a protecao contra multiplas inclusoes
+
+struct Entity
+{
+    float       x;
+    float       y;
+    int         w;
+    int         h;
+    float       dx;
+    float       dy;
+    int         health;
+    int         reload;
+    int         side;
+    SDL_Texture *texture;
+    Entity      *next;
+};
+
+
+struct Explosion
+{
+    float       x;
+    float       y;
+    float       dx;
+    float       dy;
+    int         r, g, b, a;
+    Explosion   *next;
+};
+
+
+struct Debris
+{
+    float       x;
+    float       y;
+    float       dx;
+    float       dy;
+    SDL_Rect    rect;
+    SDL_Texture *texture;
+    int         life;
+    Debris      *next;
+};
+
+
+typedef struct
+{
+    Entity      fighterHead,    *fighterTail;
+    Entity      bulletHead,     *bulletTail;
+    Entity      pointsHead,     *pointsTail;
+    Explosion   explosionHead,  *explosionTail;
+    Debris      debrisHead,     *debrisTail;
+    int         score;
+}Stage;
+
+
+typedef struct
+{
+
+    int x;
+    int y;
+    int speed;
+}Star;
+
+
+typedef struct
+{
+    char name[MAX_SCORE_NAME_LENGTH];
+    int recent;
+    int score;
+}Highscore;
+
+
+typedef struct
+{
+    Highscore highscore[NUM_HIGHSCORE];
+}Highscore;

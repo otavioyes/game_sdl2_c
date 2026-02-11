@@ -105,4 +105,4 @@ typedef struct
 typedef struct
 {
     Highscore highscore[NUM_HIGHSCORE];
-}Highscore;
+}Highscores;

@@ -1,53 +1,60 @@
 // defs.h
 // Arquivo de definicoes e constantes globais para o jogo
 
-#ifndef DEFS_H
-#define DEFS_H
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define STRNCPY(dest, src, n) \ strncpy(dest, src, n); \
+                                dest[n - 1] = '\0
 
-/* --- Se possível, inclua SDL para garantir que SDL_NUM_SCANCODES exista --- */
-/* Usamos __has_include para ser mais tolerante; se o seu compilador não suportar,
-   pode incluí-lo via common.h antes de incluir defs.h */
-#if defined(__has_include)
-  #if __has_include(<SDL2/SDL.h>)
-    #include <SDL2/SDL.h>
-  #endif
-#endif
 
-/* Se SDL_NUM_SCANCODES não estiver definido (fallback), defina um valor razoável */
-#ifndef SDL_NUM_SCANCODES
-  #define SDL_NUM_SCANCODES 350
-#endif
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
-/* Número máximo de teclas e botões do mouse */
-#define MAX_KEYBOARD_KEYS   SDL_NUM_SCANCODES
-#define MAX_MOUSE_BUTTONS   3
+#define MAX_SCORE_NAME_LENGTH 16
+#define MAX_NAME_LENGTH       32
+#define MAX_LINE_LENGTH       1024
 
-/* Tamanho da janela (pixels) */
-#define SCREEN_WIDTH  1200
-#define SCREEN_HEIGHT  720
+#define FPS 60
 
-/* Velocidades e constantes de jogo */
-#define PLAYER_SPEED         4   /* pixels por frame */
-#define PLAYER_BULLET_SPEED 16   /* velocidade das balas do jogador (px/frame) */
+#define PLAYER_SPEED        4
+#define PLAYER_BULLET_SPEED 20
+#define ALIEN_BULLET_SPEED  8
 
-#define MAX_BULLETS 128 /* numero maximo de projeteis ativos */
+#define MAX_KEYBOARD_KEYS   350
 
-/* Lados para colisao */
 #define SIDE_PLAYER 0
 #define SIDE_ALIEN  1
 
-/* Macros utilitárias - versão segura usando inline functions para evitar
-   dupla avaliação (side effects) quando possível. Essas funções tratam inteiros. */
-static inline int max_int(int a, int b) { return a > b ? a : b; }
-static inline int min_int(int a, int b) { return a < b ? a : b; }
+#define MAX_STARS   500
 
-/* Mantemos as macros tradicionais para compatibilidade, mas delegando às inline funcs.
-   Evite passar expressões com efeitos colaterais (por ex. i++) para MAX/MIN. */
-#define MAX(a,b) (max_int((int)(a), (int)(b)))
-#define MIN(a,b) (min_int((int)(a), (int)(b)))
+#define MAX_SND_CHANNELS 8
 
-/* FPS e velocidade de bala inimiga */
-#define FPS 60
-#define ALIEN_BULLET_SPEED 8
+#define NUM_HIGHSCORES 8
 
-#endif /* DEFS_H */
+#define GLYPH_HEIGHT    28
+#define GLYPH_WIDTH     18
+
+enum
+{
+    CH_ANY = -1,
+    CHPLAYER,
+    CH_ALIEN_FIRE,
+    CH_POINTS
+};
+
+enum
+{
+    SND_PLAYER_FIRE,
+    SND_ALIEN_FIRE,
+    SND_PLAYER_DIE,
+    SND_ALINE_DIE,
+    SND_POINTS,
+    SND_MAX
+}
+
+enum
+{
+    TEXT_LEFT,
+    TEXT_CENTER,
+    TEXT_RIGHT
+};

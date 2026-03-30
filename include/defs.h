@@ -51,7 +51,7 @@ enum
     SND_ALINE_DIE,
     SND_POINTS,
     SND_MAX
-}
+};
 
 enum
 {

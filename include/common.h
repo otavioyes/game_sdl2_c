@@ -1,5 +1,6 @@
-
-// Arquivo de cabecalho que reune includes comnuns e declara variaveis globais usadas em todo o jogo
+/*
+ * common.h
+ */
 
 #include "ctype.h"
 #include "defs.h"

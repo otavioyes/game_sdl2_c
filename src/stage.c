@@ -9,14 +9,10 @@ static void logic(void);
 static void doPlayer(void);
 static void doBullet(void);
 static void fireBullet(void);
-
-//novos prototipos sendo declarados para a criação de inimigos
 static void doFighters(void);
 static void spawnsEnemies(void);
 
 static int enemySpawnTimer;
-
-// Inimigo revidando
 static int stageResetTimer = 0;
 
 //prototipo da colisao

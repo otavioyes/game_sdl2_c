@@ -1,21 +1,57 @@
-# Objetos e binários
+# =========================
+# Build / Compilação
+# =========================
 build/
 bin/
-*.o
-*.d
-*.exe
-game_compiled
-*.out
+cmake-build-*/
 
-# Arquivos temporários do editor
+# Arquivos gerados pelo CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# =========================
+# Binários / Objetos
+# =========================
+*.o
+*.obj
+*.so
+*.a
+*.out
+*.exe
+
+# Executáveis específicos
+game_compiled
+
+# Dependências (Makefile)
+*.d
+
+# =========================
+# CLion / IDEs
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# Arquivos temporários
+# =========================
 *.swp
 *.swo
 *.bak
 *~
 
-# Diretórios do Git
-.git/
-
-# Outros
+# =========================
+# Sistema operacional
+# =========================
+# Mac
 .DS_Store
 
+# Linux
+*.log
+
+# =========================
+# Outros (opcional)
+# =========================
+# Se usar testes compilados
+tests/*.out

@@ -16,8 +16,7 @@
 extern App app;
 extern Stage stage;
 
-void initSDL(void)
-{
+void initSDL(void) {
     int rendererFlags, windowFlags;
 
     rendererFlags = SDL_RENDERER_ACCELERATED;
@@ -36,64 +35,54 @@ void initSDL(void)
 
 
     app.window = SDL_CreateWindow(
-        "Shooter 01",
+        "Tiro 2D",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         windowFlags
     );
-
     if (!app.window) {
         fprintf(stderr, "CreateWindow failed: %s\n", SDL_GetError());
         SDL_Quit();
         exit(1);
     }
 
+
+
     /* hint para qualidade de escala - coloque antes do renderer se quiser */
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");
 
     app.renderer = SDL_CreateRenderer(app.window, -1, rendererFlags);
+
     if (!app.renderer) {
-        fprintf(stderr, "CreateRenderer failed: %s\n", SDL_GetError());
+        fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
         SDL_DestroyWindow(app.window);
         SDL_Quit();
         exit(1);
     }
 
-    /* habilita blending alpha por padrão (importante para sprites PNG) */
-    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_BLEND);
+    IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
-    /* usa tamanho lógico para manter coordenadas consistentes */
-    SDL_RenderSetLogicalSize(app.renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    /* Inicializa suporte a PNG (mais seguro pedir só o que usa) */
-    int imageFlags = IMG_INIT_PNG;
-    if ((IMG_Init(imageFlags) & imageFlags) != imageFlags) {
-        fprintf(stderr, "IMG_Init failed (PNG): %s\n", IMG_GetError());
-        SDL_DestroyRenderer(app.renderer);
-        SDL_DestroyWindow(app.window);
-        SDL_Quit();
-        exit(1);
-    }
-
-    /* seed do RNG para spawns aleatorios */
-    srand((unsigned)time(NULL));
+    SDL_ShowCursor(0);
 }
 
+void initGame(void) {
+    initBackground();
+    initStarfield();
+    initSound(); /*add sound;c*/
+    initFonts();
+    initHighscoreTable();
+    memset(&stage, 0, sizeof(Stage));
+    loadMusic("music/Mercury.ogg");
+    playerMusic(1);
+}
 
-/* liberação de recursos - DEFINIÇÃO GLOBAL (não static!) */
-void cleanup(void)
-{
-    if (app.renderer) {
-        SDL_DestroyRenderer(app.renderer);
-        app.renderer = NULL;
-    }
-    if (app.window) {
-        SDL_DestroyWindow(app.window);
-        app.window = NULL;
-    }
-
+void cleanupGame(void) {
+    Mix_Quit();
     IMG_Quit();
+    SDL_Quit();
+    SDL_DestroyRenderer(app.renderer);
+    SDL_DestroyWindow(app.window);
     SDL_Quit();
 }

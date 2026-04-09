@@ -11,7 +11,7 @@
 static void loadSounds(void);
 
 static Mix_Chunk *sounds[SND_MAX];
-static Mix_Chunk *music;
+static Mix_Music *music;
 
 void initSounds(void) {
     memset(sounds, 0, sizeof(Mix_Chunk *) * SND_MAX);

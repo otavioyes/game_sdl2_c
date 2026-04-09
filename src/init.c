@@ -1,16 +1,39 @@
-//init.c
+/*
+ * init.c
+ */
+
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "common.h"
 
+#include "background.h"
+#include "highscore.h"
+#include "init.h"
+#include "sound.h"
+#include "text.h"
+
+extern App app;
+extern Stage stage;
+
 void initSDL(void)
 {
-    int rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-    int windowFlags   = SDL_WINDOW_SHOWN;
+    int rendererFlags, windowFlags;
+
+    rendererFlags = SDL_RENDERER_ACCELERATED;
+
+    windowFlags = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
         fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
         exit(1);
     }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2,1024) == -1) {
+        fprintf(stderr, "Mix_OpenAudio failed: %s\n", Mix_GetError());
+        exit(1);
+    }
+    Mix_AllocateChannels(MAX_SND_CHANNELS);
+
 
     app.window = SDL_CreateWindow(
         "Shooter 01",

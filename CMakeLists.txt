@@ -10,7 +10,8 @@ pkg_check_modules(SDL2_IMAGE REQUIRED SDL2_image)
 file(GLOB SRC src/*.c)
 
 add_executable(game ${SRC}
-        src/highscore.c)
+        src/highscore.c
+        src/sound.c)
 
 target_include_directories(game PRIVATE
         include

@@ -1,91 +1,49 @@
-//input.c
-
+/*
+ * input.c
+ */
 #include "common.h"
 
-// Declaração das funções de tratamento de entrada
-void doKeyDown(SDL_KeyboardEvent *event);
-void doKeyUp(SDL_KeyboardEvent *event);
-void doMouseDown(SDL_MouseButtonEvent *event);
-void doMouseUp(SDL_MouseButtonEvent *event);
+#include "input.h"
 
-// Função principal de entrada; processa todos os eventos da SDL (teclado, mouse, saída, etc.)
-void doInput(void) {
+extern App app;
+
+static void doKeyUp(SDL_KeyboardEvent *event){
+    if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS){
+        app.keyboard[event->keysym.scancode] = 0;
+    }
+}
+
+static void doKeyDown(SDL_KeyboardEvent *event){
+    if (event->repeat == 0 && event->keysym.scancode < MAX_KEYBOARD_KEYS){
+        app.Keyboard[event->keysym.scancode] = 1;
+    }
+}
+
+void doInput(void){
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
 
-            // Evento de fechamento da janela
+    memset(app.inputText, '\0', MAX_LINE_LENGTH);
+
+    while (SDL_PollEvent(&event)){
+        switch (event.type) {
             case SDL_QUIT:
                 exit(0);
+                break;
 
-            // Tecla pressionada
             case SDL_KEYDOWN:
                 doKeyDown(&event.key);
                 break;
 
-            // Tecla liberada
             case SDL_KEYUP:
                 doKeyUp(&event.key);
                 break;
 
-            // Botao do mouse pressioando
-            case SDL_MOUSEBUTTONDOWN:
-                doMouseDown(&event.button);
-                break;
-
-            // Botao do mouse liberado
-            case SDL_MOUSEBUTTONUP:
-                doMouseUp(&event.button);
+            case SDL_TEXTINPUT:
+                STRNCPY(app.inputText, event.text.text, MAX_LINE_LENGTH);
                 break;
 
             default:
-                break; // Outros eventos sao ignorados.
+                break;
         }
     }
 }
-
-// Função chamada quando uma tecla é pressionada
-void doKeyDown(SDL_KeyboardEvent *event)
-{
-    int sc = (int) event->keysym.scancode;            /* cast seguro do enum para int */
-    if (event->repeat == 0 && sc >= 0 && sc < (int)MAX_KEYBOARD_KEYS)
-    {
-        app.keyboard[sc] = 1; // Marca tecla como pressionada
-        printf("KEY PRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode));
-    }
-}
-
-// Função chamada quando uma tecla é liberada
-void doKeyUp(SDL_KeyboardEvent *event)
-{
-    int sc = (int) event->keysym.scancode;            /* cast seguro do enum para int */
-    if (event->repeat == 0 && sc >= 0 && sc < (int)MAX_KEYBOARD_KEYS)
-    {
-        app.keyboard[sc] = 0; // Marca o teclado como liberado
-        printf("KEY UNPRESSED {%s}\n", SDL_GetScancodeName(event->keysym.scancode));
-    }
-}
-
-
-
-// Função chamada quando um botão do mouse é pressionado
-void doMouseDown(SDL_MouseButtonEvent *event)
-{
-    if(event->button < MAX_MOUSE_BUTTONS)
-    {
-        app.mouse[event->button] = 1;// Marca botao como pressioando
-        printf("MOUSE BUTTON PRESSED {%d}\n", event->button);
-    }
-}
-
-// Função chamada quando um botão do mouse é liberado
-void doMouseUp(SDL_MouseButtonEvent *event)
-{
-    if(event->button < MAX_MOUSE_BUTTONS)
-    {
-        app.mouse[event->button] = 0;// Marca o botao como como liberado
-        printf("MOUSE BUTTON UNPRESSED {%d}\n", event->button); // Log
-    }
-}
-
-

@@ -27,8 +27,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="020b6914-7708-49af-a6f1-ad8c6b004e04" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/game_sdl2_c.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/game_sdl2_c.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/structs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/structs.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +67,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;C/C++ File.main.c.executor&quot;: &quot;Run&quot;,
     &quot;CMake Application.game.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
@@ -78,7 +81,7 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/otavio/Documentos/projectGame/game_sdl2_c/CMakeLists.txt&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/otavio/Documentos/workspace/game_sdl2_c&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -90,9 +93,9 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="game" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="game_sdl2_c" TARGET_NAME="game" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="game_sdl2_c" RUN_TARGET_NAME="game">
@@ -101,6 +104,7 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="020b6914-7708-49af-a6f1-ad8c6b004e04" name="Changes" comment="" />
@@ -112,6 +116,25 @@
       <workItem from="1775562460083" duration="1818000" />
       <workItem from="1775655937043" duration="9401000" />
       <workItem from="1775755157135" duration="5060000" />
+      <workItem from="1776878332576" duration="1336000" />
+      <workItem from="1776879972398" duration="15000" />
+      <workItem from="1776880027316" duration="36000" />
+      <workItem from="1776880134854" duration="12000" />
+      <workItem from="1776880152769" duration="627000" />
+      <workItem from="1776881048263" duration="2000" />
+      <workItem from="1776881090058" duration="93000" />
+      <workItem from="1776881258313" duration="137000" />
+      <workItem from="1776881415791" duration="4000" />
+      <workItem from="1776881650218" duration="3000" />
+      <workItem from="1776881800916" duration="4000" />
+      <workItem from="1776882235054" duration="2000" />
+      <workItem from="1776882339958" duration="3000" />
+      <workItem from="1776882401952" duration="156000" />
+      <workItem from="1776882590935" duration="2000" />
+      <workItem from="1776882778313" duration="2000" />
+      <workItem from="1776882862169" duration="32000" />
+      <workItem from="1776882910724" duration="3000" />
+      <workItem from="1776882921534" duration="699000" />
     </task>
     <servers />
   </component>
@@ -122,6 +145,5 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
-    <isAutomaticBootstrapAfterUpdate value="false" />
   </component>
 </project>

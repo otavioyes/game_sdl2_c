@@ -7,11 +7,18 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SDL2 REQUIRED sdl2)
 pkg_check_modules(SDL2_IMAGE REQUIRED SDL2_image)
 
-file(GLOB SRC src/*.c)
-
-add_executable(game ${SRC}
+add_executable(game
+        src/background.c
+        src/draw.c
         src/highscore.c
-        src/sound.c)
+        src/init.c
+        src/input.c
+        src/main.c
+        src/sound.c
+        src/stage.c
+        src/util.c
+)
+
 
 target_include_directories(game PRIVATE
         include

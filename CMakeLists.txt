@@ -18,6 +18,7 @@ add_executable(game
         src/stage.c
         src/util.c
         src/text.c
+        src/title.c
 )
 
 

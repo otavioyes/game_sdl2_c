@@ -16,13 +16,20 @@ extern App app;
 extern Highscore highscore;
 extern Stage stage;
 
-static void initPlayer(void);
 static void logic(void);
-static void doPlayer(void);
-static void doBullet(void);
+static void draw(void);
+static void initPlayer(void);
 static void fireBullet(void);
+static void doPlayer(void);
 static void doFighters(void);
+static void doBullet(void);
+static void drawFighters(void);
+static void drawBullets(void);
 static void spawnsEnemies(void);
+
+
+
+
 
 static int enemySpawnTimer;
 static int stageResetTimer = 0;

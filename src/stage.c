@@ -56,40 +56,31 @@ static SDL_Texture  *explosionTexture;
 static SDL_Texture  *pointsTexture;
 
 
-//prototipo da colisao
-static int bulletHitFighter(Entity *b);
-
-//prototipo para inimigo disparando
-static void resetStage(void);
-static void doEnemies(void);
-static void fireAlienBullet(Entity *e);
-static void clipPlayer(void);
-
 void initStage(void)
 {
     app.delegate.logic = logic;
     app.delegate.draw  = draw;
 
     // Carrega texturas primeiro (uma só vez)
-    bulletTexture     = loadTexture("assets/gfx/playerBullet.png");
-    enemyTexture      = loadTexture("assets/gfx/enemy.png");
-    alienBulletTexture= loadTexture("assets/gfx/alienBullet.png");
-    playerTexture     = loadTexture("assets/gfx/player1.png");
+    bulletTexture        = loadTexture("assets/gfx/playerBullet.png");
+    enemyTexture         = loadTexture("assets/gfx/enemy.png");
+    alienBulletTexture   = loadTexture("assets/gfx/alienBullet.png");
+    playerTexture        = loadTexture("assets/gfx/player1.png");
+    explosionTexture     = loadTexture("assets/gfx/explosion.png");
+    pointsTexture        = loadTexture("assets/gfx/points.png");
 
-    if (playerTexture == NULL)
-    {
-        SDL_Log("Erro ao carregar texture player1.png (initStage)");
+    if (playerTexture == NULL){
+        SDL_Log("Erro ao carregar texturas FUNCAO => initStage");
         exit(1);
     }
 
-    // Inicializa a estrutura do stage
-    memset(&stage, 0, sizeof(stage));
-    stage.fighterTail = &stage.fighterHead;
-    stage.bulletTail  = &stage.bulletHead;
+    memset(app.keyboard, 0, sizeof(int ) * MAX_KEYBOARD_KEYS);
 
-    // Usa resetStage para criar o player (evita duplicidade)
-    enemySpawnTimer = 0;
     resetStage();
+    stage.score = 0;
+    initPlayer();
+    enemySpawnTimer = 0;
+    stageResetTimer = FPS * 3;
 }
 
 

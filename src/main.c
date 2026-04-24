@@ -50,8 +50,7 @@ void capFrameRate(long *then, float *remainder)
     frameTime = SDL_GetTicks() - *then;
     wait -= frameTime;
 
-    if (wait < 1)
-    {
+    if (wait < 1){
         wait = 1;
     }
 

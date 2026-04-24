@@ -1,9 +1,21 @@
-//stage.c
+/*
+ * stage.c
+ */
+
 #include "common.h"
 
-//PROXIMO ARQUIVO A SER CRIADO -> util.c
+#include "background.h"
+#include "draw.h"
+#include "highscore.h"
+#include "sound.h"
+#include "stage.h"
+#include "text.h"
+#include "util.h"
 
-// protótipos internos
+extern App app;
+extern Highscore highscore;
+extern Stage stage;
+
 static void initPlayer(void);
 static void logic(void);
 static void doPlayer(void);

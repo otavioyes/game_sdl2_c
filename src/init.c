@@ -70,7 +70,7 @@ void initSDL(void) {
 void initGame(void) {
     initBackground();
     initStarfield();
-    initSound(); /*add sound;c*/
+    initSound(); /*add sound.c*/
     initFonts();
     initHighscoreTable();
     memset(&stage, 0, sizeof(Stage));

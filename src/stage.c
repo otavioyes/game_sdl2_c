@@ -26,13 +26,35 @@ static void doBullet(void);
 static void drawFighters(void);
 static void drawBullets(void);
 static void spawnsEnemies(void);
+static  void doEnimies(void);
+static void clipPlayer(void);
+static void resetStage(void);
+static void drawExplosions(void);
+static void doExplosions(void);
+static void doDebris(void);
+static void drawDebris(void);
+static void drawHud(void);
+static void doPointsPods(void);
+static void drawPointsPods(void);
 
+static void addExplosions(int x, int y, int num);
+static void addPointsPod(int x, int y);
 
+static int bulletHitFighter(Entity *e);
+static void fireAlienBullet(Entity *e);
+static void addDebris(Entity *e);
+static
 
+static Entity       *player;
+static int          enemySpawnTimer;
+static int          stageResetTimer;
+static SDL_Texture  *bulletTexture;
+static SDL_Texture  *enemyTexture;
+static SDL_Texture  *alienBulletTexture;
+static SDL_Texture  *playerTexture;
+static SDL_Texture  *explosionTexture;
+static SDL_Texture  *pointsTexture;
 
-
-static int enemySpawnTimer;
-static int stageResetTimer = 0;
 
 //prototipo da colisao
 static int bulletHitFighter(Entity *b);

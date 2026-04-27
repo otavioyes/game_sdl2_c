@@ -84,6 +84,62 @@ void initStage(void)
 }
 
 
+static void resetStage(void){
+    Entity     *e;
+    Explosion  *ex;
+    Debris     *d;
+
+    while (stage.fighterHead.next){
+        e = stage.fighterHead.next;
+        stage.fighterHead.next = e->next;
+        free(e);
+    }
+
+    while (stage.bulletHead.next){
+        e = stage.bulletHead.next;
+        stage.bulletHead.next = e->next;
+        free(e);
+    }
+
+    while (stage.explosionHead.next){
+        ex = stage.explosionHead.next;
+        stage.explosionHead.next = ex->next;
+        free(ex);
+    }
+
+    while (stage.debrisHead.next){
+        d = stage.debrisHead.next;
+        stage.debrisHead.next = d->next;
+        free(d);
+    }
+
+    while (stage.pointsHead.next){
+        e = stage.pointsHead.next;
+        stage.pointsHead.next = e->next;
+        free(e);
+    }
+
+    memset(&stage, 0, sizeof(Stage));
+    stage.fighterTail = &stage.fighterHead;
+    stage.bulletTail = &stage.bulletHead;
+    stage.explosionTail = &stage.explosionHead;
+    stage.debrisTail = &stage.debrisHead;
+    stage.pointsTail = &stage.pointsHead;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*Iinicia o player com localizacao e tamanho*/
 static void initPlayer(void)
 {
@@ -128,35 +184,7 @@ static void initPlayer(void)
 }
 
 
-static void resetStage(void)
-{
-    Entity *e;
 
-
-    while (stage.fighterHead.next)
-    {
-        e = stage.fighterHead.next;
-        stage.fighterHead.next = e->next;
-        free(e);
-    }
-
-    while (stage.bulletHead.next)
-    {
-        e = stage.bulletHead.next;
-        stage.bulletHead.next = e->next;
-        free(e);
-    }
-
-    memset(&stage, 0, sizeof(Stage));
-    stage.fighterTail = &stage.fighterHead;
-    stage.bulletTail = &stage.bulletHead;
-
-    initPlayer();
-
-    enemySpawnTimer =  0;
-
-    stageResetTimer = FPS * 2;
-}
 
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores

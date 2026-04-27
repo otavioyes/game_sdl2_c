@@ -150,6 +150,47 @@ static void initPlayer(void) {
 }
 
 
+static void logic(void)
+{
+    doBackground();
+    doStarfield();
+    doPlayer();
+    doEnimies();
+    doFighters();
+    doBullet();
+    doBullet();
+    doExplosions();
+    doDebris();
+    doPointsPods();
+    spawnsEnemies();
+    clipPlayer();
+
+    if (player == NULL && --stageResetTimer <= 0){
+        addHighscore(stage.score);
+        initHighscore();
+    }
+}
+
+static void doPlayer(void) {
+    if (player == NULL) {
+        player->dx = player->dy = 0;
+
+        if (player->reload > 0) {
+            player->reload--;
+        }
+
+        if (app.keyboard[SDL_SCANCODE_UP]) { player->dy = -PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_DOWN]) { player->dy = PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_LEFT]) { player->dx = PLAYER_SPEED; }
+
+        if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0) {
+            playerSound(SND_PLAYER_FIRE, CH_PLAYER);
+            fireBullet();
+        }
+    }
+}
+
 // Gera inimigos periodicamente e adiciona à lista de lutadores
 static void spawnsEnemies(void)
 {
@@ -183,60 +224,8 @@ static void spawnsEnemies(void)
     }
 }
 
-//Atualiza a logica do jogo a cada frame
-static void logic(void)
-{
-    doPlayer();
-    doFighters();
-    doEnemies(); //inimigo dispara aqui
-    doBullet();
-    spawnsEnemies();
-
-    clipPlayer();
-
-    if (player == NULL && --stageResetTimer <= 0)
-    {
-        resetStage();
-        printf("Player morto\n");
-    }
-}
 
 
-static void doPlayer(void)
-{
-    if (player == NULL) // se não existe jogador, sai da função
-
-    player->dx = player->dy = 0;
-
-    if (player->reload > 0)
-    {
-        player->reload--;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_W]) { player->dy = -PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_S]) { player->dy = PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_A]) { player->dx = -PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_D]) { player->dx = PLAYER_SPEED; }
-
-    if (app.mouse[SDL_BUTTON(SDL_BUTTON_LEFT)] && player->reload == 0) { fireBullet(); }
-
-    // restringindo o jogador aos limites da tela
-    if (player->x + player->width * player->scale > SCREEN_WIDTH)
-    {
-        player->x = SCREEN_WIDTH - player->width * player->scale;
-    }
-    if (player->x < 0) { player->x = 0; }
-    if (player->y + player->height * player->scale > SCREEN_HEIGHT)
-    {
-        player->y = SCREEN_HEIGHT - player->height * player->scale;
-    }
-    if (player->y < 0) { player->y = 0; }
-}
-
-/*
-    Essa função é muito importante!
-    Ela faz aparecer o personagem!
-*/
 static void clipPlayer(void)
 {
     if (player == NULL) return;

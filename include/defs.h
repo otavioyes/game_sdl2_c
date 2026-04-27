@@ -38,7 +38,7 @@
 enum
 {
     CH_ANY = -1,
-    CHPLAYER,
+    CH_PLAYER,
     CH_ALIEN_FIRE,
     CH_POINTS
 };

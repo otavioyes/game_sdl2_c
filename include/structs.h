@@ -28,7 +28,7 @@ typedef struct
     SDL_Renderer    *renderer;
     SDL_Window      *window;
     Delegate        delegate;
-    int             Keyboard[MAX_KEYBOARD_KEYS];
+    int             keyboard[MAX_KEYBOARD_KEYS];
     Texture         textureHead, *textureTail;
     char            inputText[MAX_LINE_LENGTH];
 }App;

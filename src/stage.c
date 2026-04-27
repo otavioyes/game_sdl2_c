@@ -125,66 +125,29 @@ static void resetStage(void){
     stage.explosionTail = &stage.explosionHead;
     stage.debrisTail = &stage.debrisHead;
     stage.pointsTail = &stage.pointsHead;
-    
+
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*Iinicia o player com localizacao e tamanho*/
-static void initPlayer(void)
-{
+static void initPlayer(void) {
     player = malloc(sizeof(Entity));
-    if (player == NULL)
-    {
-        SDL_Log("malloc falhou em initPlayer");
-        exit(1);
-    }
     memset(player, 0, sizeof(Entity));
-
     stage.fighterTail->next = player;
     stage.fighterTail = player;
 
-    player->x       = 100;
-    player->y       = 100;
-    player->scale   = 1;
-
-    // Usa a textura já carregada globalmente
-    if (playerTexture == NULL)
-    {
-        player->texture = loadTexture("assets/gfx/player1.png");
-        playerTexture = player->texture;
-    }
-    else
-    {
-        player->texture = playerTexture;
-    }
-
-    if (player->texture == NULL)
-    {
-        SDL_Log("Erro ao carregar textura player1.png (initPlayer)");
+    if (player == NULL) {
+        SDL_Log("malloc falhou em initPlayer");
         exit(1);
     }
 
-    SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
+    player->health = 1;
+    player->x = 100;
+    player->y = 100;
+    player->texture = playerTexture;
+    SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
 
     player->side = SIDE_PLAYER;
-    player->health = 3;
-
-    SDL_Log("Player inicializado em (%.1f, %.1f) size %dx%d", player->x, player->y, player->width, player->height);
 }
-
-
-
 
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores

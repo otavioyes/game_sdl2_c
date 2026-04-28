@@ -240,26 +240,23 @@ static void fireAlienBullet(Entity *e){
 
     bullet->x = e->x;
     bullet->y = e->y;
-    bullet->scale = 5;
     bullet->health = 1;
     bullet->texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;
-    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
-    bullet->x += (e->width / 2) - (bullet->width / 2);
-    bullet->y += (e->height / 2) - (bullet->height / 2);
+    bullet->x += (e->w / 2) - (bullet->w / 2);
+    bullet->y += (e->h / 2) - (bullet->h / 2);
 
-    calcSlop(player->x + (player->width / 2),
-             player->y + (player->height / 2),
-             e->x,
-             e->y,
-             &bullet->dx,
-             &bullet->dy);
+    calcSlop(player->x + (player->w / 2),
+             player->y + (player->h / 2),
+             e->x, e->y, &bullet->dx, &bullet->dy);
 
-    bullet->dx *= ALIEN_BULLET_SPEED;
-    bullet->dy *= ALIEN_BULLET_SPEED;
+        bullet->dx *= ALIEN_BULLET_SPEED;
+        bullet->dy *= ALIEN_BULLET_SPEED;
 
-    e->reload = (rand() % FPS *2);
+        e->reload = (rand() % FPS * 2);
+
 }
 
 

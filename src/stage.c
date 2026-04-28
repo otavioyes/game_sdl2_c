@@ -407,6 +407,29 @@ static void doExplosions(void){
     }
 }
 
+static void doDebris(void){
+    Debris *d, *prev;
+
+    prev = &stage.debrisHead;
+
+    for (d = stage.debrisHead.next; d != NULL; d = d->next){
+        d->x += d->dx;
+        d->y += d->dy;
+
+        d->dy += 0.5;
+
+        if (--d->life <= 0){
+            if (d == stage.debrisTail){
+                stage.debrisTail = prev;
+            }
+            prev->next = d->next;
+            free(d);
+            d = prev;
+        }
+        prev = d;
+    }
+}
+
 
 
 

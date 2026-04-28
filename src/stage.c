@@ -287,6 +287,29 @@ static void doFighters(void) {
 }
 
 
+//Atualiza as balas e remove as que sairam da tela (lado direito)
+static void doBullet(void){
+    Entity *b, *prev;
+    prev = &stage.bulletHead;
+
+    for (b = stage.bulletHead.next ; b != NULL ; b = b->next){
+        b->x    += b->dx;
+        b->y    += b->dy;
+
+        if (bulletHitFighter(b) || b->x < -b->w || b->y < -b->h || b->x > SCREEN_WIDTH || b->y > SCREEN_HEIGHT ){
+            if (b == stage.bulletTail){
+                stage.bulletTail = prev;
+            }
+
+            prev->next = b->next; /*Remove a bala da lista*/
+            free(b); /*Libera a memoria da bala*/
+            b = prev; /*Volta a uma posição da lista para manter o loop seguro*/
+        }
+        prev = b; /*Avanca o ponteiro anterior*/
+    }
+}
+
+
 // Gera inimigos periodicamente e adiciona à lista de lutadores
 static void spawnsEnemies(void)
 {
@@ -359,40 +382,3 @@ static int bulletHitFighter(Entity *b)
     }
     return 0; //Nenhua colisao
 }
-
-
-//Atualiza as balas e remove as que sairam da tela (lado direito)
-static void doBullet(void)
-{
-    Entity *b, *prev;
-
-    prev = &stage.bulletHead; // Ponteiro anterior, começa no cabeçalho da lista de balas
-
-    //Percorre a lista de balas
-    for (b = stage.bulletHead.next ; b != NULL ; b = b->next)
-    {
-        b->x    += b->dx; //atualiza a posicao X da bala
-        b->y    += b->dy; //atualiza a posicao y da bala
-
-        if (bulletHitFighter(b) || b->x < -b->width ||
-           b->y < -b->height || b->x > SCREEN_WIDTH ||
-           b->y > SCREEN_HEIGHT )//Se a bala passou do limite direito da tela
-        {
-            //Se a bala era ultima da lista, atualiza o ponteiro
-            if (b == stage.bulletTail)
-            {
-                stage.bulletTail = prev;
-            }
-
-            prev->next = b->next; //Remove a bala da lista
-            free(b); //Libera a memoria da bala
-            b = prev; //Volta a uma posição da lista para manter o loop seguro
-        }
-
-        prev = b;//Avanca o ponteiro anterior
-    }
-}
-
-
-
-

@@ -275,11 +275,14 @@ static void doFighters(void) {
             if (e == player) {
                 player = NULL;
             }
-            if (e == stage.fighterTail) {
+            if (e == stage.fighterTail){
                 stage.fighterTail = prev;
             }
-            prev = e;
+            prev->next = e->next;
+            free(e);
+            e = prev;
         }
+        prev = e;
     }
 }
 

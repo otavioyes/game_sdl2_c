@@ -43,7 +43,6 @@ static void addPointsPod(int x, int y);
 static int bulletHitFighter(Entity *e);
 static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
-static
 
 static Entity       *player;
 static int          enemySpawnTimer;
@@ -157,7 +156,6 @@ static void logic(void)
     doPlayer();
     doEnimies();
     doFighters();
-    doBullet();
     doBullet();
     doExplosions();
     doDebris();

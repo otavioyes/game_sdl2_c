@@ -386,7 +386,26 @@ static void clipPlayer(void){
     }
 }
 
+static void doExplosions(void){
+    Explosion *e, *prev;
 
+    prev = &stage.explosionHead;
+
+    for (e = stage.explosionHead.next; e != NULL; e = e->next){
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if (--e->a <= 0){
+            if (e == stage.explosionTail){
+                stage.explosionTail = prev;
+            }
+            prev->next = e->next;
+            free(e);
+            e = prev;
+        }
+        prev = e;
+    }
+}
 
 
 

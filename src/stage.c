@@ -179,10 +179,10 @@ static void doPlayer(void) {
             player->reload--;
         }
 
-        if (app.keyboard[SDL_SCANCODE_UP]) { player->dy = -PLAYER_SPEED; }
-        if (app.keyboard[SDL_SCANCODE_DOWN]) { player->dy = PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_UP])    { player->dy = -PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_DOWN])  { player->dy = PLAYER_SPEED; }
         if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
-        if (app.keyboard[SDL_SCANCODE_LEFT]) { player->dx = PLAYER_SPEED; }
+        if (app.keyboard[SDL_SCANCODE_LEFT])  { player->dx = PLAYER_SPEED; }
 
         if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0) {
             playerSound(SND_PLAYER_FIRE, CH_PLAYER);
@@ -190,6 +190,80 @@ static void doPlayer(void) {
         }
     }
 }
+
+
+// Função que cria uma nova bala (disparo do jogador)
+static void fireBullet(void){
+    Entity *bullet;
+
+    bullet = malloc(sizeof(Entity));
+    memset(bullet, 0, sizeof(Entity));
+    stage.bulletTail->next = bullet;
+    stage.bulletTail = bullet;
+
+    bullet->x = player->x;
+    bullet->y = player->y;
+    bullet->dx = PLAYER_BULLET_SPEED;
+    bullet->texture = bulletTexture;
+    bullet->side = player->side;
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+
+    bullet->y += (player->h / 2) - (bullet->h / 2);
+
+    bullet->side = SIDE_PLAYER;
+
+    player->reload = 8;
+}
+
+static void doEnemies(void){
+    Entity *e;
+
+    for (e = stage.fighterHead.next; e != NULL; e = e->next){
+        if (e != player){
+            e->y = MIN(MAX(e->y, 0), SCREEN_HEIGHT - e->h);
+            if (player != NULL && --e->reload <= 0){
+                fireAlienBullet(e);
+                playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
+            }
+        }
+    }
+}
+
+
+static void fireAlienBullet(Entity *e){
+    Entity *bullet;
+
+    bullet = malloc(sizeof(Entity));
+    memset(bullet, 0, sizeof(Entity));
+    stage.bulletTail->next = bullet;
+    stage.bulletTail = bullet;
+
+    bullet->x = e->x;
+    bullet->y = e->y;
+    bullet->scale = 5;
+    bullet->health = 1;
+    bullet->texture = alienBulletTexture;
+    bullet->side = SIDE_ALIEN;
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
+
+    bullet->x += (e->width / 2) - (bullet->width / 2);
+    bullet->y += (e->height / 2) - (bullet->height / 2);
+
+    calcSlop(player->x + (player->width / 2),
+             player->y + (player->height / 2),
+             e->x,
+             e->y,
+             &bullet->dx,
+             &bullet->dy);
+
+    bullet->dx *= ALIEN_BULLET_SPEED;
+    bullet->dy *= ALIEN_BULLET_SPEED;
+
+    e->reload = (rand() % FPS *2);
+}
+
+
+
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores
 static void spawnsEnemies(void)
@@ -225,7 +299,6 @@ static void spawnsEnemies(void)
 }
 
 
-
 static void clipPlayer(void)
 {
     if (player == NULL) return;
@@ -241,18 +314,7 @@ static void clipPlayer(void)
 }
 
 
-static void doEnemies(void)
-{
-    Entity *e;
 
-    for (e = stage.fighterHead.next ; e != NULL ; e = e->next)
-    {
-        if (e != player && player != NULL && --e->reload <= 0)
-        {
-            fireAlienBullet(e);
-        }
-    }
-}
 
 
 //Atualiza os lutadores e remove os que saíram da tela
@@ -381,67 +443,5 @@ static void doBullet(void)
 }
 
 
-// Função que cria uma nova bala (disparo do jogador)
-static void fireBullet(void)
-{
-    Entity *bullet;
 
-    // Aloca memória para a bala e zera seus dados
-    bullet = malloc(sizeof(Entity));
-    memset(bullet, 0, sizeof(Entity));
 
-    // Adiciona a bala ao final da lista de balas
-    stage.bulletTail->next = bullet;
-    stage.bulletTail = bullet;
-
-    bullet->scale   = 1; // Define o tamanho (escala) da bala
-
-    bullet->texture = bulletTexture; // Usa a textura da bala
-
-    // Obtém as dimensões originais da textura da bala
-    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
-
-    //Define a posição inicial da bala no centro do jogador
-    bullet->x   =   player->x + (player->width * player->scale / 2) - (bullet->width * bullet->scale / 2);
-    bullet->y   =   player->y + (player->height * player->scale / 2) - (bullet->height * bullet->scale / 2);
-
-    bullet->dx = PLAYER_BULLET_SPEED; //Velocidade da bala no eixo Y
-    bullet->health = 1; //A bala esta ativa (vida util)
-    player->reload = 8; //Tempo de recarga antes de atirar novamente.
-
-    bullet->side = SIDE_PLAYER;
-
-}
-
-static void fireAlienBullet(Entity *e)
-{
-    Entity *bullet;
-
-    bullet = malloc(sizeof(Entity));
-    memset(bullet, 0, sizeof(Entity));
-    stage.bulletTail->next = bullet;
-    stage.bulletTail = bullet;
-
-    bullet->x = e->x;
-    bullet->y = e->y;
-    bullet->scale = 5;
-    bullet->health = 1;
-    bullet->texture = alienBulletTexture;
-    bullet->side = SIDE_ALIEN;
-    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
-
-    bullet->x += (e->width / 2) - (bullet->width / 2);
-    bullet->y += (e->height / 2) - (bullet->height / 2);
-
-    calcSlop(player->x + (player->width / 2),
-             player->y + (player->height / 2),
-             e->x,
-             e->y,
-             &bullet->dx,
-             &bullet->dy);
-
-    bullet->dx *= ALIEN_BULLET_SPEED;
-    bullet->dy *= ALIEN_BULLET_SPEED;
-
-    e->reload = (rand() % FPS *2);
-}

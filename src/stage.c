@@ -365,18 +365,25 @@ static void spawnsEnemies(void){
 }
 
 
-static void clipPlayer(void)
-{
-    if (player == NULL) return;
+static void clipPlayer(void){
+    if (player == NULL){
 
-    // Usa largura/altura * scale para clipping consistente
-    float w = player->width * player->scale;
-    float h = player->height * player->scale;
+        if (player->x < 0){
+            player->x = 0;
+        }
 
-    if (player->x < 0) player->x = 0;
-    if (player->y < 0) player->y = 0;
-    if (player->x > SCREEN_WIDTH  - w) player->x = SCREEN_WIDTH  - w;
-    if (player->y > SCREEN_HEIGHT - h) player->y = SCREEN_HEIGHT - h;
+        if (player->y < 0){
+            player->y = 0;
+        }
+
+        if (player->x > SCREEN_WIDTH - player->w){
+            player->x = SCREEN_WIDTH - player->w;
+        }
+
+        if (player->h > SCREEN_HEIGHT - player->h){
+            player->h = SCREEN_HEIGHT - player->h;
+        }
+    }
 }
 
 

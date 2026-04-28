@@ -337,36 +337,30 @@ static int bulletHitFighter(Entity *b){
     return  0;
 }
 
+
 // Gera inimigos periodicamente e adiciona à lista de lutadores
-static void spawnsEnemies(void)
-{
+static void spawnsEnemies(void){
     Entity *enemy;
 
-    // Decrementa o temporizador e verifica se é hora de criar um inimigo
-    if(--enemySpawnTimer <=0)
-    {
-        enemy = malloc(sizeof(Entity)); //aloca memoria para um novo inimigo
-        memset(enemy, 0, sizeof(Entity)); //zera os dados da estrutura
-
-        // Adiciona o inimigo ao final da lista ligada de lutadores
+    if(--enemySpawnTimer <=0){
+        enemy = malloc(sizeof(Entity));
+        memset(enemy, 0, sizeof(Entity));
         stage.fighterTail->next = enemy;
         stage.fighterTail = enemy;
 
-        enemy->scale = 1; // define o tamnho visual do inimigo(scale)
+        enemy->x = SCREEN_WIDTH;
+        enemy->y = rand() % SCREEN_HEIGHT;
+        enemy->texture = enemyTexture;
+        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
 
-        enemy->x = SCREEN_WIDTH; //Comeca fora da tela a direita
-        enemy->y = rand() % SCREEN_HEIGHT;//coordenada Y e escolhida aleatoriamente com base em SCREEN_HEIGHT
-        enemy->texture = enemyTexture; // usa textura do inimigo
-        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->width, &enemy->height); //define largura e altura original
-
-        enemy->dx = -(2 + (rand() % 4));//velocidade para a esquerda negativa
-        enemy->dy = rand() %5 - 2; //Movimentacao do eixo Y eleatoria
-        enemySpawnTimer = 20  + (rand() % 60); //taxa de geracao do inimigo
+        enemy->dx = -(2 + (rand() % 4));
+        enemy->dy = -100 + rand() % 200;
+        enemy->dy /= 100;
+        enemy->side = SIDE_ALIEN;
+        enemy->health = 1;
         enemy->reload = FPS * (1 + (rand() % 3));
 
-        enemy->side = SIDE_ALIEN;
-
-        enemy->health = 3;
+        enemySpawnTimer = 30  + (rand() % FPS); //taxa de geracao do inimigo
     }
 }
 

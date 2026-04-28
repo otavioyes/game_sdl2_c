@@ -259,7 +259,29 @@ static void fireAlienBullet(Entity *e){
 
 }
 
+//Atualiza os lutadores e remove os que saíram da tela
+static void doFighters(void) {
+    Entity *e, *prev;
+    prev = &stage.fighterHead;
 
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+        e->x += e->dx;
+        e->y += e->dy;
+
+        if (e != player && e->x < -e->w) {
+            e->health = 0;
+        }
+        if (e->health == 0) {
+            if (e == player) {
+                player = NULL;
+            }
+            if (e == stage.fighterTail) {
+                stage.fighterTail = prev;
+            }
+            prev = e;
+        }
+    }
+}
 
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores
@@ -314,78 +336,7 @@ static void clipPlayer(void)
 
 
 
-//Atualiza os lutadores e remove os que saíram da tela
-static void doFighters(void)
-{
-    Entity *e = stage.fighterHead.next;
-    Entity *prev = &stage.fighterHead; // começo no cabeçalho da lista de lutadores
 
-    while (e != NULL)
-    {
-        // Atualiza posição com base na velocidade
-        e->x += e->dx;
-        e->y += e->dy;
-
-        // Restringe o lutador ao limite inferior da tela (corrigido e usando altura)
-        if (e->y + e->height * e->scale > SCREEN_HEIGHT)
-        {
-            e->y = SCREEN_HEIGHT - e->height * e->scale;
-        }
-
-        // Se o lutador não for o player e saiu da tela pela esquerda, marca vida como 0
-        if (e != player && e->x < -e->width)
-        {
-            e->health = 0;
-        }
-
-        // Se a vida for 0, trata remoção e colisão
-        if (e->health == 0)
-        {
-            if (e == player)
-            {
-                player = NULL;
-            }
-
-            if (player && e != player && checkCollisionEntities(e, player))
-            {
-                e->health = 0; // inimigo morre ao colidir com jogador
-                // player->health -= 1; // opcional: reduzir vida do jogador
-                SDL_Log("Inimigo colidiu com o jogador");
-            }
-        }
-
-        // Restringe limite superior da tela
-        if (e->y < 0)
-        {
-            e->y = 0;
-        }
-
-        // Condição para remover lutadores que saíram da tela à esquerda ou estão mortos
-        if (e != player && ((e->x + e->width * e->scale) < 0 || e->health <= 0))
-        {
-            SDL_Log("Inimigo removido! Vida = %d", e->health);
-
-            // Se for o último da lista, atualiza ponteiro do final
-            if (e == stage.fighterTail)
-            {
-                stage.fighterTail = prev;
-            }
-
-            prev->next = e->next; // remove da lista
-
-            Entity *toFree = e; // salva ponteiro para liberar depois
-            e = e->next;        // avança antes de liberar
-
-            free(toFree);       // libera memória
-
-            continue;           // pula o avanço de prev para manter a lista consistente
-        }
-
-        // Avança ponteiros normalmente
-        prev = e;
-        e = e->next;
-    }
-}
 
 
 // Função que testa se a bala `b` atingiu algum inimigo

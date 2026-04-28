@@ -310,6 +310,33 @@ static void doBullet(void){
 }
 
 
+static int bulletHitFighter(Entity *b){
+    Entity *e;
+
+    for (e = stage.fighterHead.next; e != NULL, e = e->next){
+        if (e->side != b->side && collision(b->x, b->y, b->w,
+                                            b->h, e->x, e->y,
+                                            e->w, e->h)){
+            b->health = 0;
+            e->health = 0;
+
+            addExplosions(e->x, e->y, 32);
+
+            addDebris(e);
+
+            if (e == player){
+                playerSound(SND_ALINE_DIE,CH_PLAYER);
+            }
+            else{
+                addPointsPod(e->x + e->w / 2, e->y + e->h / 2) ;
+                playerSound(SND_ALINE_DIE, CH_ANY);
+            }
+            return 1;
+        }
+    }
+    return  0;
+}
+
 // Gera inimigos periodicamente e adiciona à lista de lutadores
 static void spawnsEnemies(void)
 {
@@ -365,20 +392,4 @@ static void clipPlayer(void)
 
 
 
-// Função que testa se a bala `b` atingiu algum inimigo
-static int bulletHitFighter(Entity *b)
-{
-    Entity *e; // Ponteiro para percorrer a lista de fighters
 
-    // Para cada fighter na lista encadeada de inimigos…
-    for(e = stage.fighterHead.next; e != NULL; e = e->next)
-    {
-        if(e->side != b->side && checkCollisionEntities(b, e))
-        {
-            b->health = 0; // Marca a bala para a remocao
-            e->health -= 1; // Marca o inimigo para a remocao
-            return 1; // Marca um "hit" (colisao bem sucedida)
-        }
-    }
-    return 0; //Nenhua colisao
-}

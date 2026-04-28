@@ -478,7 +478,8 @@ static void doPointsPods(void){
 }
 
 
-
-
+static void addExplosions(int x, int y, int num){
+    
+}
 
 

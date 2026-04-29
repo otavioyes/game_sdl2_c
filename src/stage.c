@@ -623,3 +623,13 @@ static void drawExplosions(void){
     }
     SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
 }
+
+static void drawHud(void){
+    drawText(10, 10, 255, 255, 255, TEXT_LEFT, "SCORE: %03d", stage.score);
+    if (stage.score < highscores.highscore[0].score){
+        drawText(SCREEN_WIDTH - 10, 10, 255, 255, 255, TEXT_RIGHT, "HIGHSCORE: %03d", highscores.highscore[0].score);
+    }
+    else{
+        drawText(SCREEN_WIDTH -10, 10, 0, 255, 0, TEXT_RIGHT, "HIGHSCORE: %03d", stage.score);
+    }
+}

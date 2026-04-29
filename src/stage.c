@@ -569,3 +569,13 @@ static void addPointsPod(int x, int y){
     e->y -= e->h / 2;
 }
 
+static void draw(void){
+    drawBackground();
+    drawStarfield();
+    drawPointsPods();
+    drawFighters();
+    drawDebris();
+    drawExplosions();
+    drawBullets();
+    drawHud();
+}

@@ -596,3 +596,10 @@ static void drawFighters(void){
     }
 }
 
+static void drawBullets(void){
+    Entity *b;
+    for (b = stage.bulletHead.next; b != NULL; b = b->next){
+        blit(b->texture, b->x, b->y);
+    }
+}
+

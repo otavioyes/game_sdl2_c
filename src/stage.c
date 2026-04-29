@@ -603,3 +603,10 @@ static void drawBullets(void){
     }
 }
 
+static void drawDebris(void){
+    Debris *d;
+    for (d = stage.debrisHead.next; d != NULL; d = d->next){
+        blit(d->texture, d->x, d->y);
+    }
+}
+

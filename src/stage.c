@@ -548,5 +548,24 @@ static void addDebris(Entity *e){
     }
 }
 
+static void addPointsPod(int x, int y){
+    Entity *e;
 
+    e = malloc(sizeof(Entity));
+    memset(e, 0, sizeof(Entity));
+    stage.pointsTail->next = e;
+    stage.pointsTail = e;
+
+    e->x = x;
+    e->y = y;
+    e->dx = -(rand() % 5);
+    e->dy = (rand() % 5) - (rand() %  5);
+    e->health = FPS * 10;
+    e->texture = pointsTexture;
+
+    SDL_QueryTexture(e->texture, NULL, NULL, &e->w, &e->h);
+
+    e->x -= e->w / 2;
+    e->y -= e->h / 2;
+}
 

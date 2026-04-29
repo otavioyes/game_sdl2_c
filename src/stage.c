@@ -610,3 +610,16 @@ static void drawDebris(void){
     }
 }
 
+static void drawExplosions(void){
+    Explosion *e;
+
+    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_ADD);
+    SDL_SetTextureAlphaMod(explosionTexture, SDL_BLENDMODE_ADD);
+
+    for (e = stage.explosionHead.next; e != NULL; e = e->next){
+        SDL_SetTextureColorMod(explosionTexture, e->r, e->g, e->b);
+        SDL_SetTextureAlphaMod(explosionTexture, e->a);
+        blit(explosionTexture, e->x, e->y);
+    }
+    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
+}

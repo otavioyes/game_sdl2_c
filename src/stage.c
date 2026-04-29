@@ -588,3 +588,11 @@ static void drawPointsPods(void){
         }
     }
 }
+
+static void drawFighters(void){
+    Entity *e;
+    for (e = stage.fighterHead.next; e != NULL; e = e->next){
+        blit(e->texture, e->x, e->y);
+    }
+}
+

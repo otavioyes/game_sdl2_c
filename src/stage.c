@@ -290,7 +290,7 @@ static void doBullet(void){
     Entity *b, *prev;
     prev = &stage.bulletHead;
 
-    for (b = stage.bulletHead.next ; b != NULL ; b = b->next){
+    for (b = stage.bulletHead.next; b != NULL ; b = b->next){
         b->x    += b->dx;
         b->y    += b->dy;
 
@@ -516,6 +516,35 @@ static void addExplosions(int x, int y, int num){
                 break;
         }
         e->a = rand() % FPS * 3;
+    }
+}
+
+
+static void addDebris(Entity *e){
+    Debris *d;
+    int     x, y, w, h;
+
+    w = e->w / 2;
+    h = e->h / 2;
+
+    for (y = 0; y <= h; y += h){
+        for (x = 0; x <= w; x += w){
+            d = malloc(sizeof (Debris ));
+            memset(d, 0, sizeof(Debris));
+            stage.debrisTail->next = d;
+            stage.debrisTail = d;
+
+            d->x = e->x + e->w / 2;
+            d->y = e->y + e->h / 2;
+            d->dx = (rand() % 5) - (rand() % 5);
+            d->dy = -(5 + (rand() % 12));
+            d->life = FPS * 2;
+
+            d->rect.x = x;
+            d->rect.y = y;
+            d->rect.w = w;
+            d->rect.h = h;
+        }
     }
 }
 

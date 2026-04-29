@@ -149,8 +149,7 @@ static void initPlayer(void) {
 }
 
 
-static void logic(void)
-{
+static void logic(void){
     doBackground();
     doStarfield();
     doPlayer();

@@ -310,7 +310,7 @@ static void doBullet(void){
 static int bulletHitFighter(Entity *b){
     Entity *e;
 
-    for (e = stage.fighterHead.next; e != NULL, e = e->next){
+    for (e = stage.fighterHead.next; e != NULL; e = e->next){
         if (e->side != b->side && collision(b->x, b->y, b->w,
                                             b->h, e->x, e->y,
                                             e->w, e->h)){
@@ -322,11 +322,11 @@ static int bulletHitFighter(Entity *b){
             addDebris(e);
 
             if (e == player){
-                playerSound(SND_ALINE_DIE,CH_PLAYER);
+                playerSound(SND_ALIEN_DIE,CH_PLAYER);
             }
             else{
                 addPointsPod(e->x + e->w / 2, e->y + e->h / 2) ;
-                playerSound(SND_ALINE_DIE, CH_ANY);
+                playerSound(SND_ALIEN_DIE, CH_ANY);
             }
             return 1;
         }

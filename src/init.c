@@ -76,7 +76,7 @@ void initGame(void) {
 
     memset(&stage, 0, sizeof(Stage));
     loadMusic("music/Mercury.ogg");
-    playerMusic(1);
+    playMusic(1);
 }
 
 void cleanupGame(void) {

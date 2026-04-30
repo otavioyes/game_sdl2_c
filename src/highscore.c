@@ -158,12 +158,12 @@ void addHighscore(int score) {
     newHighscores[NUM_HIGHSCORES].score = score;
     newHighscores[NUM_HIGHSCORES].recent = 1;
 
-    qsort(newHighscore, NUM_HIGHSCORES + 1, sizeof(Highscore), highscoreComparator);
+    qsort(newHighscores, NUM_HIGHSCORES + 1, sizeof(Highscore), highscoreComparator);
 
     newHighscore = NULL;
 
     for (i = 0; i < NUM_HIGHSCORES; i++) {
-        highscores.highscore[i] = newHighscore[i];
+        highscores.highscore[i] = newHighscores[i];
         if (highscores.highscore[i].recent) {
             newHighscore = &highscores.highscore[i];
         }

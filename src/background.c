@@ -14,7 +14,7 @@ static Star         star[MAX_STARS];
 static SDL_Texture  *background;
 
 void initBackground(void) {
-    background = loadTexture("background.png");
+    background = loadTexture("assets/gfx/background.png");
     backgroundX = 0;
 }
 
@@ -38,12 +38,12 @@ void doStarfield(void) {
     for (i = 0; i < MAX_STARS; i++) {
         star[i].x -= star[i].speed;
         if (star[i].x < 0) {
-            star[i].x = SCREEN_WIDTH - star[i].x;
+            star[i].x = SCREEN_WIDTH + star[i].x;
         }
     }
 }
 
-void drawBackground(void) {
+void drawStarfield(void) {
     int i, c;
     for (i = 0; i < MAX_STARS; i++) {
         c = 32 * star[i].speed;
@@ -52,7 +52,7 @@ void drawBackground(void) {
     }
 }
 
-void drawBackground2(void) {
+void drawBackground(void) {
     SDL_Rect dest;
     int x;
 

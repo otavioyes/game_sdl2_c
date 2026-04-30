@@ -79,7 +79,7 @@ void initGame(void) {
     playMusic(1);
 }
 
-void cleanupGame(void) {
+void cleanup(void) {
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();

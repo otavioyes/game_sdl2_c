@@ -11,9 +11,9 @@
 #include "main.h"
 #include "title.h"
 
-App         app;
+App          app;
 Highscores   highscores;
-Stage stage;
+Stage        stage;
 
 static void capFrameRate(long *then, float *remainder);
 
@@ -28,6 +28,9 @@ int main(int argc, char *argv[]){
     initSDL();
     atexit(cleanup);
     initGame();
+    initTitle();
+    then = SDL_GetTicks();
+    remainder = 0;
 
     while (1)
 {

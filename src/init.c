@@ -70,9 +70,10 @@ void initSDL(void) {
 void initGame(void) {
     initBackground();
     initStarfield();
-    initSounds(); /*add sound.c*/
+    initSounds();
     initFonts();
     initHighscoreTable();
+
     memset(&stage, 0, sizeof(Stage));
     loadMusic("music/Mercury.ogg");
     playerMusic(1);

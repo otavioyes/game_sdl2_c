@@ -21,10 +21,10 @@ static void doNameInput(void);
 static void drawNameInput(void);
 
 static Highscore *newHighscore;
-static int cursorBlink;
-static int timeout;
+static int        cursorBlink;
+static int        timeout;
 
-void initHighscore(void) {
+void initHighscoreTable(void) {
     int i;
 
     memset(&highscores, 0, sizeof(highscores));
@@ -126,46 +126,46 @@ static void drawNameInput(void) {
         "PRESS RETURN WHEN FINISHED");
 }
 
-static void drawHighscore(void) {
+static void drawHighscores(void) {
     int i, y, r, g, b;
 
     y = 150;
 
     drawText(SCREEN_WIDTH /2, 70, 255, 255, 255, TEXT_CENTER,
         "HIGHSCORE");
-    for (i = 0; i < MAX_HIGHSCORES; i++) {
+    for (i = 0; i < NUM_HIGHSCORES; i++) {
         r = 255;
         g = 255;
         b = 255;
-        if (highscore.highscore[i].recent) {
+        if (highscores.highscore[i].recent) {
             b = 0;
         }
         drawText(SCREEN_WIDTH / 2, y, r, g, b, TEXT_CENTER,
-            "#%d. %-15s......%03d", (i + 1), highscore.highscore[i].name, highscore.highscore[i].score);
+            "#%d. %-15s......%03d", (i + 1), highscores.highscore[i].name, highscores.highscore[i].score);
         y += 50;
     }
 }
 
 void addHighscore(int score) {
     int i;
-    Highscore newHighscore[NUM_HIGHSCORES + 1];
+    Highscore newHighscores[NUM_HIGHSCORES + 1];
 
-    memset(newHighscore, 0, sizeof(Highscore) * (NUM_HIGHSCORES + 1));
+    memset(newHighscores, 0, sizeof(Highscore) * (NUM_HIGHSCORES + 1));
     for (i = 0; i < NUM_HIGHSCORES; i++) {
-        newHighscore[i] = highscore.highscore[i];
-        newHighscore[i].recent = 0;
+        newHighscores[i] = highscores.highscore[i];
+        newHighscores[i].recent = 0;
     }
-    newHighscore[NUM_HIGHSCORES].score = score;
-    newHighscore[NUM_HIGHSCORES].recent = 1;
+    newHighscores[NUM_HIGHSCORES].score = score;
+    newHighscores[NUM_HIGHSCORES].recent = 1;
 
-    qsort(newHighscores, NUM_HIGHSCORES + 1, sizeof(Highscore), highscoreComparator);
+    qsort(newHighscore, NUM_HIGHSCORES + 1, sizeof(Highscore), highscoreComparator);
 
     newHighscore = NULL;
 
     for (i = 0; i < NUM_HIGHSCORES; i++) {
-        highscore.highscore[i] = newHighscore[i];
-        if (highscore.highscore[i].recent) {
-            newHighscore = &highscore.highscore[i];
+        highscores.highscore[i] = newHighscore[i];
+        if (highscores.highscore[i].recent) {
+            newHighscore = &highscores.highscore[i];
         }
     }
 }

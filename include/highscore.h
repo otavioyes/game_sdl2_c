@@ -3,6 +3,6 @@
  */
 
 void initHighscoreTable(void);
-void initHighscore(void);
+void initHighscores(void);
 void addHighscore(int score);
 

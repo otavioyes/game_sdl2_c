@@ -42,7 +42,7 @@ static void loic(void){
         reveal++;
     }
     if (--timeout <= 0){
-        initHighscore();
+        initHighscores();
     }
     if (app.keyboard[SDL_SCANCODE_LCTRL]){
         initStage();

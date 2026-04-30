@@ -12,13 +12,12 @@
 #include "title.h"
 
 App         app;
-Highscore   highscore;
+Highscores   highscores;
 Stage stage;
 
 static void capFrameRate(long *then, float *remainder);
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
 
     long then;
     float remainder;

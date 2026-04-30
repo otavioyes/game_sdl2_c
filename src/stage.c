@@ -26,7 +26,7 @@ static void doBullet(void);
 static void drawFighters(void);
 static void drawBullets(void);
 static void spawnsEnemies(void);
-static  void doEnimies(void);
+static  void doEnemies(void);
 static void clipPlayer(void);
 static void resetStage(void);
 static void drawExplosions(void);
@@ -153,7 +153,7 @@ static void logic(void){
     doBackground();
     doStarfield();
     doPlayer();
-    doEnimies();
+    doEnemies();
     doFighters();
     doBullet();
     doExplosions();
@@ -164,7 +164,7 @@ static void logic(void){
 
     if (player == NULL && --stageResetTimer <= 0){
         addHighscore(stage.score);
-        initHighscore();
+        initHighscores();
     }
 }
 

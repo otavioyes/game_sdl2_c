@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     initSDL();
     atexit(cleanup);
-    initStage();
+    initGame();
 
     while (1)
 {

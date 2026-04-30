@@ -4,5 +4,5 @@
 
 void initHighscoreTable(void);
 void initHighscore(void);
-void addHighscore(void);
+void addHighscore(int score);
 

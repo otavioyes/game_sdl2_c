@@ -13,7 +13,7 @@
 #include "util.h"
 
 extern App app;
-extern Highscore highscore;
+extern Highscores highscores;
 extern Stage stage;
 
 static void logic(void);
@@ -485,8 +485,8 @@ static void addExplosions(int x, int y, int num){
         stage.explosionTail->next = e;
         stage.explosionTail = e;
 
-        e->x = + (rand() % 32) - (rand() % 32);
-        e->y = + (rand() % 32) - (rand() % 32);
+        e->x = x + (rand() % 32) - (rand() % 32);
+        e->y = y + (rand() % 32) - (rand() % 32);
         e->dx = (rand() % 10) - (rand() % 10);
         e->dy = (rand() % 10) - (rand() % 10);
 

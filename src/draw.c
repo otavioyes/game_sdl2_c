@@ -36,7 +36,7 @@ static void addTextureToCache(char *name, SDL_Texture *sdlTexture) {
     app.textureTail ->next = texture;
     app.textureTail = texture;
 
-    STRNCPY(texture->name, name MAX_NAME_LENGTH);
+    STRNCPY(texture->name, name, MAX_NAME_LENGTH);
 }
 
 SDL_Texture *loadTexture(char *filename) {

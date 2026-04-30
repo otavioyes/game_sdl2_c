@@ -11,12 +11,12 @@
 #include "title.h"
 
 extern App app;
-extern Highscore highscore;
+extern Highscores highscores;
 
 static void logic(void);
 static void draw(void);
 static int highscoreComparator(const void *a, const void *b);
-static void drawHighScore(void);
+static void drawHighscores(void);
 static void doNameInput(void);
 static void drawNameInput(void);
 
@@ -27,20 +27,20 @@ static int timeout;
 void initHighscore(void) {
     int i;
 
-    memset(&highscore, 0, sizeof(highscore));
-    for (i = 0; i < MAX_HIGHSCORE; i++) {
-        highscore.highscore[i].score = NUM_HIGHSCORES - i;
-        STRNCPY(highscore.highscore[i].name, "OTAVIO CORREA", MAX_SCORE_NAME_LENGTH);
+    memset(&highscores, 0, sizeof(highscores));
+    for (i = 0; i < NUM_HIGHSCORES; i++) {
+        highscores.highscore[i].score = NUM_HIGHSCORES - i;
+        STRNCPY(highscores.highscore[i].name, "OTAVIO CORREA", MAX_SCORE_NAME_LENGTH);
     }
     newHighscore = NULL;
     cursorBlink = 0;
 }
 
-void initHighscore(void) {
+void initHighscores(void) {
     app.delegate.logic = logic;
     app.delegate.draw = draw;
 
-    memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_SIZE);
+    memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
     timeout = FPS * 5;
 }
 
@@ -68,9 +68,9 @@ static void doNameInput(void) {
     char c;
 
     n = strlen(newHighscore->name);
-    for (i = 0; i < strlen(app.inputText); i++) {
+    for (i = 0; i < (int) strlen(app.inputText); i++) {
         c = toupper(app.inputText[i]);
-        if (n < MAX_SCORE_NAME_LENGTH - 1 && C >= ' ' && c <= 'Z') {
+        if (n < MAX_SCORE_NAME_LENGTH - 1 && c >= ' ' && c <= 'Z') {
             newHighscore->name[n++] = c;
         }
     }
@@ -93,7 +93,7 @@ static void draw(void) {
     if (newHighscore != NULL) {
         drawNameInput();
     }else {
-        drawHighScore();
+        drawHighscores();
         if (timeout % 40 < 20) {
             drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255,
             TEXT_CENTER, "PRESS FIRE TO PLAY");

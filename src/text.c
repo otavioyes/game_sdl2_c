@@ -7,11 +7,11 @@
 #include "draw.h"
 #include "text.h"
 
-static SDL_Texture *fontTexture;
-static char drawTextBuffer[MAX_LINE_LENGTH];
+static SDL_Texture  *fontTexture;
+static char         drawTextBuffer[MAX_LINE_LENGTH];
 
 void initFonts(void){
-    fontTexture = loadTexture("gfx/font.png");
+    fontTexture = loadTexture("assets/gfx/font.png");
 }
 
 void drawText(int x, int y, int r, int g, int b, int align, char *format, ...){

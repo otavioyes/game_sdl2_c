@@ -2,6 +2,10 @@
  * main.c
  */
 
+/*
+ * JOGO RODOU COM ERRO EM 01/05/2026
+ * ERRO: As imagens nao carregou
+ */
 
 #include "common.h"
 

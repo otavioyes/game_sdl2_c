@@ -61,7 +61,7 @@ void blit(SDL_Texture *texture, int x, int y) {
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
 
-void blitReact(SDL_Texture *texture, SDL_Rect *src, int x, int y) {
+void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y) {
     SDL_Rect dest;
     dest.x = x;
     dest.y = y;

@@ -34,7 +34,7 @@ void initTitle(void){
     timeout = FPS * 5;
 }
 
-static void loic(void){
+static void logic(void){
     doBackground();
     doStarfield();
 

@@ -5,6 +5,7 @@
 /*
  * JOGO RODOU COM ERRO EM 01/05/2026
  * ERRO: As imagens nao carregou
+ * ERRO: rodou, mas fechou inesperadamente
  */
 
 #include "common.h"

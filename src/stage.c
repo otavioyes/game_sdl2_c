@@ -172,6 +172,7 @@ static void doPlayer(void) {
     if (player == NULL) {
         return;
     }
+
     player->dx = player->dy = 0;
 
     if (player->reload > 0) {
@@ -183,7 +184,7 @@ static void doPlayer(void) {
     if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
     if (app.keyboard[SDL_SCANCODE_LEFT])  { player->dx = PLAYER_SPEED; }
 
-    if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0) {
+    if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);
         fireBullet();
     }

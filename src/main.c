@@ -23,6 +23,9 @@ static void capFrameRate(long *then, float *remainder);
 
 int main(int argc, char *argv[]){
 
+    (void)argc;
+    (void)argv;
+
     long then;
     float remainder;
 

@@ -363,25 +363,27 @@ static void spawnsEnemies(void){
 
 
 static void clipPlayer(void){
-    if (player == NULL){
+    if (player == NULL) {
+        return;
+    }
 
-        if (player->x < 0){
-            player->x = 0;
-        }
+    if (player->x < 0){
+        player->x = 0;
+    }
 
-        if (player->y < 0){
-            player->y = 0;
-        }
+    if (player->y < 0){
+        player->y = 0;
+    }
 
-        if (player->x > SCREEN_WIDTH - player->w){
-            player->x = SCREEN_WIDTH - player->w;
-        }
+    if (player->x > SCREEN_WIDTH - player->w){
+        player->x = SCREEN_WIDTH - player->w;
+    }
 
-        if (player->h > SCREEN_HEIGHT - player->h){
+    if (player->h > SCREEN_HEIGHT - player->h){
             player->h = SCREEN_HEIGHT - player->h;
-        }
     }
 }
+    
 
 static void doExplosions(void){
     Explosion *e, *prev;

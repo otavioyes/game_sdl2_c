@@ -3,9 +3,8 @@
  */
 
 /*
- * JOGO RODOU COM ERRO EM 01/05/2026
- * ERRO: As imagens nao carregou
- * ERRO: rodou, mas fechou inesperadamente
+ * ESTA RODANDO! AGORA PRECISO REFINAR O JOGO
+ * 02/05/2025
  */
 
 #include "common.h"

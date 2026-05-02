@@ -170,23 +170,25 @@ static void logic(void){
 
 static void doPlayer(void) {
     if (player == NULL) {
-        player->dx = player->dy = 0;
+        return;
+    }
+    player->dx = player->dy = 0;
 
-        if (player->reload > 0) {
-            player->reload--;
-        }
+    if (player->reload > 0) {
+        player->reload--;
+    }
 
-        if (app.keyboard[SDL_SCANCODE_UP])    { player->dy = -PLAYER_SPEED; }
-        if (app.keyboard[SDL_SCANCODE_DOWN])  { player->dy = PLAYER_SPEED; }
-        if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
-        if (app.keyboard[SDL_SCANCODE_LEFT])  { player->dx = PLAYER_SPEED; }
+    if (app.keyboard[SDL_SCANCODE_UP])    { player->dy = -PLAYER_SPEED; }
+    if (app.keyboard[SDL_SCANCODE_DOWN])  { player->dy = PLAYER_SPEED; }
+    if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
+    if (app.keyboard[SDL_SCANCODE_LEFT])  { player->dx = PLAYER_SPEED; }
 
-        if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0) {
-            playerSound(SND_PLAYER_FIRE, CH_PLAYER);
-            fireBullet();
-        }
+    if (app.keyboard[SDL_SCANCODE_LCTRL] && player->reload <= 0) {
+        playerSound(SND_PLAYER_FIRE, CH_PLAYER);
+        fireBullet();
     }
 }
+
 
 
 // Função que cria uma nova bala (disparo do jogador)
@@ -383,7 +385,7 @@ static void clipPlayer(void){
             player->h = SCREEN_HEIGHT - player->h;
     }
 }
-    
+
 
 static void doExplosions(void){
     Explosion *e, *prev;

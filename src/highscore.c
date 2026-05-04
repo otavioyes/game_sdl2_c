@@ -64,25 +64,46 @@ static void logic(void) {
 }
 
 static void doNameInput(void) {
+
+    if (newHighscore == NULL) {
+        return;
+    }
+
     int i, n;
     char c;
 
     n = strlen(newHighscore->name);
-    for (i = 0; i < (int) strlen(app.inputText); i++) {
+    int inputLen = strlen(app.inputText);
+
+    // Entrada de texto
+    for (i = 0; i < inputLen; i++) {
         c = toupper(app.inputText[i]);
+
         if (n < MAX_SCORE_NAME_LENGTH - 1 && c >= ' ' && c <= 'Z') {
             newHighscore->name[n++] = c;
+            newHighscore->name[n] = '\0'; // garante string válida
         }
     }
-    if (n > 0 && app.keyboard[SDL_SCANCODE_KP_BACKSPACE]) {
+
+    // Backspace
+    if (n > 0 && app.keyboard[SDL_SCANCODE_BACKSPACE]) {
         newHighscore->name[--n] = '\0';
-        app.keyboard[SDL_SCANCODE_KP_BACKSPACE] = 0;
+        app.keyboard[SDL_SCANCODE_BACKSPACE] = 0;
     }
+
+    // Enter (com proteção)
+    static int enterPressed = 0;
+
     if (app.keyboard[SDL_SCANCODE_RETURN]) {
-        if (strlen(newHighscore->name) == 0) {
-            STRNCPY(newHighscore->name, "OTAVIO CORREA", MAX_SCORE_NAME_LENGTH);
+        if (!enterPressed) {
+            if (n == 0) {
+                STRNCPY(newHighscore->name, "PLAYER", MAX_SCORE_NAME_LENGTH);
+            }
+            newHighscore = NULL;
         }
-        newHighscore = NULL;
+        enterPressed = 1;
+    } else {
+        enterPressed = 0;
     }
 }
 
@@ -105,7 +126,7 @@ static void drawNameInput(void) {
     SDL_Rect r;
 
     drawText(SCREEN_WIDTH / 2, 70, 255, 255, 255,TEXT_CENTER,
-        "PARABÉNS, VOCÊ OBTEVE UMA PONTUAÇÃO MÁXIMA");
+        "NOVO RECORDE");
 
     drawText(SCREEN_WIDTH / 2, 120, 255, 255, 255,TEXT_CENTER,
         "DIGITE SEU NOME ABAIXO");

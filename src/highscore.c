@@ -96,7 +96,7 @@ static void draw(void) {
         drawHighscores();
         if (timeout % 40 < 20) {
             drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255,
-            TEXT_CENTER, "PRESS FIRE TO PLAY");
+            TEXT_CENTER, "PRESSIONE ENTER PARA INICIAR");
         }
     }
 }
@@ -105,10 +105,10 @@ static void drawNameInput(void) {
     SDL_Rect r;
 
     drawText(SCREEN_WIDTH / 2, 70, 255, 255, 255,TEXT_CENTER,
-        "CONGRATULATIONS, YOU'VE GAINED A HIGHSCORE");
+        "PARABÉNS, VOCÊ OBTEVE UMA PONTUAÇÃO MÁXIMA");
 
     drawText(SCREEN_WIDTH / 2, 120, 255, 255, 255,TEXT_CENTER,
-        "ENTER YOUR NAME BELOW");
+        "DIGITE SEU NOME ABAIXO");
 
     drawText(SCREEN_WIDTH / 2, 250, 128, 255, 128, TEXT_CENTER,
         newHighscore->name);
@@ -123,7 +123,7 @@ static void drawNameInput(void) {
         SDL_RenderFillRect(app.renderer, &r);
     }
     drawText(SCREEN_WIDTH / 2, 625, 255, 255, 255,TEXT_CENTER,
-        "PRESS RETURN WHEN FINISHED");
+        "PRESSIONE ENTER QUANDO TERMINAR");
 }
 
 static void drawHighscores(void) {

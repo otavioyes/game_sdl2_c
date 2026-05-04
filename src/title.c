@@ -44,7 +44,7 @@ static void logic(void){
     if (--timeout <= 0){
         initHighscores();
     }
-    if (app.keyboard[SDL_SCANCODE_LCTRL]){
+    if (app.keyboard[SDL_SCANCODE_KP_ENTER]){
         initStage();
     }
 }
@@ -55,7 +55,7 @@ static void draw(void){
     drawLogo();
 
     if (timeout % 40 < 20){
-        drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE TO PLAY");
+        drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESSIONE ENTER PARA INICIAR");
     }
 }
 

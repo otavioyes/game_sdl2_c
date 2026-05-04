@@ -179,10 +179,21 @@ static void doPlayer(void) {
         player->reload--;
     }
 
-    if (app.keyboard[SDL_SCANCODE_UP])    { player->dy = -PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_DOWN])  { player->dy = PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_RIGHT]) { player->dx = -PLAYER_SPEED; }
-    if (app.keyboard[SDL_SCANCODE_LEFT])  { player->dx = PLAYER_SPEED; }
+    if (app.keyboard[SDL_SCANCODE_A] || app.keyboard[SDL_SCANCODE_LEFT]) {
+        player->dx = -PLAYER_SPEED;
+    }
+
+    if (app.keyboard[SDL_SCANCODE_D] || app.keyboard[SDL_SCANCODE_RIGHT]) {
+        player->dx = PLAYER_SPEED;
+    }
+
+    if (app.keyboard[SDL_SCANCODE_W] || app.keyboard[SDL_SCANCODE_UP]) {
+        player->dy = -PLAYER_SPEED;
+    }
+
+    if (app.keyboard[SDL_SCANCODE_S] || app.keyboard[SDL_SCANCODE_DOWN]) {
+        player->dy = PLAYER_SPEED;
+    }
 
     if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);

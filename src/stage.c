@@ -139,7 +139,7 @@ static void initPlayer(void) {
         exit(1);
     }
 
-    player->health = 1;
+    player->health = 5;
     player->x = 100;
     player->y = 100;
     player->texture = playerTexture;
@@ -329,7 +329,7 @@ static int bulletHitFighter(Entity *b){
                                             b->h, e->x, e->y,
                                             e->w, e->h)){
             b->health = 0;
-            e->health = 0;
+            e->health--;
 
             addExplosions(e->x, e->y, 32);
 

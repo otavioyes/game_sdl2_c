@@ -126,7 +126,7 @@ static void logic(void) {
             initTitle();
         }
         /* Atalho: ENTER inicia uma nova partida direto */
-        if (app.keyboard[SDL_SCANCODE_KP_ENTER]) {
+        if (app.keyboard[SDL_SCANCODE_RETURN]) {
             initStage();
         }
     }

@@ -43,6 +43,10 @@ static void addPointsPod(int x, int y);
 static int bulletHitFighter(Entity *e);
 static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
+static int canAlienShootPlayer(Entity *e);
+
+
+
 
 static Entity       *player;
 static int          enemySpawnTimer;
@@ -239,13 +243,64 @@ static void doEnemies(void){
         }
     }
 }
+/*calcular o ângulo entre “para onde o inimigo olha” e “onde o player está”.*/
+static int canAlienShootPlayer(Entity *e)
+{
+    float enemyCenterX, enemyCenterY;
+    float playerCenterX, playerCenterY;
+    float dx, dy;
+    float length;
+    float dot;
+    float cosAngle;
+
+    if (player == NULL) {
+        return 0;
+    }
+
+    enemyCenterX = e->x + (e->w / 2);
+    enemyCenterY = e->y + (e->h / 2);
+
+    playerCenterX = player->x + (player->w / 2);
+    playerCenterY = player->y + (player->h / 2);
+
+    dx = playerCenterX - enemyCenterX;
+    dy = playerCenterY - enemyCenterY;
+
+    length = sqrtf(dx * dx + dy * dy);
+
+    if (length == 0) {
+        return 1;
+    }
+
+    /*
+     * Direção frontal do inimigo: esquerda.
+     * Vetor forward = (-1, 0)
+     */
+    dot = (dx * -1.0f) + (dy * 0.0f);
+
+    cosAngle = dot / length;
+
+    /*
+     * Permite tiro até 135 graus.
+     * cos(135°) = -0.7071
+     *
+     * Se passar de 135°, o inimigo para de atirar.
+     */
+    return cosAngle >= -0.7071f;
+}
 
 
-static void fireAlienBullet(Entity *e){
+static void fireAlienBullet(Entity *e)
+{
     Entity *bullet;
+
+    if (!canAlienShootPlayer(e)) {
+        return;
+    }
 
     bullet = malloc(sizeof(Entity));
     memset(bullet, 0, sizeof(Entity));
+
     stage.bulletTail->next = bullet;
     stage.bulletTail = bullet;
 
@@ -254,6 +309,7 @@ static void fireAlienBullet(Entity *e){
     bullet->health = 1;
     bullet->texture = alienBulletTexture;
     bullet->side = SIDE_ALIEN;
+
     SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
     bullet->x += (e->w / 2) - (bullet->w / 2);
@@ -261,13 +317,15 @@ static void fireAlienBullet(Entity *e){
 
     calcSlop(player->x + (player->w / 2),
              player->y + (player->h / 2),
-             e->x, e->y, &bullet->dx, &bullet->dy);
+             e->x,
+             e->y,
+             &bullet->dx,
+             &bullet->dy);
 
-        bullet->dx *= ALIEN_BULLET_SPEED;
-        bullet->dy *= ALIEN_BULLET_SPEED;
+    bullet->dx *= ALIEN_BULLET_SPEED;
+    bullet->dy *= ALIEN_BULLET_SPEED;
 
-        e->reload = (rand() % FPS * 2);
-
+    e->reload = rand() % (FPS * 2);
 }
 
 //Atualiza os lutadores e remove os que saíram da tela
@@ -376,24 +434,44 @@ static void spawnsEnemies(void){
 }
 
 
-static void clipPlayer(void){
+static void clipPlayer(void)
+{
+    /* Verificação de segurança:
+     * Evita acessar memória inválida caso o player ainda não tenha sido inicializado.
+     */
     if (player == NULL) {
         return;
     }
 
-    if (player->x < 0){
+    /* Limite esquerdo:
+     * Impede o player de sair pela lateral esquerda da tela.
+     */
+    if (player->x < 0) {
         player->x = 0;
     }
 
-    if (player->y < 0){
+    /* Limite superior:
+     * Impede o player de ultrapassar o topo da tela.
+     */
+    if (player->y < 0) {
         player->y = 0;
     }
 
-    if (player->x > SCREEN_WIDTH - player->w){
+    /* Limite direito:
+     * Garante que o player permaneça dentro da largura da tela,
+     * considerando o tamanho (largura) do sprite.
+     * (x + largura não pode ultrapassar SCREEN_WIDTH)
+     */
+    if (player->x > SCREEN_WIDTH - player->w) {
         player->x = SCREEN_WIDTH - player->w;
     }
 
-    if (player->y > SCREEN_HEIGHT - player->h){
+    /* Limite inferior:
+     * Garante que o player permaneça dentro da altura da tela,
+     * considerando o tamanho (altura) do sprite.
+     * (y + altura não pode ultrapassar SCREEN_HEIGHT)
+     */
+    if (player->y > SCREEN_HEIGHT - player->h) {
         player->y = SCREEN_HEIGHT - player->h;
     }
 }

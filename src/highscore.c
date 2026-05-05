@@ -128,15 +128,26 @@ static void doNameInput(void)
         app.keyboard[SDL_SCANCODE_BACKSPACE] = 0;
     }
 
+    /*
+     * ENTER confirma o nome.
+     * Depois disso, newHighscore vira NULL e a tela passa
+     * automaticamente para drawHighscores().
+     */
     if (app.keyboard[SDL_SCANCODE_RETURN]) {
         if (!enterPressed) {
             if (n == 0) {
                 STRNCPY(newHighscore->name,
-                        randomArcadeName(),
+                        "PLAYER",
                         MAX_SCORE_NAME_LENGTH);
             }
 
             newHighscore = NULL;
+
+            /*
+             * Consome o ENTER para evitar que o mesmo ENTER
+             * confirme o nome e já inicie uma nova partida.
+             */
+            app.keyboard[SDL_SCANCODE_RETURN] = 0;
         }
 
         enterPressed = 1;
@@ -144,7 +155,6 @@ static void doNameInput(void)
         enterPressed = 0;
     }
 }
-
 static void draw(void)
 {
     drawBackground();

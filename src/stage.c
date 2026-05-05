@@ -708,7 +708,13 @@ static void draw(void){
     drawExplosions();
     drawBullets();
     drawHud();
+
+    if (player == NULL && --stageResetTimer <= 0) {
+        addHighscore(stage.score);
+        initHighscores();
+    }
 }
+
 
 static void drawPointsPods(void){
     Entity  *e;

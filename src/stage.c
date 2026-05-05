@@ -44,6 +44,8 @@ static int bulletHitFighter(Entity *e);
 static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
 static int canAlienShootPlayer(Entity *e);
+//static void drawAlienShootCone(Entity *e);
+
 
 
 
@@ -286,7 +288,7 @@ static int canAlienShootPlayer(Entity *e)
      *
      * Se passar de 135°, o inimigo para de atirar.
      */
-    return cosAngle >= -0.7071f;
+    return cosAngle >= -0.0f;
 }
 
 
@@ -317,16 +319,17 @@ static void fireAlienBullet(Entity *e)
 
     calcSlop(player->x + (player->w / 2),
              player->y + (player->h / 2),
-             e->x,
-             e->y,
-             &bullet->dx,
-             &bullet->dy);
+             e->x + (e->w / 2),
+             e->y + (e->h / 2),
+             &bullet->dx, &bullet->dy);
 
     bullet->dx *= ALIEN_BULLET_SPEED;
     bullet->dy *= ALIEN_BULLET_SPEED;
 
     e->reload = rand() % (FPS * 2);
 }
+
+
 
 //Atualiza os lutadores e remove os que saíram da tela
 static void doFighters(void) {
@@ -662,6 +665,40 @@ static void addPointsPod(int x, int y){
     e->y -= e->h / 2;
 }
 
+
+/*static void drawAlienShootCone(Entity *e)
+{
+    int centerX;
+    int centerY;
+    int length;
+
+    centerX = e->x + (e->w / 2);
+    centerY = e->y + (e->h / 2);
+    length = 180;
+
+    /*
+     * Cone de tiro do inimigo.
+     * O inimigo olha para a esquerda.
+     *
+     * 135° = diagonal esquerda/cima
+     * 225° = diagonal esquerda/baixo
+     */
+   /* SDL_SetRenderDrawColor(app.renderer, 255, 0, 0, 255);
+
+    SDL_RenderDrawLine(app.renderer,
+                       centerX,
+                       centerY,
+                       centerX + cosf(135.0f * M_PI / 180.0f) * length,
+                       centerY + sinf(135.0f * M_PI / 180.0f) * length);
+
+    SDL_RenderDrawLine(app.renderer,
+                       centerX,
+                       centerY,
+                       centerX + cosf(225.0f * M_PI / 180.0f) * length,
+                       centerY + sinf(225.0f * M_PI / 180.0f) * length);
+}
+*/
+
 static void draw(void){
     drawBackground();
     drawStarfield();
@@ -686,8 +723,13 @@ static void drawFighters(void){
     Entity *e;
     for (e = stage.fighterHead.next; e != NULL; e = e->next){
         blit(e->texture, e->x, e->y);
+
+        /*if (e != player) {
+            drawAlienShootCone(e);
+        }*/
     }
 }
+
 
 static void drawBullets(void){
     Entity *b;
@@ -695,6 +737,7 @@ static void drawBullets(void){
         blit(b->texture, b->x, b->y);
     }
 }
+
 
 static void drawDebris(void){
     Debris *d;

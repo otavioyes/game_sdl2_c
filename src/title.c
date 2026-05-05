@@ -44,7 +44,7 @@ static void logic(void){
     if (--timeout <= 0){
         initHighscores();
     }
-    if (app.keyboard[SDL_SCANCODE_KP_ENTER]){
+    if (app.keyboard[SDL_SCANCODE_RETURN]){
         initStage();
     }
 }

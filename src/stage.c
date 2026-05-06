@@ -250,7 +250,7 @@ static void fireBullet(void){
     angleRad = player->angle * (M_PI / 180.0f);
 
 
-    
+
     /*
      * Se sua nave originalmente aponta para a direita.
      */
@@ -262,6 +262,7 @@ static void fireBullet(void){
      */
     bullet->x = player->x + (player->w / 2) - (bullet->w / 2);
     bullet->y = player->y + (player->h / 2) - (bullet->h / 2);
+    bullet->angle = player->angle;
 
     player->reload = 8;
 }
@@ -843,7 +844,11 @@ static void drawFighters(void){
 static void drawBullets(void){
     Entity *b;
     for (b = stage.bulletHead.next; b != NULL; b = b->next){
-        blit(b->texture, b->x, b->y);
+        if (b->side == SIDE_PLAYER) {
+            blitRotated(b->texture, b->x, b->y, b->angle);
+        } else {
+            blit(b->texture, b->x, b->y);
+        }
     }
 }
 

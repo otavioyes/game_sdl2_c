@@ -37,6 +37,8 @@ static void drawHud(void);
 static void doPointsPods(void);
 static void drawPointsPods(void);
 
+static void drawPlayerHealthBar(void);
+
 static void addExplosions(int x, int y, int num);
 static void addPointsPod(int x, int y);
 
@@ -45,6 +47,7 @@ static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
 static int canAlienShootPlayer(Entity *e);
 //static void drawAlienShootCone(Entity *e);
+
 
 
 
@@ -145,7 +148,7 @@ static void initPlayer(void) {
         exit(1);
     }
 
-    player->health = 5;
+    player->health = PLAYER_MAX_HEALTH;
     player->x = 100;
     player->y = 100;
     player->texture = playerTexture;
@@ -699,6 +702,37 @@ static void addPointsPod(int x, int y){
 }
 */
 
+static void drawPlayerHealthBar(void){
+    SDL_Rect bg;
+    SDL_Rect fg;
+
+    int barWidth = 300;
+    int barHeight = 20;
+
+    if (player == NULL) {
+        return;
+    }
+
+    bg.x = 10;
+    bg.y = 45;
+    bg.w = barWidth;
+    bg.h = barHeight;
+
+    fg.x = bg.x;
+    fg.y = bg.y;
+    fg.w = (player->health * barWidth) / PLAYER_MAX_HEALTH;
+    fg.h = barHeight;
+
+    SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
+    SDL_RenderFillRect(app.renderer, &bg);
+
+    SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
+    SDL_RenderFillRect(app.renderer, &fg);
+
+    SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(app.renderer, &bg);
+}
+
 static void draw(void){
     drawBackground();
     drawStarfield();
@@ -709,10 +743,6 @@ static void draw(void){
     drawBullets();
     drawHud();
 
-    if (player == NULL && --stageResetTimer <= 0) {
-        addHighscore(stage.score);
-        initHighscores();
-    }
 }
 
 
@@ -768,6 +798,9 @@ static void drawExplosions(void){
 
 static void drawHud(void){
     drawText(10, 10, 255, 255, 255, TEXT_LEFT, "SCORE: %03d", stage.score);
+
+    drawPlayerHealthBar();
+
     if (stage.score < highscores.highscore[0].score){
         drawText(SCREEN_WIDTH - 10, 10, 255, 255, 255, TEXT_RIGHT, "HIGHSCORE: %03d", highscores.highscore[0].score);
     }

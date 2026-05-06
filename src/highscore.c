@@ -136,9 +136,7 @@ static void doNameInput(void)
     if (app.keyboard[SDL_SCANCODE_RETURN]) {
         if (!enterPressed) {
             if (n == 0) {
-                STRNCPY(newHighscore->name,
-                        "PLAYER",
-                        MAX_SCORE_NAME_LENGTH);
+                STRNCPY(newHighscore->name, "PLAYER", MAX_SCORE_NAME_LENGTH);
             }
 
             newHighscore = NULL;

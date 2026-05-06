@@ -70,3 +70,20 @@ void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y) {
 
     SDL_RenderCopy(app.renderer, texture, src, &dest);
 }
+
+void blitRotated(SDL_Texture *texture, float x, float y, float angle){
+    SDL_Rect dest;
+
+    dest.x = x;
+    dest.y = y;
+
+    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+
+    SDL_RenderCopyEx(app.renderer,
+                     texture,
+                     NULL,
+                     &dest,
+                     angle,
+                     NULL,
+                     SDL_FLIP_NONE);
+}

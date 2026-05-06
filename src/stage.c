@@ -208,6 +208,14 @@ static void doPlayer(void) {
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);
         fireBullet();
     }
+    if (app.keyboard[SDL_SCANCODE_Q]) {
+        player->angle -= 4;
+    }
+
+    if (app.keyboard[SDL_SCANCODE_E]) {
+        player->angle += 4;
+    }
+
 }
 
 
@@ -587,23 +595,33 @@ static void doPointsPods(void){
 
 static void addExplosions(int x, int y, int num){
     Explosion *e;
-    int        i;
+    int i;
 
-    for (i = 0; i < num; i++){
-        e = malloc(sizeof (Explosion));
-        memset(e, 0, sizeof (Explosion));
+    for (i = 0; i < num; i++) {
+        e = malloc(sizeof(Explosion));
+
+        if (e == NULL) {
+            SDL_Log("malloc falhou em addExplosions");
+            exit(1);
+        }
+
+        memset(e, 0, sizeof(Explosion));
+
         stage.explosionTail->next = e;
         stage.explosionTail = e;
 
-        e->x = x + (rand() % 32) - (rand() % 32);
-        e->y = y + (rand() % 32) - (rand() % 32);
-        e->dx = (rand() % 10) - (rand() % 10);
-        e->dy = (rand() % 10) - (rand() % 10);
+        /* Espalhamento menor */
+        e->x = x + (rand() % 8) - (rand() % 8);
+        e->y = y + (rand() % 8) - (rand() % 8);
+
+        /* Movimento mais lento */
+        e->dx = (rand() % 6) - (rand() % 6);
+        e->dy = (rand() % 6) - (rand() % 6);
 
         e->dx /= 10;
         e->dy /= 10;
 
-        switch (rand() % 4){
+        switch (rand() % 4) {
             case 0:
                 e->r = 255;
                 break;
@@ -624,7 +642,9 @@ static void addExplosions(int x, int y, int num){
                 e->b = 255;
                 break;
         }
-        e->a = rand() % FPS * 3;
+
+        /* Duração menor da explosão */
+        e->a = 40 + (rand() % 60);
     }
 }
 
@@ -784,7 +804,11 @@ static void drawPointsPods(void){
 static void drawFighters(void){
     Entity *e;
     for (e = stage.fighterHead.next; e != NULL; e = e->next){
-        blit(e->texture, e->x, e->y);
+        if (e == player) {
+            blitRotated(e->texture, e->x, e->y, e->angle);
+        } else {
+            blit(e->texture, e->x, e->y);
+        }
 
         /*if (e != player) {
             drawAlienShootCone(e);

@@ -393,7 +393,17 @@ static int bulletHitFighter(Entity *b){
                                             b->h, e->x, e->y,
                                             e->w, e->h)){
             b->health = 0;
-            e->health--;
+            //e->health--;
+
+            if (e == player) {
+                e->health -= 10;
+
+                if (e->health < 0) {
+                    e->health = 0;
+                }
+            } else {
+                e->health--;
+            }
 
             addExplosions(e->x, e->y, 32);
 

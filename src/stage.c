@@ -701,36 +701,52 @@ static void addPointsPod(int x, int y){
                        centerY + sinf(225.0f * M_PI / 180.0f) * length);
 }
 */
-
 static void drawPlayerHealthBar(void){
     SDL_Rect bg;
-    SDL_Rect fg;
+    SDL_Rect segment;
 
-    int barWidth = 300;
-    int barHeight = 20;
+    int i;
+    int maxLives = 10;
+    int currentLives;
+    int segmentWidth = 25;
+    int segmentHeight = 20;
+    int gap = 4;
 
     if (player == NULL) {
         return;
     }
 
+    currentLives = player->health / 10;
+
     bg.x = 10;
-    bg.y = 45;
-    bg.w = barWidth;
-    bg.h = barHeight;
+    bg.y = 50;
+    bg.w = (segmentWidth * maxLives) + (gap * (maxLives - 1));
+    bg.h = segmentHeight;
 
-    fg.x = bg.x;
-    fg.y = bg.y;
-    fg.w = (player->health * barWidth) / PLAYER_MAX_HEALTH;
-    fg.h = barHeight;
-
-    SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
+    /* Fundo geral da barra */
+    SDL_SetRenderDrawColor(app.renderer, 40, 40, 40, 255);
     SDL_RenderFillRect(app.renderer, &bg);
 
-    SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
-    SDL_RenderFillRect(app.renderer, &fg);
+    for (i = 0; i < maxLives; i++) {
+        segment.x = bg.x + (i * (segmentWidth + gap));
+        segment.y = bg.y;
+        segment.w = segmentWidth;
+        segment.h = segmentHeight;
 
-    SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(app.renderer, &bg);
+        if (i < currentLives) {
+            /* Bloco com vida */
+            SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(app.renderer, &segment);
+        } else {
+            /* Bloco vazio */
+            SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
+            SDL_RenderFillRect(app.renderer, &segment);
+        }
+
+        /* Borda de cada bloco */
+        SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
+        SDL_RenderDrawRect(app.renderer, &segment);
+    }
 }
 
 static void draw(void){

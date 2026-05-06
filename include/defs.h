@@ -35,7 +35,7 @@
 #define GLYPH_HEIGHT    28
 #define GLYPH_WIDTH     18
 
-#define PLAYER_MAX_HEALTH 10
+#define PLAYER_MAX_HEALTH 100
 
 enum
 {

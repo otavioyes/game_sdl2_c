@@ -2,9 +2,13 @@
  * main.c
  */
 
-/*
- * ESTA RODANDO! AGORA PRECISO REFINAR O JOGO
- * 02/05/2025
+/* 06/05/2026
+ * REFINAMENTOS:
+ * nave gira
+ * tiro acompanha o ângulo
+ * barra de vida
+ * highscore
+ * 
  */
 
 #include "common.h"

@@ -405,7 +405,7 @@ static int bulletHitFighter(Entity *b){
                 e->health--;
             }
 
-            addExplosions(e->x, e->y, 32);
+            addExplosions(e->x, e->y, 5);
 
             addDebris(e);
 

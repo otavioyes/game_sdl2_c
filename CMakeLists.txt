@@ -20,6 +20,7 @@ add_executable(game
         src/util.c
         src/text.c
         src/title.c
+        src/player.c
 )
 
 target_include_directories(game PRIVATE include)

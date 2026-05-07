@@ -18,7 +18,10 @@ extern Stage stage;
 
 static void logic(void);
 static void draw(void);
+
+/*refatorando código*/
 static void initPlayer(void);
+
 static void fireBullet(void);
 static void doPlayer(void);
 static void doFighters(void);

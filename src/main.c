@@ -8,7 +8,7 @@
  * tiro acompanha o ângulo
  * barra de vida
  * highscore
- * 
+ *
  */
 
 #include "common.h"

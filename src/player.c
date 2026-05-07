@@ -63,46 +63,63 @@ void initPlayer(SDL_Texture *texture)
 }
 
 
+/*
+ * Atualiza a lógica do jogador.
+ *
+ * Responsabilidades:
+ * - Processar entrada do teclado
+ * - Controlar movimentação
+ * - Controlar tempo de recarga do tiro
+ * - Disparar projéteis
+ * - Atualizar rotação da nave
+ */
 void doPlayer(void) {
+    /* Garante que o jogador exista antes de processar lógica */
     if (player == NULL) {
         return;
     }
 
+    /* Reinicia velocidade do jogador a cada frame */
     player->dx = player->dy = 0;
 
+    /* Atualiza temporizador de recarga do tiro */
     if (player->reload > 0) {
         player->reload--;
     }
 
+    /* Movimento horizontal para esquerda */
     if (app.keyboard[SDL_SCANCODE_A] || app.keyboard[SDL_SCANCODE_LEFT]) {
         player->dx = -PLAYER_SPEED;
     }
 
+    /* Movimento horizontal para direita */
     if (app.keyboard[SDL_SCANCODE_D] || app.keyboard[SDL_SCANCODE_RIGHT]) {
         player->dx = PLAYER_SPEED;
     }
 
+    /* Movimento vertical para cima */
     if (app.keyboard[SDL_SCANCODE_W] || app.keyboard[SDL_SCANCODE_UP]) {
         player->dy = -PLAYER_SPEED;
     }
 
+    /* Movimento vertical para baixo */
     if (app.keyboard[SDL_SCANCODE_S] || app.keyboard[SDL_SCANCODE_DOWN]) {
         player->dy = PLAYER_SPEED;
     }
 
-
+    /* Dispara projétil caso a recarga esteja disponível */
     if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);
         fireBullet();
     }
 
-
+    /* Rotaciona nave para esquerda */
     if (app.keyboard[SDL_SCANCODE_Q]) {
         player->angle -= 4;
     }
 
+    /* Rotaciona nave para direita */
     if (app.keyboard[SDL_SCANCODE_E]) {
         player->angle += 4;
     }
 }
-

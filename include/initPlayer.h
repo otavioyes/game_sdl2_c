@@ -2,4 +2,4 @@
  * initPLayer.h
  */
 
-static void initPlayer(void);
+void initPlayer(SDL_Texture *texture);

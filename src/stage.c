@@ -11,6 +11,7 @@
 #include "stage.h"
 #include "text.h"
 #include "util.h"
+#include "initPlayer.h"
 
 extern App app;
 extern Highscores highscores;
@@ -29,7 +30,7 @@ static void doBullet(void);
 static void drawFighters(void);
 static void drawBullets(void);
 static void spawnsEnemies(void);
-static  void doEnemies(void);
+static void doEnemies(void);
 static void clipPlayer(void);
 static void resetStage(void);
 static void drawExplosions(void);
@@ -50,10 +51,6 @@ static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
 static int canAlienShootPlayer(Entity *e);
 //static void drawAlienShootCone(Entity *e);
-
-
-
-
 
 
 static Entity       *player;
@@ -89,7 +86,7 @@ void initStage(void)
 
     resetStage();
     stage.score = 0;
-    initPlayer();
+    initPlayer(playerTexture);
     enemySpawnTimer = 0;
     stageResetTimer = FPS * 3;
 }

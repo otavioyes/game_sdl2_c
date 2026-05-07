@@ -20,7 +20,7 @@ static void logic(void);
 static void draw(void);
 
 /*refatorando código*/
-static void initPlayer(void);
+//static void initPlayer(void);
 
 static void fireBullet(void);
 static void doPlayer(void);
@@ -139,7 +139,8 @@ static void resetStage(void){
 
 }
 
-
+/*movendo para player.c*/
+/*
 static void initPlayer(void) {
     player = malloc(sizeof(Entity));
     memset(player, 0, sizeof(Entity));
@@ -159,6 +160,7 @@ static void initPlayer(void) {
 
     player->side = SIDE_PLAYER;
 }
+*/
 
 
 static void logic(void){

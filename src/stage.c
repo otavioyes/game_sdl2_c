@@ -11,7 +11,7 @@
 #include "stage.h"
 #include "text.h"
 #include "util.h"
-#include "initPlayer.h"
+#include "player.h"
 
 extern App app;
 extern Highscores highscores;
@@ -24,7 +24,7 @@ static void draw(void);
 //static void initPlayer(void);
 
 static void fireBullet(void);
-static void doPlayer(void);
+//static void doPlayer(void);
 static void doFighters(void);
 static void doBullet(void);
 static void drawFighters(void);
@@ -133,31 +133,8 @@ static void resetStage(void){
     stage.explosionTail = &stage.explosionHead;
     stage.debrisTail = &stage.debrisHead;
     stage.pointsTail = &stage.pointsHead;
-
 }
 
-/*movendo para player.c*/
-/*
-static void initPlayer(void) {
-    player = malloc(sizeof(Entity));
-    memset(player, 0, sizeof(Entity));
-    stage.fighterTail->next = player;
-    stage.fighterTail = player;
-
-    if (player == NULL) {
-        SDL_Log("malloc falhou em initPlayer");
-        exit(1);
-    }
-
-    player->health = PLAYER_MAX_HEALTH;
-    player->x = 100;
-    player->y = 100;
-    player->texture = playerTexture;
-    SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
-
-    player->side = SIDE_PLAYER;
-}
-*/
 
 
 static void logic(void){
@@ -177,47 +154,6 @@ static void logic(void){
         addHighscore(stage.score);
         initHighscores();
     }
-}
-
-static void doPlayer(void) {
-    if (player == NULL) {
-        return;
-    }
-
-    player->dx = player->dy = 0;
-
-    if (player->reload > 0) {
-        player->reload--;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_A] || app.keyboard[SDL_SCANCODE_LEFT]) {
-        player->dx = -PLAYER_SPEED;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_D] || app.keyboard[SDL_SCANCODE_RIGHT]) {
-        player->dx = PLAYER_SPEED;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_W] || app.keyboard[SDL_SCANCODE_UP]) {
-        player->dy = -PLAYER_SPEED;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_S] || app.keyboard[SDL_SCANCODE_DOWN]) {
-        player->dy = PLAYER_SPEED;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
-        playerSound(SND_PLAYER_FIRE, CH_PLAYER);
-        fireBullet();
-    }
-    if (app.keyboard[SDL_SCANCODE_Q]) {
-        player->angle -= 4;
-    }
-
-    if (app.keyboard[SDL_SCANCODE_E]) {
-        player->angle += 4;
-    }
-
 }
 
 

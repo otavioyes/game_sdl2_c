@@ -23,7 +23,7 @@ static void draw(void);
 /*refatorando código*/
 //static void initPlayer(void);
 
-static void fireBullet(void);
+void fireBullet(void);
 //static void doPlayer(void);
 static void doFighters(void);
 static void doBullet(void);
@@ -53,7 +53,7 @@ static int canAlienShootPlayer(Entity *e);
 //static void drawAlienShootCone(Entity *e);
 
 
-static Entity       *player;
+//static Entity       *player;
 static int          enemySpawnTimer;
 static int          stageResetTimer;
 static SDL_Texture  *bulletTexture;
@@ -159,7 +159,7 @@ static void logic(void){
 
 
 // Função que cria uma nova bala (disparo do jogador)
-static void fireBullet(void){
+void fireBullet(void){
     Entity *bullet;
     float angleRad;
 

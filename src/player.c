@@ -4,14 +4,18 @@
 
 #include "common.h"
 
+#include "player.h"
+#include "sound.h"
+
 
 extern Stage stage;
 extern App app;
+extern void fireBullet(void);
 
 void initPlayer(SDL_Texture *texture);
 void doPlayer(void);
 
-static Entity       *player;
+Entity *player;
 
 
 

@@ -3,6 +3,9 @@
  */
 #include "common.h"
 #include "stage.h"
+#include "player.h"
+
+extern Stage stage;
 
 
 
@@ -17,7 +20,7 @@
  * - Posicionar projétil no centro do jogador
  * - Aplicar tempo de recarga do disparo
  *============================================================================*/
-void fireBullet(void) {
+void fireBullet(SDL_Texture *texture) {
     Entity *bullet;
 
     /* Ângulo convertido para radianos */
@@ -40,7 +43,7 @@ void fireBullet(void) {
     stage.bulletTail = bullet;
 
     /* Configuração inicial do projétil */
-    bullet->texture = bulletTexture;
+    bullet->texture = texture;
     bullet->side = SIDE_PLAYER;
     bullet->health = 1;
 

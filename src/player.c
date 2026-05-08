@@ -6,11 +6,12 @@
 
 #include "player.h"
 #include "sound.h"
+#include "bullet.h"
 
 
 extern Stage stage;
 extern App app;
-extern void fireBullet(void);
+
 
 
 Entity *player;
@@ -108,7 +109,7 @@ void doPlayer(void) {
     /* Dispara projétil caso a recarga esteja disponível */
     if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);
-        fireBullet();
+        fireBullet(bulletTexture);
     }
 
     /* Rotaciona nave para esquerda */

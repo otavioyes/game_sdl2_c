@@ -2,4 +2,4 @@
  * bullet.h
  */
 
-void fireBullet(void);
+void fireBullet(SDL_Texture *texture);

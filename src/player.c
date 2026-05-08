@@ -169,6 +169,7 @@ void clipPlayer(void) {
 }
 
 
+
 /*==============================================================================
  * Desenha a barra de vida segmentada do jogador.
  *

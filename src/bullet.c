@@ -143,3 +143,92 @@ void doBullet(void)
         prev = b;
     }
 }
+
+
+
+/*==============================================================================
+ * Verifica colisão entre um projétil e entidades da fase.
+ *
+ * Responsabilidades:
+ * - Detectar colisão entre projétil e fighters
+ * - Aplicar dano na entidade atingida
+ * - Gerar efeitos visuais da colisão
+ * - Gerar debris da entidade destruída
+ * - Reproduzir efeitos sonoros
+ * - Criar cápsulas de pontuação para inimigos
+ *
+ * Retorno:
+ * - 1 : colisão detectada
+ * - 0 : nenhuma colisão
+ *============================================================================*/
+int bulletHitFighter(Entity *b)
+{
+    Entity *e;
+
+    /* Percorre lista de entidades da fase */
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+
+        /*
+         * Detecta colisão apenas entre entidades
+         * de lados opostos.
+         */
+        if (e->side != b->side &&
+            collision(b->x, b->y, b->w, b->h,
+                      e->x, e->y, e->w, e->h)) {
+
+            /* Marca projétil para remoção */
+            b->health = 0;
+
+            /*
+             * Jogador recebe dano maior
+             * em relação aos inimigos.
+             */
+            if (e == player) {
+
+                e->health -= 10;
+
+                /* Impede valores negativos de vida */
+                if (e->health < 0) {
+                    e->health = 0;
+                }
+
+            } else {
+
+                /* Inimigos recebem dano padrão */
+                e->health--;
+            }
+
+            /* Cria efeito visual de explosão */
+            addExplosions(e->x, e->y, 5);
+
+            /* Gera fragmentos da entidade destruída */
+            addDebris(e);
+
+            /*
+             * Reproduz efeitos sonoros distintos
+             * para jogador e inimigos.
+             */
+            if (e == player) {
+
+                playerSound(SND_ALIEN_DIE, CH_PLAYER);
+
+            } else {
+
+                /*
+                 * Gera cápsula de pontos no centro
+                 * da entidade inimiga destruída.
+                 */
+                addPointsPod(e->x + e->w / 2,
+                             e->y + e->h / 2);
+
+                playerSound(SND_ALIEN_DIE, CH_ANY);
+            }
+
+            /* Colisão detectada */
+            return 1;
+        }
+    }
+
+    /* Nenhuma colisão detectada */
+    return 0;
+}

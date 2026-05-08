@@ -4,3 +4,4 @@
 
 void fireBullet(SDL_Texture *texture);
 void doBullet(void);
+int bulletHitFighter(Entity *b);

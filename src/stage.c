@@ -46,7 +46,7 @@ static void drawPointsPods(void);
 static void addExplosions(int x, int y, int num);
 static void addPointsPod(int x, int y);
 
-static int bulletHitFighter(Entity *e);
+
 static void fireAlienBullet(Entity *e);
 static void addDebris(Entity *e);
 static int canAlienShootPlayer(Entity *e);
@@ -283,45 +283,6 @@ static void doFighters(void) {
     }
 }
 
-
-
-
-static int bulletHitFighter(Entity *b){
-    Entity *e;
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next){
-        if (e->side != b->side && collision(b->x, b->y, b->w,
-                                            b->h, e->x, e->y,
-                                            e->w, e->h)){
-            b->health = 0;
-            //e->health--;
-
-            if (e == player) {
-                e->health -= 10;
-
-                if (e->health < 0) {
-                    e->health = 0;
-                }
-            } else {
-                e->health--;
-            }
-
-            addExplosions(e->x, e->y, 5);
-
-            addDebris(e);
-
-            if (e == player){
-                playerSound(SND_ALIEN_DIE,CH_PLAYER);
-            }
-            else{
-                addPointsPod(e->x + e->w / 2, e->y + e->h / 2) ;
-                playerSound(SND_ALIEN_DIE, CH_ANY);
-            }
-            return 1;
-        }
-    }
-    return  0;
-}
 
 
 // Gera inimigos periodicamente e adiciona à lista de lutadores

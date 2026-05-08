@@ -19,19 +19,18 @@ extern Stage stage;
 
 static void logic(void);
 static void draw(void);
-
-/*refatorando código*/
-//static void initPlayer(void);
-
 void fireBullet(void);
-//static void doPlayer(void);
 static void doFighters(void);
 static void doBullet(void);
 static void drawFighters(void);
 static void drawBullets(void);
 static void spawnsEnemies(void);
 static void doEnemies(void);
-static void clipPlayer(void);
+
+/* movendo para player.c
+ *  static void clipPlayer(void);
+ */
+
 static void resetStage(void);
 static void drawExplosions(void);
 static void doExplosions(void);
@@ -420,47 +419,7 @@ static void spawnsEnemies(void){
 }
 
 
-static void clipPlayer(void)
-{
-    /* Verificação de segurança:
-     * Evita acessar memória inválida caso o player ainda não tenha sido inicializado.
-     */
-    if (player == NULL) {
-        return;
-    }
 
-    /* Limite esquerdo:
-     * Impede o player de sair pela lateral esquerda da tela.
-     */
-    if (player->x < 0) {
-        player->x = 0;
-    }
-
-    /* Limite superior:
-     * Impede o player de ultrapassar o topo da tela.
-     */
-    if (player->y < 0) {
-        player->y = 0;
-    }
-
-    /* Limite direito:
-     * Garante que o player permaneça dentro da largura da tela,
-     * considerando o tamanho (largura) do sprite.
-     * (x + largura não pode ultrapassar SCREEN_WIDTH)
-     */
-    if (player->x > SCREEN_WIDTH - player->w) {
-        player->x = SCREEN_WIDTH - player->w;
-    }
-
-    /* Limite inferior:
-     * Garante que o player permaneça dentro da altura da tela,
-     * considerando o tamanho (altura) do sprite.
-     * (y + altura não pode ultrapassar SCREEN_HEIGHT)
-     */
-    if (player->y > SCREEN_HEIGHT - player->h) {
-        player->y = SCREEN_HEIGHT - player->h;
-    }
-}
 
 
 static void doExplosions(void){

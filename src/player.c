@@ -17,7 +17,7 @@ Entity *player;
 
 
 
-/*
+/*==============================================================================
  * Inicializa a entidade do jogador.
  *
  * Responsabilidades:
@@ -26,9 +26,8 @@ Entity *player;
  * - Configurar atributos iniciais
  * - Associar a textura do jogador
  * - Obter largura e altura da textura
- */
-void initPlayer(SDL_Texture *texture)
-{
+ *============================================================================*/
+void initPlayer(SDL_Texture *texture) {
     /* Aloca memória para a entidade do jogador */
     player = malloc(sizeof(Entity));
 
@@ -62,7 +61,7 @@ void initPlayer(SDL_Texture *texture)
 
 
 
-/*
+/*==============================================================================
  * Atualiza a lógica do jogador.
  *
  * Responsabilidades:
@@ -71,7 +70,7 @@ void initPlayer(SDL_Texture *texture)
  * - Controlar tempo de recarga do tiro
  * - Disparar projéteis
  * - Atualizar rotação da nave
- */
+ *============================================================================*/
 void doPlayer(void) {
     /* Garante que o jogador exista antes de processar lógica */
     if (player == NULL) {
@@ -120,5 +119,51 @@ void doPlayer(void) {
     /* Rotaciona nave para direita */
     if (app.keyboard[SDL_SCANCODE_E]) {
         player->angle += 4;
+    }
+}
+
+
+
+/*==============================================================================
+ * Mantém o jogador dentro dos limites visíveis da tela.
+ *
+ * Responsabilidades:
+ * - Validar existência da entidade do jogador
+ * - Restringir movimentação horizontal
+ * - Restringir movimentação vertical
+ * - Garantir que o sprite permaneça totalmente visível
+ *============================================================================*/
+void clipPlayer(void) {
+    /* Garante que o jogador exista antes de aplicar limites */
+    if (player == NULL) {
+        return;
+    }
+
+    /* Limite esquerdo da tela */
+    if (player->x < 0) {
+        player->x = 0;
+    }
+
+    /* Limite superior da tela */
+    if (player->y < 0) {
+        player->y = 0;
+    }
+
+    /*
+     * Limite direito da tela.
+     * Subtrai a largura do sprite para evitar que o jogador
+     * ultrapasse parcialmente a área visível.
+     */
+    if (player->x > SCREEN_WIDTH - player->w) {
+        player->x = SCREEN_WIDTH - player->w;
+    }
+
+    /*
+     * Limite inferior da tela.
+     * Subtrai a altura do sprite para manter o jogador
+     * completamente visível dentro da janela.
+     */
+    if (player->y > SCREEN_HEIGHT - player->h) {
+        player->y = SCREEN_HEIGHT - player->h;
     }
 }

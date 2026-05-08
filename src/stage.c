@@ -25,12 +25,8 @@ static void draw(void);
 
 static void doFighters(void);
 
-/*
-static void doBullet(void);
- */
-
 static void drawFighters(void);
-static void drawBullets(void);
+
 static void spawnsEnemies(void);
 static void doEnemies(void);
 
@@ -552,16 +548,7 @@ static void drawFighters(void){
 }
 
 
-static void drawBullets(void){
-    Entity *b;
-    for (b = stage.bulletHead.next; b != NULL; b = b->next){
-        if (b->side == SIDE_PLAYER) {
-            blitRotated(b->texture, b->x, b->y, b->angle);
-        } else {
-            blit(b->texture, b->x, b->y);
-        }
-    }
-}
+
 
 
 static void drawDebris(void){

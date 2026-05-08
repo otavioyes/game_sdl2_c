@@ -146,6 +146,40 @@ void doBullet(void)
 
 
 
+
+/*==============================================================================
+ * Renderiza todos os projéteis ativos da fase.
+ *
+ * Responsabilidades:
+ * - Percorrer lista de projéteis
+ * - Renderizar disparos do jogador com rotação
+ * - Renderizar disparos inimigos sem rotação
+ *============================================================================*/
+void drawBullets(void)
+{
+    Entity *b;
+
+    /* Percorre lista de projéteis ativos */
+    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+
+        /*
+         * Projéteis do jogador utilizam rotação
+         * baseada no ângulo atual do disparo.
+         */
+        if (b->side == SIDE_PLAYER) {
+
+            blitRotated(b->texture, b->x, b->y, b->angle);
+
+        } else {
+
+            /* Projéteis inimigos utilizam renderização padrão */
+            blit(b->texture, b->x, b->y);
+        }
+    }
+}
+
+
+
 /*==============================================================================
  * Verifica colisão entre um projétil e entidades da fase.
  *

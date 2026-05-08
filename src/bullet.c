@@ -79,3 +79,67 @@ void fireBullet(SDL_Texture *texture) {
     /* Aplica tempo de recarga entre disparos */
     player->reload = 8;
 }
+
+
+
+/*==============================================================================
+ * Atualiza lógica dos projéteis ativos.
+ *
+ * Responsabilidades:
+ * - Atualizar posição das balas
+ * - Detectar colisões com entidades
+ * - Remover projéteis fora da tela
+ * - Liberar memória de projéteis destruídos
+ * - Manter integridade da lista encadeada
+ *============================================================================*/
+void doBullet(void)
+{
+    Entity *b;
+    Entity *prev;
+
+    /* Ponteiro auxiliar para manipulação segura da lista encadeada */
+    prev = &stage.bulletHead;
+
+    /* Percorre todos os projéteis ativos */
+    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+
+        /* Atualiza posição baseada na velocidade atual */
+        b->x += b->dx;
+        b->y += b->dy;
+
+        /*
+         * Remove projétil caso:
+         * - atinja uma entidade
+         * - saia dos limites visíveis da tela
+         */
+        if (bulletHitFighter(b) ||
+            b->x < -b->w ||
+            b->y < -b->h ||
+            b->x > SCREEN_WIDTH ||
+            b->y > SCREEN_HEIGHT) {
+
+            /*
+             * Atualiza ponteiro final da lista
+             * caso o projétil removido seja o último elemento.
+             */
+            if (b == stage.bulletTail) {
+                stage.bulletTail = prev;
+            }
+
+            /* Remove projétil da lista encadeada */
+            prev->next = b->next;
+
+            /* Libera memória da entidade removida */
+            free(b);
+
+            /*
+             * Retorna uma posição no loop para manter
+             * iteração segura após remoção do elemento.
+             */
+            b = prev;
+        }
+
+        /* Avança ponteiro auxiliar */
+        prev = b;
+    }
+}

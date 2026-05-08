@@ -11,6 +11,8 @@
 #include "stage.h"
 #include "text.h"
 #include "util.h"
+
+//NOVOS ARQUIVOS
 #include "player.h"
 #include "bullet.h"
 
@@ -21,12 +23,12 @@ extern Stage stage;
 static void logic(void);
 static void draw(void);
 
-/*
-void fireBullet(void);
-*/
-
 static void doFighters(void);
+
+/*
 static void doBullet(void);
+ */
+
 static void drawFighters(void);
 static void drawBullets(void);
 static void spawnsEnemies(void);
@@ -282,27 +284,6 @@ static void doFighters(void) {
 }
 
 
-//Atualiza as balas e remove as que sairam da tela (lado direito)
-static void doBullet(void){
-    Entity *b, *prev;
-    prev = &stage.bulletHead;
-
-    for (b = stage.bulletHead.next; b != NULL ; b = b->next){
-        b->x    += b->dx;
-        b->y    += b->dy;
-
-        if (bulletHitFighter(b) || b->x < -b->w || b->y < -b->h || b->x > SCREEN_WIDTH || b->y > SCREEN_HEIGHT ){
-            if (b == stage.bulletTail){
-                stage.bulletTail = prev;
-            }
-
-            prev->next = b->next; /*Remove a bala da lista*/
-            free(b); /*Libera a memoria da bala*/
-            b = prev; /*Volta a uma posição da lista para manter o loop seguro*/
-        }
-        prev = b; /*Avanca o ponteiro anterior*/
-    }
-}
 
 
 static int bulletHitFighter(Entity *b){

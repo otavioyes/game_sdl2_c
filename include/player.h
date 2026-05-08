@@ -1,5 +1,5 @@
 /*
- * initPLayer.h
+ * Player.h
  */
 
 

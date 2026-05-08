@@ -12,6 +12,7 @@
 #include "text.h"
 #include "util.h"
 #include "player.h"
+#include "bullet.h"
 
 extern App app;
 extern Highscores highscores;
@@ -19,7 +20,11 @@ extern Stage stage;
 
 static void logic(void);
 static void draw(void);
+
+/*
 void fireBullet(void);
+*/
+
 static void doFighters(void);
 static void doBullet(void);
 static void drawFighters(void);
@@ -149,53 +154,6 @@ static void logic(void){
 }
 
 
-
-// Função que cria uma nova bala (disparo do jogador)
-void fireBullet(void){
-    Entity *bullet;
-    float angleRad;
-
-    bullet = malloc(sizeof(Entity));
-
-    if (bullet == NULL) {
-        SDL_Log("malloc falhou em fireBullet");
-        exit(1);
-    }
-
-    memset(bullet, 0, sizeof(Entity));
-
-    stage.bulletTail->next = bullet;
-    stage.bulletTail = bullet;
-
-    bullet->texture = bulletTexture;
-    bullet->side = SIDE_PLAYER;
-    bullet->health = 1;
-
-    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
-
-    /*
-     * SDL_RenderCopyEx usa ângulo em graus.
-     * sin/cos usam ângulo em radianos.
-     */
-    angleRad = player->angle * (M_PI / 180.0f);
-
-
-
-    /*
-     * Se sua nave originalmente aponta para a direita.
-     */
-    bullet->dx = cosf(angleRad) * PLAYER_BULLET_SPEED;
-    bullet->dy = sinf(angleRad) * PLAYER_BULLET_SPEED;
-
-    /*
-     * Faz a bala nascer no centro da nave.
-     */
-    bullet->x = player->x + (player->w / 2) - (bullet->w / 2);
-    bullet->y = player->y + (player->h / 2) - (bullet->h / 2);
-    bullet->angle = player->angle;
-
-    player->reload = 8;
-}
 
 static void doEnemies(void){
     Entity *e;

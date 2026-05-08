@@ -27,10 +27,6 @@ static void drawBullets(void);
 static void spawnsEnemies(void);
 static void doEnemies(void);
 
-/* movendo para player.c
- *  static void clipPlayer(void);
- */
-
 static void resetStage(void);
 static void drawExplosions(void);
 static void doExplosions(void);
@@ -40,7 +36,9 @@ static void drawHud(void);
 static void doPointsPods(void);
 static void drawPointsPods(void);
 
-static void drawPlayerHealthBar(void);
+/*
+ * static void drawPlayerHealthBar(void);
+ */
 
 static void addExplosions(int x, int y, int num);
 static void addPointsPod(int x, int y);
@@ -652,53 +650,7 @@ static void addPointsPod(int x, int y){
                        centerY + sinf(225.0f * M_PI / 180.0f) * length);
 }
 */
-static void drawPlayerHealthBar(void){
-    SDL_Rect bg;
-    SDL_Rect segment;
 
-    int i;
-    int maxLives = 10;
-    int currentLives;
-    int segmentWidth = 25;
-    int segmentHeight = 20;
-    int gap = 4;
-
-    if (player == NULL) {
-        return;
-    }
-
-    currentLives = player->health / 10;
-
-    bg.x = 10;
-    bg.y = 50;
-    bg.w = (segmentWidth * maxLives) + (gap * (maxLives - 1));
-    bg.h = segmentHeight;
-
-    /* Fundo geral da barra */
-    SDL_SetRenderDrawColor(app.renderer, 40, 40, 40, 255);
-    SDL_RenderFillRect(app.renderer, &bg);
-
-    for (i = 0; i < maxLives; i++) {
-        segment.x = bg.x + (i * (segmentWidth + gap));
-        segment.y = bg.y;
-        segment.w = segmentWidth;
-        segment.h = segmentHeight;
-
-        if (i < currentLives) {
-            /* Bloco com vida */
-            SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
-            SDL_RenderFillRect(app.renderer, &segment);
-        } else {
-            /* Bloco vazio */
-            SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
-            SDL_RenderFillRect(app.renderer, &segment);
-        }
-
-        /* Borda de cada bloco */
-        SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
-        SDL_RenderDrawRect(app.renderer, &segment);
-    }
-}
 
 static void draw(void){
     drawBackground();

@@ -167,3 +167,80 @@ void clipPlayer(void) {
         player->y = SCREEN_HEIGHT - player->h;
     }
 }
+
+
+/*==============================================================================
+ * Desenha a barra de vida segmentada do jogador.
+ *
+ * Responsabilidades:
+ * - Validar existência da entidade do jogador
+ * - Calcular quantidade atual de vida
+ * - Renderizar fundo da barra de vida
+ * - Renderizar segmentos preenchidos e vazios
+ * - Renderizar bordas de cada segmento
+ *============================================================================*/
+void drawPlayerHealthBar(void)
+{
+    SDL_Rect bg;
+    SDL_Rect segment;
+
+    int i;
+
+    /* Quantidade máxima de segmentos de vida */
+    int maxLives = 10;
+
+    /* Quantidade atual de segmentos ativos */
+    int currentLives;
+
+    /* Dimensões de cada segmento */
+    int segmentWidth = 25;
+    int segmentHeight = 20;
+
+    /* Espaçamento entre segmentos */
+    int gap = 4;
+
+    /* Garante que o jogador exista antes de desenhar a HUD */
+    if (player == NULL) {
+        return;
+    }
+
+    /* Converte vida total em segmentos visuais */
+    currentLives = player->health / 10;
+
+    /* Configuração do retângulo de fundo da barra */
+    bg.x = 10;
+    bg.y = 50;
+    bg.w = (segmentWidth * maxLives) + (gap * (maxLives - 1));
+    bg.h = segmentHeight;
+
+    /* Renderiza fundo geral da barra */
+    SDL_SetRenderDrawColor(app.renderer, 40, 40, 40, 255);
+    SDL_RenderFillRect(app.renderer, &bg);
+
+    /* Renderiza cada segmento individual da barra */
+    for (i = 0; i < maxLives; i++) {
+
+        /* Calcula posição do segmento atual */
+        segment.x = bg.x + (i * (segmentWidth + gap));
+        segment.y = bg.y;
+        segment.w = segmentWidth;
+        segment.h = segmentHeight;
+
+        /* Segmentos preenchidos representam vida disponível */
+        if (i < currentLives) {
+
+            SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(app.renderer, &segment);
+
+        } else {
+
+            /* Segmentos vazios representam vida perdida */
+            SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
+            SDL_RenderFillRect(app.renderer, &segment);
+        }
+
+        /* Renderiza borda visual de cada segmento */
+        SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
+        SDL_RenderDrawRect(app.renderer, &segment);
+    }
+}

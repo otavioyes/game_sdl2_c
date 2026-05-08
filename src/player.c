@@ -12,8 +12,6 @@ extern Stage stage;
 extern App app;
 extern void fireBullet(void);
 
-void initPlayer(SDL_Texture *texture);
-void doPlayer(void);
 
 Entity *player;
 
@@ -61,6 +59,7 @@ void initPlayer(SDL_Texture *texture)
     /* Define o lado da entidade */
     player->side = SIDE_PLAYER;
 }
+
 
 
 /*

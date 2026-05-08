@@ -22,14 +22,10 @@ extern Stage stage;
 
 static void logic(void);
 static void draw(void);
-
 static void doFighters(void);
-
 static void drawFighters(void);
-
 static void spawnsEnemies(void);
 static void doEnemies(void);
-
 static void resetStage(void);
 static void drawExplosions(void);
 static void doExplosions(void);
@@ -39,13 +35,15 @@ static void drawHud(void);
 static void doPointsPods(void);
 static void drawPointsPods(void);
 
-static void addExplosions(int x, int y, int num);
-static void addPointsPod(int x, int y);
-
 
 static void fireAlienBullet(Entity *e);
-static void addDebris(Entity *e);
 static int canAlienShootPlayer(Entity *e);
+
+
+void addDebris(Entity *e);
+void addPointsPod(int x, int y);
+void addExplosions(int x, int y, int num);
+
 
 
 //static Entity       *player;
@@ -403,7 +401,7 @@ static void doPointsPods(void){
 }
 
 
-static void addExplosions(int x, int y, int num){
+void addExplosions(int x, int y, int num){
     Explosion *e;
     int i;
 
@@ -459,7 +457,7 @@ static void addExplosions(int x, int y, int num){
 }
 
 
-static void addDebris(Entity *e){
+void addDebris(Entity *e){
     Debris *d;
     int     x, y, w, h;
 
@@ -487,7 +485,7 @@ static void addDebris(Entity *e){
     }
 }
 
-static void addPointsPod(int x, int y){
+void addPointsPod(int x, int y){
     Entity *e;
 
     e = malloc(sizeof(Entity));
@@ -558,7 +556,7 @@ static void drawDebris(void){
     }
 }
 
-static void drawExplosions(void){
+void drawExplosions(void){
     Explosion *e;
 
     SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_ADD);

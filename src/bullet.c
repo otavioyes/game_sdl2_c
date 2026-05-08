@@ -3,7 +3,12 @@
  */
 #include "common.h"
 
+#include "bullet.h"
 #include "player.h"
+#include "stage.h"
+#include "sound.h"
+#include "draw.h"
+#include "util.h"
 
 extern Stage stage;
 

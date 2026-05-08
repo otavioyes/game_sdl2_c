@@ -137,7 +137,7 @@ static void resetStage(void){
 static void logic(void){
     doBackground();
     doStarfield();
-    doPlayer();
+    doPlayer(bulletTexture);
     doEnemies();
     doFighters();
     doBullet();

@@ -13,9 +13,7 @@ extern Stage stage;
 extern App app;
 
 
-
 Entity *player;
-
 
 
 /*==============================================================================
@@ -72,7 +70,7 @@ void initPlayer(SDL_Texture *texture) {
  * - Disparar projéteis
  * - Atualizar rotação da nave
  *============================================================================*/
-void doPlayer(void) {
+void doPlayer(SDL_Texture *bulletTexture) {
     /* Garante que o jogador exista antes de processar lógica */
     if (player == NULL) {
         return;

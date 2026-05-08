@@ -10,7 +10,7 @@ extern Entity *player;
 void initPlayer(SDL_Texture *texture);
 
 /* Atualiza lógica do jogador */
-void doPlayer(void);
+void doPlayer(SDL_Texture *bulletTexture);
 
 /* Mantém jogador dentro da tela */
 void clipPlayer(void);

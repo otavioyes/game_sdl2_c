@@ -2,7 +2,7 @@
  * bullet.c
  */
 #include "common.h"
-#include "stage.h"
+
 #include "player.h"
 
 extern Stage stage;

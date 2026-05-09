@@ -1,6 +1,33 @@
 /*
  * bullet.c
  */
+
+/* PROXIMOS FUNCOES QUE IRA PARA SEUS RESPECTIVOS
+ * DE RESPONSABILIDADES:
+ *
+ ** enemy.c
+- spawnsEnemies()
+- doEnemies()
+- fireAlienBullet()
+- canAlienShootPlayer()
+ *
+ ** effects.c
+- doExplosions()
+- drawExplosions()
+- doDebris()
+- drawDebris()
+ *
+ ** points.c
+- doPointsPods()
+- drawPointsPods()
+ *
+ ** hud.c
+- drawHud()
+
+ * */
+
+
+
 #include "common.h"
 
 #include "bullet.h"

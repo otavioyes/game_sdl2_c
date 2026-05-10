@@ -21,9 +21,8 @@ add_executable(game
         src/text.c
         src/title.c
         src/player.c
-        include/player.h
         src/bullet.c
-        include/bullet.h
+        src/enemy.c
 )
 
 target_include_directories(game PRIVATE include)

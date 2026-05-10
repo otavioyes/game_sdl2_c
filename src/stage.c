@@ -24,8 +24,15 @@ static void logic(void);
 static void draw(void);
 static void doFighters(void);
 static void drawFighters(void);
+
+/*
 static void spawnsEnemies(void);
+*/
+
+/*
 static void doEnemies(void);
+*/
+
 static void resetStage(void);
 static void drawExplosions(void);
 static void doExplosions(void);
@@ -151,19 +158,6 @@ static void logic(void){
 
 
 
-static void doEnemies(void){
-    Entity *e;
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next){
-        if (e != player){
-            e->y = MIN(MAX(e->y, 0), SCREEN_HEIGHT - e->h);
-            if (player != NULL && --e->reload <= 0){
-                fireAlienBullet(e);
-                playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
-            }
-        }
-    }
-}
 /*calcular o ângulo entre “para onde o inimigo olha” e “onde o player está”.*/
 static int canAlienShootPlayer(Entity *e)
 {
@@ -279,31 +273,7 @@ static void doFighters(void) {
 
 
 
-// Gera inimigos periodicamente e adiciona à lista de lutadores
-static void spawnsEnemies(void){
-    Entity *enemy;
 
-    if(--enemySpawnTimer <=0){
-        enemy = malloc(sizeof(Entity));
-        memset(enemy, 0, sizeof(Entity));
-        stage.fighterTail->next = enemy;
-        stage.fighterTail = enemy;
-
-        enemy->x = SCREEN_WIDTH;
-        enemy->y = rand() % SCREEN_HEIGHT;
-        enemy->texture = enemyTexture;
-        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
-
-        enemy->dx = -(2 + (rand() % 4));
-        enemy->dy = -100 + rand() % 200;
-        enemy->dy /= 100;
-        enemy->side = SIDE_ALIEN;
-        enemy->health = 1;
-        enemy->reload = FPS * (1 + (rand() % 3));
-
-        enemySpawnTimer = 30  + (rand() % FPS); //taxa de geracao do inimigo
-    }
-}
 
 
 

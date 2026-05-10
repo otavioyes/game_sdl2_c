@@ -2,15 +2,6 @@
  * main.c
  */
 
-/* 06/05/2026
- * REFINAMENTOS:
- * nave gira
- * tiro acompanha o ângulo
- * barra de vida
- * highscore
- *
- */
-
 #include "common.h"
 
 #include "draw.h"

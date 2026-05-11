@@ -15,6 +15,7 @@
 //NOVOS ARQUIVOS
 #include "player.h"
 #include "bullet.h"
+#include "enemy.h"
 
 extern App app;
 extern Highscores highscores;
@@ -25,13 +26,6 @@ static void draw(void);
 static void doFighters(void);
 static void drawFighters(void);
 
-/*
-static void spawnsEnemies(void);
-*/
-
-/*
-static void doEnemies(void);
-*/
 
 static void resetStage(void);
 static void drawExplosions(void);
@@ -43,7 +37,6 @@ static void doPointsPods(void);
 static void drawPointsPods(void);
 
 
-static void fireAlienBullet(Entity *e);
 static int canAlienShootPlayer(Entity *e);
 
 
@@ -53,7 +46,6 @@ void addExplosions(int x, int y, int num);
 
 
 
-//static Entity       *player;
 static int          enemySpawnTimer;
 static int          stageResetTimer;
 static SDL_Texture  *bulletTexture;
@@ -202,44 +194,6 @@ static int canAlienShootPlayer(Entity *e)
      * Se passar de 135°, o inimigo para de atirar.
      */
     return cosAngle >= -0.0f;
-}
-
-
-static void fireAlienBullet(Entity *e)
-{
-    Entity *bullet;
-
-    if (!canAlienShootPlayer(e)) {
-        return;
-    }
-
-    bullet = malloc(sizeof(Entity));
-    memset(bullet, 0, sizeof(Entity));
-
-    stage.bulletTail->next = bullet;
-    stage.bulletTail = bullet;
-
-    bullet->x = e->x;
-    bullet->y = e->y;
-    bullet->health = 1;
-    bullet->texture = alienBulletTexture;
-    bullet->side = SIDE_ALIEN;
-
-    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
-
-    bullet->x += (e->w / 2) - (bullet->w / 2);
-    bullet->y += (e->h / 2) - (bullet->h / 2);
-
-    calcSlop(player->x + (player->w / 2),
-             player->y + (player->h / 2),
-             e->x + (e->w / 2),
-             e->y + (e->h / 2),
-             &bullet->dx, &bullet->dy);
-
-    bullet->dx *= ALIEN_BULLET_SPEED;
-    bullet->dy *= ALIEN_BULLET_SPEED;
-
-    e->reload = rand() % (FPS * 2);
 }
 
 

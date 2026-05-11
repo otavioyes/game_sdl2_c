@@ -4,12 +4,12 @@
 
 #include "common.h"
 
+#include "util.h"
+#include "enemy.h"
+#include "player.h"
 
 
-
-void spawnsEnemies(void);
-void doEnemies(void){
-
+extern Stage stage;
 
 
 /*==============================================================================
@@ -95,34 +95,108 @@ void spawnsEnemies(void)
  * - Executar disparos inimigos
  * - Reproduzir efeitos sonoros de ataque
  *============================================================================*/
-    void doEnemies(void) {
-        Entity *e;
+void doEnemies(void) {
+    Entity *e;
 
-        /* Percorre lista de fighters ativos */
-        for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+    /* Percorre lista de fighters ativos */
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
 
-            /* Ignora entidade do jogador */
-            if (e != player) {
+        /* Ignora entidade do jogador */
+        if (e != player) {
 
-                /*
-                 * Mantém inimigo dentro dos limites verticais da tela.
-                 */
-                e->y = MIN(MAX(e->y, 0),
-                           SCREEN_HEIGHT - e->h);
+            /*
+             * Mantém inimigo dentro dos limites verticais da tela.
+             */
+            e->y = MIN(MAX(e->y, 0),
+                       SCREEN_HEIGHT - e->h);
 
-                /*
-                 * Executa disparo apenas se:
-                 * - jogador existir
-                 * - temporizador de recarga chegar a zero
-                 */
-                if (player != NULL && --e->reload <= 0) {
+            /*
+             * Executa disparo apenas se:
+             * - jogador existir
+             * - temporizador de recarga chegar a zero
+             */
+            if (player != NULL && --e->reload <= 0) {
 
-                    /* Cria projétil inimigo */
-                    fireAlienBullet(e);
+                /* Cria projétil inimigo */
+                fireAlienBullet(e);
 
-                    /* Reproduz efeito sonoro do disparo */
-                    playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
-                }
+                /* Reproduz efeito sonoro do disparo */
+                playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
             }
         }
     }
+}
+
+
+
+/*==============================================================================
+ * Cria um projétil disparado por um inimigo.
+ *
+ * Responsabilidades:
+ * - Validar possibilidade de disparo
+ * - Alocar memória para o projétil
+ * - Inserir projétil na lista de balas
+ * - Configurar propriedades iniciais
+ * - Calcular direção do disparo em relação ao jogador
+ * - Aplicar velocidade do projétil
+ * - Reiniciar temporizador de recarga do inimigo
+ *============================================================================*/
+void fireAlienBullet(Entity *e) {
+    Entity *bullet;
+
+    /* Impede disparo caso jogador esteja fora do ângulo permitido */
+    if (!canAlienShootPlayer(e)) {
+        return;
+    }
+
+    /* Aloca memória para o projétil inimigo */
+    bullet = malloc(sizeof(Entity));
+
+    /* Inicializa estrutura com zero */
+    memset(bullet, 0, sizeof(Entity));
+
+    /* Adiciona projétil na lista encadeada de balas */
+    stage.bulletTail->next = bullet;
+    stage.bulletTail = bullet;
+
+    /* Define posição inicial do projétil */
+    bullet->x = e->x;
+    bullet->y = e->y;
+
+    /* Configura propriedades básicas do projétil */
+    bullet->health = 1;
+    bullet->texture = alienBulletTexture;
+    bullet->side = SIDE_ALIEN;
+
+    /* Obtém dimensões da textura */
+    SDL_QueryTexture(bullet->texture, NULL, NULL,
+                     &bullet->w, &bullet->h);
+
+    /*
+     * Centraliza projétil em relação ao inimigo
+     * para manter alinhamento visual do disparo.
+     */
+    bullet->x += (e->w / 2) - (bullet->w / 2);
+    bullet->y += (e->h / 2) - (bullet->h / 2);
+
+    /*
+     * Calcula direção normalizada do disparo
+     * em relação à posição atual do jogador.
+     */
+    calcSlop(player->x + (player->w / 2),
+             player->y + (player->h / 2),
+             e->x + (e->w / 2),
+             e->y + (e->h / 2),
+             &bullet->dx,
+             &bullet->dy);
+
+    /* Aplica velocidade final do projétil */
+    bullet->dx *= ALIEN_BULLET_SPEED;
+    bullet->dy *= ALIEN_BULLET_SPEED;
+
+    /*
+     * Reinicia temporizador de disparo do inimigo
+     * com valor aleatório para variar frequência de ataque.
+     */
+    e->reload = rand() % (FPS * 2);
+}

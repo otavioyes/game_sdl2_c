@@ -37,7 +37,6 @@ static void doPointsPods(void);
 static void drawPointsPods(void);
 
 
-static int canAlienShootPlayer(Entity *e);
 
 
 void addDebris(Entity *e);
@@ -148,53 +147,6 @@ static void logic(void){
     }
 }
 
-
-
-/*calcular o ângulo entre “para onde o inimigo olha” e “onde o player está”.*/
-static int canAlienShootPlayer(Entity *e)
-{
-    float enemyCenterX, enemyCenterY;
-    float playerCenterX, playerCenterY;
-    float dx, dy;
-    float length;
-    float dot;
-    float cosAngle;
-
-    if (player == NULL) {
-        return 0;
-    }
-
-    enemyCenterX = e->x + (e->w / 2);
-    enemyCenterY = e->y + (e->h / 2);
-
-    playerCenterX = player->x + (player->w / 2);
-    playerCenterY = player->y + (player->h / 2);
-
-    dx = playerCenterX - enemyCenterX;
-    dy = playerCenterY - enemyCenterY;
-
-    length = sqrtf(dx * dx + dy * dy);
-
-    if (length == 0) {
-        return 1;
-    }
-
-    /*
-     * Direção frontal do inimigo: esquerda.
-     * Vetor forward = (-1, 0)
-     */
-    dot = (dx * -1.0f) + (dy * 0.0f);
-
-    cosAngle = dot / length;
-
-    /*
-     * Permite tiro até 135 graus.
-     * cos(135°) = -0.7071
-     *
-     * Se passar de 135°, o inimigo para de atirar.
-     */
-    return cosAngle >= -0.0f;
-}
 
 
 

@@ -12,6 +12,7 @@
 extern Stage stage;
 
 
+
 /*==============================================================================
  * Gera inimigos periodicamente durante a fase.
  *
@@ -22,8 +23,7 @@ extern Stage stage;
  * - Configurar atributos iniciais do inimigo
  * - Definir movimentação e tempo de disparo
  *============================================================================*/
-void spawnsEnemies(void)
-{
+void spawnsEnemies(void) {//PASSAR A TEXTURA POR PARAMETRO
     Entity *enemy;
 
     /* Atualiza temporizador de geração de inimigos */
@@ -199,4 +199,91 @@ void fireAlienBullet(Entity *e) {
      * com valor aleatório para variar frequência de ataque.
      */
     e->reload = rand() % (FPS * 2);
+}
+
+
+
+/*==============================================================================
+ * Verifica se o inimigo possui ângulo válido para disparar no jogador.
+ *
+ * Responsabilidades:
+ * - Calcular direção entre inimigo e jogador
+ * - Normalizar vetor de direção
+ * - Calcular alinhamento angular utilizando produto escalar
+ * - Restringir disparo ao campo de visão frontal do inimigo
+ *
+ * Retorno:
+ * - 1 : jogador está dentro do ângulo permitido
+ * - 0 : jogador está fora do ângulo permitido
+ *============================================================================*/
+int canAlienShootPlayer(Entity *e) {
+    float enemyCenterX;
+    float enemyCenterY;
+
+    float playerCenterX;
+    float playerCenterY;
+
+    float dx;
+    float dy;
+
+    float length;
+
+    float dot;
+    float cosAngle;
+
+    /* Garante que o jogador exista antes do cálculo */
+    if (player == NULL) {
+        return 0;
+    }
+
+    /* Calcula centro do inimigo */
+    enemyCenterX = e->x + (e->w / 2);
+    enemyCenterY = e->y + (e->h / 2);
+
+    /* Calcula centro do jogador */
+    playerCenterX = player->x + (player->w / 2);
+    playerCenterY = player->y + (player->h / 2);
+
+    /*
+     * Vetor direção:
+     * inimigo -> jogador
+     */
+    dx = playerCenterX - enemyCenterX;
+    dy = playerCenterY - enemyCenterY;
+
+    /* Calcula comprimento do vetor */
+    length = sqrtf(dx * dx + dy * dy);
+
+    /*
+     * Evita divisão por zero caso
+     * inimigo e jogador estejam sobrepostos.
+     */
+    if (length == 0) {
+        return 1;
+    }
+
+    /*
+     * Vetor frontal do inimigo.
+     *
+     * Neste caso:
+     * (-1, 0) = olhando para esquerda
+     */
+    dot = (dx * -1.0f) + (dy * 0.0f);
+
+    /*
+     * Produto escalar normalizado.
+     *
+     * Resultado representa o cosseno do ângulo
+     * entre direção do inimigo e direção do jogador.
+     */
+    cosAngle = dot / length;
+
+    /*
+     * Permite disparo apenas dentro
+     * do campo de visão frontal.
+     *
+     * Quanto menor o valor permitido,
+     * maior o ângulo de disparo aceito.
+     */
+    return cosAngle >= -0.0f;
 }

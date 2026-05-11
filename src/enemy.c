@@ -4,12 +4,29 @@
 
 #include "common.h"
 
+#include "sound.h"
 #include "util.h"
 #include "enemy.h"
 #include "player.h"
 
-
 extern Stage stage;
+
+static int enemySpawnTimer;
+
+
+
+/*==============================================================================
+ * Inicializa o sistema de inimigos da fase.
+ *
+ * Responsabilidades:
+ * - Reiniciar temporizador de geração de inimigos
+ * - Preparar sistema de spawn para nova fase
+ *============================================================================*/
+void initEnemies(void)
+{
+    /* Reinicia contador de spawn dos inimigos */
+    enemySpawnTimer = 0;
+}
 
 
 
@@ -23,7 +40,7 @@ extern Stage stage;
  * - Configurar atributos iniciais do inimigo
  * - Definir movimentação e tempo de disparo
  *============================================================================*/
-void spawnsEnemies(void) {//PASSAR A TEXTURA POR PARAMETRO
+void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
     Entity *enemy;
 
     /* Atualiza temporizador de geração de inimigos */
@@ -95,7 +112,7 @@ void spawnsEnemies(void) {//PASSAR A TEXTURA POR PARAMETRO
  * - Executar disparos inimigos
  * - Reproduzir efeitos sonoros de ataque
  *============================================================================*/
-void doEnemies(void) {
+void doEnemies(SDL_Texture *alienBulletTexture){
     Entity *e;
 
     /* Percorre lista de fighters ativos */
@@ -118,7 +135,7 @@ void doEnemies(void) {
             if (player != NULL && --e->reload <= 0) {
 
                 /* Cria projétil inimigo */
-                fireAlienBullet(e);
+                fireAlienBullet(e, alienBulletTexture);
 
                 /* Reproduz efeito sonoro do disparo */
                 playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
@@ -141,7 +158,7 @@ void doEnemies(void) {
  * - Aplicar velocidade do projétil
  * - Reiniciar temporizador de recarga do inimigo
  *============================================================================*/
-void fireAlienBullet(Entity *e) {
+void fireAlienBullet(Entity *e, SDL_Texture *texture) {
     Entity *bullet;
 
     /* Impede disparo caso jogador esteja fora do ângulo permitido */
@@ -165,7 +182,7 @@ void fireAlienBullet(Entity *e) {
 
     /* Configura propriedades básicas do projétil */
     bullet->health = 1;
-    bullet->texture = alienBulletTexture;
+    bullet->texture = texture;
     bullet->side = SIDE_ALIEN;
 
     /* Obtém dimensões da textura */

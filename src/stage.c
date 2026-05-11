@@ -45,7 +45,6 @@ void addExplosions(int x, int y, int num);
 
 
 
-static int          enemySpawnTimer;
 static int          stageResetTimer;
 static SDL_Texture  *bulletTexture;
 static SDL_Texture  *enemyTexture;
@@ -78,7 +77,7 @@ void initStage(void)
     resetStage();
     stage.score = 0;
     initPlayer(playerTexture);
-    enemySpawnTimer = 0;
+    initEnemies();
     stageResetTimer = FPS * 3;
 }
 
@@ -124,6 +123,8 @@ static void resetStage(void){
     stage.explosionTail = &stage.explosionHead;
     stage.debrisTail = &stage.debrisHead;
     stage.pointsTail = &stage.pointsHead;
+
+    initEnemies();
 }
 
 
@@ -132,13 +133,13 @@ static void logic(void){
     doBackground();
     doStarfield();
     doPlayer(bulletTexture);
-    doEnemies();
+    doEnemies(alienBulletTexture);
     doFighters();
     doBullet();
     doExplosions();
     doDebris();
     doPointsPods();
-    spawnsEnemies();
+    spawnsEnemies(enemyTexture);
     clipPlayer();
 
     if (player == NULL && --stageResetTimer <= 0){

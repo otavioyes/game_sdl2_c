@@ -13,3 +13,5 @@ void drawBullets(void);
 
 /* Verifica colisão entre projétil e entidades */
 int bulletHitFighter(Entity *b);
+
+

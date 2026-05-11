@@ -1,5 +1,6 @@
-
-//Cabecalho que define as estruturas de dados principais usadas no jogo
+/*
+ * struct.h
+ */
 
 
 typedef struct Entity       Entity;

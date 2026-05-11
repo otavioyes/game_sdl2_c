@@ -1,5 +1,6 @@
-
-// Cabecalho com funcoes de inicializacao e finalizacao do SDL e do jogo
+/*
+ * init.h
+ */
 
 
 void initSDL(void);

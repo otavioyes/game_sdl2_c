@@ -1,15 +1,12 @@
 /*
  * effects.c
  */
-/*
-- doExplosions()
-- drawExplosions()
-- doDebris()
-- drawDebris()
-*/
+
 
 #include "common.h"
+
 #include "draw.h"
+
 extern Stage stage;
 
 

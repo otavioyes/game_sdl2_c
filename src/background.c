@@ -52,17 +52,50 @@ void drawStarfield(void) {
     }
 }
 
+
+/*==============================================================================
+ * Renderiza o background da fase.
+ *
+ * Responsabilidades:
+ * - Aplicar modulação de cor na textura
+ * - Renderizar background em loop horizontal
+ * - Preencher toda área visível da tela
+ * - Criar efeito contínuo de scrolling
+ *============================================================================*/
 void drawBackground(void) {
     SDL_Rect dest;
+
     int x;
 
-    for (x = backgroundX; x < SCREEN_WIDTH; x += SCREEN_WIDTH) {
+    /*
+     * Define modulação de cor da textura.
+     *
+     * RGB(255, 255, 255): AQUI ALTERO A COR DO background.png
+     * mantém cores originais da imagem.
+     */
+    SDL_SetTextureColorMod(background,
+                           255,
+                           255,
+                           255);
+
+    /*
+     * Renderiza múltiplas cópias do background
+     * para criar efeito contínuo de movimentação.
+     */
+    for (x = backgroundX;
+         x < SCREEN_WIDTH;
+         x += SCREEN_WIDTH) {
+
+        /* Define área de destino da renderização */
         dest.x = x;
         dest.y = 0;
         dest.w = SCREEN_WIDTH;
         dest.h = SCREEN_HEIGHT;
 
-        SDL_RenderCopy(app.renderer, background, NULL, &dest);
+        /* Renderiza textura do background */
+        SDL_RenderCopy(app.renderer,
+                       background,
+                       NULL,
+                       &dest);
     }
 }
-

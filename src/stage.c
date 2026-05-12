@@ -30,7 +30,6 @@ static void drawFighters(void);
 
 static void resetStage(void);
 
-//static void drawDebris(void);
 static void drawHud(void);
 static void doPointsPods(void);
 static void drawPointsPods(void);

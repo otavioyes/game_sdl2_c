@@ -25,6 +25,7 @@ add_executable(game
         src/enemy.c
         src/effects.c
         include/effects.h
+        src/points.c
 )
 
 target_include_directories(game PRIVATE include)

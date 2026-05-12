@@ -2,6 +2,17 @@
  * effects.c
  */
 
+/*
+ ** effects.c
+-
+- addExplosions() OK
+- doExplosions() OK
+- drawExplosions() OK
+- addDebris() OK
+- doDebris() OK
+- drawDebris() OK
+ */
+
 
 #include "common.h"
 
@@ -203,5 +214,183 @@ void drawDebris(void){
 
         /* Renderiza fragmento na posição atual */
         blit(d->texture, d->x, d->y);
+    }
+}
+
+
+
+/*==============================================================================
+ * Cria partículas de explosão na posição informada.
+ *
+ * Responsabilidades:
+ * - Alocar memória para partículas de explosão
+ * - Inserir explosões na lista encadeada
+ * - Configurar posição inicial das partículas
+ * - Aplicar movimentação aleatória
+ * - Configurar coloração visual
+ * - Definir duração do efeito
+ *============================================================================*/
+void addExplosions(int x, int y, int num)/*ass. em stage.h*/
+{
+    Explosion *e;
+
+    int i;
+
+    /* Cria quantidade solicitada de partículas */
+    for (i = 0; i < num; i++) {
+
+        /* Aloca memória para nova explosão */
+        e = malloc(sizeof(Explosion));
+
+        /* Verifica falha de alocação */
+        if (e == NULL) {
+            SDL_Log("malloc falhou em addExplosions");
+            exit(1);
+        }
+
+        /* Inicializa estrutura com zero */
+        memset(e, 0, sizeof(Explosion));
+
+        /* Adiciona explosão na lista encadeada */
+        stage.explosionTail->next = e;
+        stage.explosionTail = e;
+
+        /*
+         * Aplica pequena variação de posição
+         * para criar espalhamento visual da explosão.
+         */
+        e->x = x + (rand() % 8) - (rand() % 8);
+        e->y = y + (rand() % 8) - (rand() % 8);
+
+        /*
+         * Define movimentação aleatória das partículas
+         * para simular dispersão da explosão.
+         */
+        e->dx = (rand() % 6) - (rand() % 6);
+        e->dy = (rand() % 6) - (rand() % 6);
+
+        /* Reduz intensidade da movimentação */
+        e->dx /= 10;
+        e->dy /= 10;
+
+        /*
+         * Define coloração aleatória da explosão.
+         *
+         * Tons possíveis:
+         * - vermelho
+         * - laranja
+         * - amarelo
+         * - branco
+         */
+        switch (rand() % 4) {
+
+            case 0:
+                e->r = 255;
+                break;
+
+            case 1:
+                e->r = 255;
+                e->g = 128;
+                break;
+
+            case 2:
+                e->r = 255;
+                e->g = 255;
+                break;
+
+            default:
+                e->r = 255;
+                e->g = 255;
+                e->b = 255;
+                break;
+        }
+
+        /*
+         * Define duração da explosão
+         * utilizando canal alpha.
+         */
+        e->a = 40 + (rand() % 60);
+    }
+}
+
+
+
+/*==============================================================================
+ * Cria fragmentos (debris) a partir de uma entidade destruída.
+ *
+ * Responsabilidades:
+ * - Dividir sprite da entidade em fragmentos
+ * - Alocar memória para debris
+ * - Inserir debris na lista encadeada
+ * - Configurar posição inicial dos fragmentos
+ * - Aplicar movimentação aleatória
+ * - Definir tempo de vida dos debris
+ * - Configurar região da textura utilizada
+ *============================================================================*/
+void addDebris(Entity *e) /*ass. em stage.h*/
+{
+    Debris *d;
+
+    int x;
+    int y;
+
+    int w;
+    int h;
+
+    /*
+     * Divide sprite da entidade em 4 partes.
+     */
+    w = e->w / 2;
+    h = e->h / 2;
+
+    /*
+     * Percorre regiões da textura para gerar
+     * múltiplos fragmentos da entidade destruída.
+     */
+    for (y = 0; y <= h; y += h) {
+
+        for (x = 0; x <= w; x += w) {
+
+            /* Aloca memória para novo debris */
+            d = malloc(sizeof(Debris));
+
+            /* Inicializa estrutura com zero */
+            memset(d, 0, sizeof(Debris));
+
+            /* Adiciona debris na lista encadeada */
+            stage.debrisTail->next = d;
+            stage.debrisTail = d;
+
+            /*
+             * Posiciona fragmento no centro
+             * da entidade destruída.
+             */
+            d->x = e->x + e->w / 2;
+            d->y = e->y + e->h / 2;
+
+            /*
+             * Define movimentação aleatória
+             * para efeito de explosão.
+             */
+            d->dx = (rand() % 5) - (rand() % 5);
+
+            /*
+             * Impulsiona debris para cima
+             * simulando dispersão da explosão.
+             */
+            d->dy = -(5 + (rand() % 12));
+
+            /* Define duração do fragmento */
+            d->life = FPS * 2;
+
+            /*
+             * Define região da textura original
+             * utilizada pelo fragmento.
+             */
+            d->rect.x = x;
+            d->rect.y = y;
+            d->rect.w = w;
+            d->rect.h = h;
+        }
     }
 }

@@ -165,89 +165,7 @@ static void doFighters(void) {
 }
 
 
-void addExplosions(int x, int y, int num){
-    Explosion *e;
-    int i;
 
-    for (i = 0; i < num; i++) {
-        e = malloc(sizeof(Explosion));
-
-        if (e == NULL) {
-            SDL_Log("malloc falhou em addExplosions");
-            exit(1);
-        }
-
-        memset(e, 0, sizeof(Explosion));
-
-        stage.explosionTail->next = e;
-        stage.explosionTail = e;
-
-        /* Espalhamento menor */
-        e->x = x + (rand() % 8) - (rand() % 8);
-        e->y = y + (rand() % 8) - (rand() % 8);
-
-        /* Movimento mais lento */
-        e->dx = (rand() % 6) - (rand() % 6);
-        e->dy = (rand() % 6) - (rand() % 6);
-
-        e->dx /= 10;
-        e->dy /= 10;
-
-        switch (rand() % 4) {
-            case 0:
-                e->r = 255;
-                break;
-
-            case 1:
-                e->r = 255;
-                e->g = 128;
-                break;
-
-            case 2:
-                e->r = 255;
-                e->g = 255;
-                break;
-
-            default:
-                e->r = 255;
-                e->g = 255;
-                e->b = 255;
-                break;
-        }
-
-        /* Duração menor da explosão */
-        e->a = 40 + (rand() % 60);
-    }
-}
-
-
-void addDebris(Entity *e){
-    Debris *d;
-    int     x, y, w, h;
-
-    w = e->w / 2;
-    h = e->h / 2;
-
-    for (y = 0; y <= h; y += h){
-        for (x = 0; x <= w; x += w){
-            d = malloc(sizeof (Debris ));
-            memset(d, 0, sizeof(Debris));
-            stage.debrisTail->next = d;
-            stage.debrisTail = d;
-
-            d->x = e->x + e->w / 2;
-            d->y = e->y + e->h / 2;
-            d->dx = (rand() % 5) - (rand() % 5);
-            d->dy = -(5 + (rand() % 12));
-            d->life = FPS * 2;
-
-            d->rect.x = x;
-            d->rect.y = y;
-            d->rect.w = w;
-            d->rect.h = h;
-        }
-    }
-}
 
 
 
@@ -273,9 +191,5 @@ static void drawFighters(void){
         } else {
             blit(e->texture, e->x, e->y);
         }
-
-        /*if (e != player) {
-            drawAlienShootCone(e);
-        }*/
     }
 }

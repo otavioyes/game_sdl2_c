@@ -23,6 +23,8 @@ add_executable(game
         src/player.c
         src/bullet.c
         src/enemy.c
+        src/effects.c
+        include/effects.h
 )
 
 target_include_directories(game PRIVATE include)

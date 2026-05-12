@@ -16,6 +16,7 @@
 #include "player.h"
 #include "bullet.h"
 #include "enemy.h"
+#include "effects.h"
 
 extern App app;
 extern Highscores highscores;
@@ -28,10 +29,8 @@ static void drawFighters(void);
 
 
 static void resetStage(void);
-static void drawExplosions(void);
-static void doExplosions(void);
-static void doDebris(void);
-static void drawDebris(void);
+
+//static void drawDebris(void);
 static void drawHud(void);
 static void doPointsPods(void);
 static void drawPointsPods(void);
@@ -186,49 +185,8 @@ static void doFighters(void) {
 
 
 
-static void doExplosions(void){
-    Explosion *e, *prev;
 
-    prev = &stage.explosionHead;
 
-    for (e = stage.explosionHead.next; e != NULL; e = e->next){
-        e->x += e->dx;
-        e->y += e->dy;
-
-        if (--e->a <= 0){
-            if (e == stage.explosionTail){
-                stage.explosionTail = prev;
-            }
-            prev->next = e->next;
-            free(e);
-            e = prev;
-        }
-        prev = e;
-    }
-}
-
-static void doDebris(void){
-    Debris *d, *prev;
-
-    prev = &stage.debrisHead;
-
-    for (d = stage.debrisHead.next; d != NULL; d = d->next){
-        d->x += d->dx;
-        d->y += d->dy;
-
-        d->dy += 0.5;
-
-        if (--d->life <= 0){
-            if (d == stage.debrisTail){
-                stage.debrisTail = prev;
-            }
-            prev->next = d->next;
-            free(d);
-            d = prev;
-        }
-        prev = d;
-    }
-}
 
 
 static void doPointsPods(void){
@@ -391,7 +349,7 @@ static void draw(void){
     drawPointsPods();
     drawFighters();
     drawDebris();
-    drawExplosions();
+    drawExplosions(app.renderer, explosionTexture);
     drawBullets();
     drawHud();
 
@@ -426,26 +384,7 @@ static void drawFighters(void){
 
 
 
-static void drawDebris(void){
-    Debris *d;
-    for (d = stage.debrisHead.next; d != NULL; d = d->next){
-        blit(d->texture, d->x, d->y);
-    }
-}
 
-void drawExplosions(void){
-    Explosion *e;
-
-    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_ADD);
-    SDL_SetTextureAlphaMod(explosionTexture, SDL_BLENDMODE_ADD);
-
-    for (e = stage.explosionHead.next; e != NULL; e = e->next){
-        SDL_SetTextureColorMod(explosionTexture, e->r, e->g, e->b);
-        SDL_SetTextureAlphaMod(explosionTexture, e->a);
-        blit(explosionTexture, e->x, e->y);
-    }
-    SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
-}
 
 static void drawHud(void){
     drawText(10, 10, 255, 255, 255, TEXT_LEFT, "SCORE: %03d", stage.score);

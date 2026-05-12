@@ -6,16 +6,16 @@
  * DE RESPONSABILIDADES:
  *
  ** enemy.c
-- spawnsEnemies()
-- doEnemies()
-- fireAlienBullet()
-- canAlienShootPlayer()
+- spawnsEnemies() OK
+- doEnemies() OK
+- fireAlienBullet() OK
+- canAlienShootPlayer() OK
  *
  ** effects.c
-- doExplosions()
-- drawExplosions()
-- doDebris()
-- drawDebris()
+- doExplosions() OK
+- drawExplosions() OK
+- doDebris() OK
+- drawDebris() OK
  *
  ** points.c
 - doPointsPods()

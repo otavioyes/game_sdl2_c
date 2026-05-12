@@ -11,8 +11,6 @@ extern Stage stage;
 
 
 
-
-
 /*==============================================================================
  * Atualiza efeitos de explosão ativos da fase.
  *

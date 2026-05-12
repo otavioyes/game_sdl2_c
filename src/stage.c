@@ -17,6 +17,7 @@
 #include "bullet.h"
 #include "enemy.h"
 #include "effects.h"
+#include "points.h"
 
 extern App app;
 extern Highscores highscores;
@@ -26,19 +27,10 @@ static void logic(void);
 static void draw(void);
 static void doFighters(void);
 static void drawFighters(void);
-
-
 static void resetStage(void);
-
 static void drawHud(void);
-static void doPointsPods(void);
-static void drawPointsPods(void);
-
-
-
 
 void addDebris(Entity *e);
-void addPointsPod(int x, int y);
 void addExplosions(int x, int y, int num);
 
 
@@ -133,7 +125,7 @@ static void logic(void){
     doPlayer(bulletTexture);
     doEnemies(alienBulletTexture);
     doFighters();
-    doBullet();
+    doBullet(pointsTexture);
     doExplosions();
     doDebris();
     doPointsPods();
@@ -167,64 +159,6 @@ static void doFighters(void) {
             }
             if (e == stage.fighterTail){
                 stage.fighterTail = prev;
-            }
-            prev->next = e->next;
-            free(e);
-            e = prev;
-        }
-        prev = e;
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-static void doPointsPods(void){
-    Entity *e, *prev;
-
-    prev = &stage.pointsHead;
-
-    for (e = stage.pointsHead.next; e != NULL; e = e->next){
-        if (e->x < 0){
-            e->x = 0;
-            e->dx = -e->dx;
-        }
-
-        if (e->x + e->w > SCREEN_WIDTH){
-            e->x = SCREEN_WIDTH - e->w;
-            e->dx = -e->dx;
-        }
-
-        if (e->y < 0){
-            e->y = 0;
-            e->dy = -e->dy;
-        }
-
-        if (e->y + e->h > SCREEN_HEIGHT){
-            e->y = SCREEN_HEIGHT - e->y;
-            e->dy = -e->dy;
-        }
-        e->x += e->dx;
-        e->y += e->dy;
-
-        if (player != NULL && collision(e->x, e->y, e->w, e->h, player->x, player->y, player->w, player->h)){
-            e->health = 0;
-            stage.score++;
-            playerSound(SND_POINTS, CH_POINTS);
-        }
-
-        if (--e->health <= 0){
-            if (e == stage.pointsTail){
-                stage.pointsTail = prev;
             }
             prev->next = e->next;
             free(e);
@@ -319,27 +253,6 @@ void addDebris(Entity *e){
     }
 }
 
-void addPointsPod(int x, int y){
-    Entity *e;
-
-    e = malloc(sizeof(Entity));
-    memset(e, 0, sizeof(Entity));
-    stage.pointsTail->next = e;
-    stage.pointsTail = e;
-
-    e->x = x;
-    e->y = y;
-    e->dx = -(rand() % 5);
-    e->dy = (rand() % 5) - (rand() %  5);
-    e->health = FPS * 10;
-    e->texture = pointsTexture;
-
-    SDL_QueryTexture(e->texture, NULL, NULL, &e->w, &e->h);
-
-    e->x -= e->w / 2;
-    e->y -= e->h / 2;
-}
-
 
 
 static void draw(void){
@@ -355,14 +268,6 @@ static void draw(void){
 }
 
 
-static void drawPointsPods(void){
-    Entity  *e;
-    for (e = stage.pointsHead.next; e != NULL; e = e->next){
-        if (e->health > (FPS * 2) || e->health % 12 < 6){
-            blit(e->texture, e->x, e->y);
-        }
-    }
-}
 
 static void drawFighters(void){
     Entity *e;

@@ -20,41 +20,13 @@ static int  highscoreComparator(const void *a, const void *b);
 static void drawHighscores(void);
 static void doNameInput(void);
 static void drawNameInput(void);
-static const char *randomArcadeName(void);
 
 static Highscore *newHighscore;
 static int cursorBlink;
 static int lastScore;
 
-static const char *arcadePrefixes[] = {
-        "ACE", "RED", "BIG", "ICE", "MAD", "NEO", "SKY", "ZAP",
-        "DARK", "IRON", "STAR", "NOVA", "CYBER", "BLAZE", "GHOST",
-        "TURBO", "HYPER", "ULTRA", "MEGA", "ALPHA"
-};
 
-static const char *arcadeSuffixes[] = {
-        "X", "Z", "ACE", "ONE", "MAX", "RAY", "GUN", "BOT",
-        "HAWK", "WOLF", "BYTE", "ZERO", "FORCE", "BLADE", "STORM",
-        "RIDER", "SNAKE", "CLAW", "FURY", "PRIME"
-};
-
-static const char *randomArcadeName(void)
-{
-    static char name[MAX_SCORE_NAME_LENGTH];
-
-    int numPrefixes = sizeof(arcadePrefixes) / sizeof(arcadePrefixes[0]);
-    int numSuffixes = sizeof(arcadeSuffixes) / sizeof(arcadeSuffixes[0]);
-
-    const char *prefix = arcadePrefixes[rand() % numPrefixes];
-    const char *suffix = arcadeSuffixes[rand() % numSuffixes];
-
-    snprintf(name, sizeof(name), "%s%s", prefix, suffix);
-
-    return name;
-}
-
-void initHighscoreTable(void)
-{
+void initHighscoreTable(void) {
     int i;
 
     memset(&highscores, 0, sizeof(highscores));

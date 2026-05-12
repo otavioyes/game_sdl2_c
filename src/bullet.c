@@ -20,6 +20,7 @@
  ** points.c
 - doPointsPods()
 - drawPointsPods()
+- addPointsPod(int x, int y);
  *
  ** hud.c
 - drawHud()
@@ -36,6 +37,7 @@
 #include "sound.h"
 #include "draw.h"
 #include "util.h"
+#include "points.h"
 
 extern Stage stage;
 
@@ -124,8 +126,7 @@ void fireBullet(SDL_Texture *texture) {
  * - Liberar memória de projéteis destruídos
  * - Manter integridade da lista encadeada
  *============================================================================*/
-void doBullet(void)
-{
+void doBullet(SDL_Texture *pointsTexture) {
     Entity *b;
     Entity *prev;
 
@@ -144,7 +145,7 @@ void doBullet(void)
          * - atinja uma entidade
          * - saia dos limites visíveis da tela
          */
-        if (bulletHitFighter(b) ||
+        if (bulletHitFighter(b, pointsTexture) ||
             b->x < -b->w ||
             b->y < -b->h ||
             b->x > SCREEN_WIDTH ||
@@ -227,8 +228,7 @@ void drawBullets(void)
  * - 1 : colisão detectada
  * - 0 : nenhuma colisão
  *============================================================================*/
-int bulletHitFighter(Entity *b)
-{
+int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture) {
     Entity *e;
 
     /* Percorre lista de entidades da fase */
@@ -285,7 +285,8 @@ int bulletHitFighter(Entity *b)
                  * da entidade inimiga destruída.
                  */
                 addPointsPod(e->x + e->w / 2,
-                             e->y + e->h / 2);
+                             e->y + e->h / 2,
+                             pointsTexture);
 
                 playerSound(SND_ALIEN_DIE, CH_ANY);
             }

@@ -24,7 +24,6 @@ add_executable(game
         src/bullet.c
         src/enemy.c
         src/effects.c
-        include/effects.h
         src/points.c
 )
 

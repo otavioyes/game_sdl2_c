@@ -1,30 +1,9 @@
 /*
  * bullet.c
  */
-
-/* PROXIMOS FUNCOES QUE IRA PARA SEUS RESPECTIVOS
- * DE RESPONSABILIDADES:
- *
- ** enemy.c
-- spawnsEnemies() OK
-- doEnemies() OK
-- fireAlienBullet() OK
-- canAlienShootPlayer() OK
- *
- ** effects.c
-- doExplosions() OK
-- drawExplosions() OK
-- doDebris() OK
-- drawDebris() OK
- *
- ** points.c
-- doPointsPods()
-- drawPointsPods()
-- addPointsPod(int x, int y);
- *
+/*
  ** hud.c
 - drawHud()
-
  * */
 
 

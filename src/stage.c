@@ -18,6 +18,7 @@
 #include "enemy.h"
 #include "effects.h"
 #include "points.h"
+#include "hud.h"
 
 extern App app;
 extern Highscores highscores;
@@ -28,11 +29,6 @@ static void draw(void);
 static void doFighters(void);
 static void drawFighters(void);
 static void resetStage(void);
-static void drawHud(void);
-
-void addDebris(Entity *e);
-void addExplosions(int x, int y, int num);
-
 
 
 static int          stageResetTimer;
@@ -281,24 +277,5 @@ static void drawFighters(void){
         /*if (e != player) {
             drawAlienShootCone(e);
         }*/
-    }
-}
-
-
-
-
-
-
-
-static void drawHud(void){
-    drawText(10, 10, 255, 255, 255, TEXT_LEFT, "SCORE: %03d", stage.score);
-
-    drawPlayerHealthBar();
-
-    if (stage.score < highscores.highscore[0].score){
-        drawText(SCREEN_WIDTH - 10, 10, 255, 255, 255, TEXT_RIGHT, "HIGHSCORE: %03d", highscores.highscore[0].score);
-    }
-    else{
-        drawText(SCREEN_WIDTH -10, 10, 0, 255, 0, TEXT_RIGHT, "HIGHSCORE: %03d", stage.score);
     }
 }

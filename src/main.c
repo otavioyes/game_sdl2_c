@@ -1,6 +1,14 @@
 /*
  * main.c
  */
+/**
+## Próximo passo é criar um entity.c para
+## as seguintes responsabilidades:
+ * Fighter
+ * Player
+ * Enemy
+*/
+
 
 #include "common.h"
 

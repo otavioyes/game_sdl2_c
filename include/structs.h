@@ -45,6 +45,7 @@ struct Entity
     float       dy;
     int         health;
     int         reload;
+    int         type;
     int         side;
     float       angle;
     SDL_Texture *texture;

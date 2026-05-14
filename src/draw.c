@@ -28,7 +28,7 @@ static SDL_Texture *getTexture(char *name) {
     return NULL;
 }
 
-static void addTextureToCache(char *name, SDL_Texture *sdlTexture) {
+static void addTextureToCache(char *name, SDL_Texture *SsdlTexture) {
     Texture *texture;
 
     texture = malloc(sizeof(Texture));

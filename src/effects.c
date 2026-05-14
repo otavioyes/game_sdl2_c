@@ -2,20 +2,8 @@
  * effects.c
  */
 
-/*
- ** effects.c
--
-- addExplosions() OK
-- doExplosions() OK
-- drawExplosions() OK
-- addDebris() OK
-- doDebris() OK
-- drawDebris() OK
- */
-
 
 #include "common.h"
-
 #include "draw.h"
 
 extern Stage stage;
@@ -230,8 +218,7 @@ void drawDebris(void){
  * - Configurar coloração visual
  * - Definir duração do efeito
  *============================================================================*/
-void addExplosions(int x, int y, int num)/*ass. em stage.h*/
-{
+void addExplosions(int x, int y, int num)/*ass. em stage.h*/ {
     Explosion *e;
 
     int i;
@@ -327,8 +314,7 @@ void addExplosions(int x, int y, int num)/*ass. em stage.h*/
  * - Definir tempo de vida dos debris
  * - Configurar região da textura utilizada
  *============================================================================*/
-void addDebris(Entity *e) /*ass. em stage.h*/
-{
+void addDebris(Entity *e) /*ass. em stage.h*/{
     Debris *d;
 
     int x;

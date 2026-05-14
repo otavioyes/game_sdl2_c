@@ -56,6 +56,9 @@ void initPlayer(SDL_Texture *texture) {
 
     /* Define o lado da entidade */
     player->side = SIDE_PLAYER;
+
+    /* Define tipo da entidade */
+    player->type = ET_PLAYER;
 }
 
 

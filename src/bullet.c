@@ -58,6 +58,7 @@ void fireBullet(SDL_Texture *texture) {
     /* Configuração inicial do projétil */
     bullet->texture = texture;
     bullet->side = SIDE_PLAYER;
+    bullet->type = ET_PLAYER_BULLET;
     bullet->health = 1;
 
     /* Obtém dimensões da textura */

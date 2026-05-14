@@ -83,6 +83,9 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
         /* Define facção da entidade */
         enemy->side = SIDE_ALIEN;
 
+        /* Define tipo da entidade */
+        enemy->type = ET_ENEMY;
+
         /* Vida inicial do inimigo */
         enemy->health = 1;
 
@@ -184,6 +187,7 @@ void fireAlienBullet(Entity *e, SDL_Texture *texture) {
     bullet->health = 1;
     bullet->texture = texture;
     bullet->side = SIDE_ALIEN;
+    bullet->type = ET_ALIEN_BULLET;
 
     /* Obtém dimensões da textura */
     SDL_QueryTexture(bullet->texture, NULL, NULL,

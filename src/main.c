@@ -7,6 +7,9 @@
  * Fighter
  * Player
  * Enemy
+ *
+ * NOME: Classificação de entidades OU tipo de entidade (Entity Typing)
+
 */
 
 

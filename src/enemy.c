@@ -14,20 +14,18 @@ extern Stage stage;
 static int enemySpawnTimer;
 
 
-
 /*==============================================================================
  * Inicializa o sistema de inimigos da fase.
  *
  * Responsabilidades:
  * - Reiniciar temporizador de geração de inimigos
- * - Preparar sistema de spawn para nova fase
+ * - Preparar sistema de spawn para uma nova fase
  *============================================================================*/
 void initEnemies(void)
 {
     /* Reinicia contador de spawn dos inimigos */
     enemySpawnTimer = 0;
 }
-
 
 
 /*==============================================================================
@@ -40,7 +38,8 @@ void initEnemies(void)
  * - Configurar atributos iniciais do inimigo
  * - Definir movimentação e tempo de disparo
  *============================================================================*/
-void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
+void spawnEnemies(SDL_Texture *enemyTexture)
+{
     Entity *enemy;
 
     /* Atualiza temporizador de geração de inimigos */
@@ -48,6 +47,12 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
 
         /* Aloca memória para nova entidade inimiga */
         enemy = malloc(sizeof(Entity));
+
+        /* Verifica falha de alocação */
+        if (enemy == NULL) {
+            SDL_Log("malloc falhou em spawnEnemies");
+            exit(1);
+        }
 
         /* Inicializa estrutura com zero */
         memset(enemy, 0, sizeof(Entity));
@@ -64,8 +69,7 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
         enemy->texture = enemyTexture;
 
         /* Obtém dimensões da textura */
-        SDL_QueryTexture(enemy->texture, NULL, NULL,
-                         &enemy->w, &enemy->h);
+        SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
 
         /*
          * Velocidade horizontal negativa
@@ -76,9 +80,11 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
         /*
          * Pequena variação vertical aleatória
          * para criar movimentação menos previsível.
+         *
+         * O uso de 100.0f força divisão em ponto flutuante,
+         * evitando perda de precisão por divisão inteira.
          */
-        enemy->dy = -100 + rand() % 200;
-        enemy->dy /= 100;
+        enemy->dy = (-100 + (rand() % 200)) / 100.0f;
 
         /* Define facção da entidade */
         enemy->side = SIDE_ALIEN;
@@ -96,13 +102,12 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
         enemy->reload = FPS * (1 + (rand() % 3));
 
         /*
-         * Define novo tempo para próximo spawn.
+         * Define novo tempo para o próximo spawn.
          * Mantém frequência variável de inimigos.
          */
         enemySpawnTimer = 30 + (rand() % FPS);
     }
 }
-
 
 
 /*==============================================================================
@@ -115,7 +120,8 @@ void spawnsEnemies(SDL_Texture *enemyTexture) {//PASSAR A TEXTURA POR PARAMETRO
  * - Executar disparos inimigos
  * - Reproduzir efeitos sonoros de ataque
  *============================================================================*/
-void doEnemies(SDL_Texture *alienBulletTexture){
+void doEnemies(SDL_Texture *alienBulletTexture)
+{
     Entity *e;
 
     /* Percorre lista de fighters ativos */
@@ -127,8 +133,7 @@ void doEnemies(SDL_Texture *alienBulletTexture){
             /*
              * Mantém inimigo dentro dos limites verticais da tela.
              */
-            e->y = MIN(MAX(e->y, 0),
-                       SCREEN_HEIGHT - e->h);
+            e->y = MIN(MAX(e->y, 0), SCREEN_HEIGHT - e->h);
 
             /*
              * Executa disparo apenas se:
@@ -140,13 +145,18 @@ void doEnemies(SDL_Texture *alienBulletTexture){
                 /* Cria projétil inimigo */
                 fireAlienBullet(e, alienBulletTexture);
 
-                /* Reproduz efeito sonoro do disparo */
-                playerSound(SND_PLAYER_FIRE, CH_ALIEN_FIRE);
+                /*
+                 * Reproduz efeito sonoro do disparo inimigo.
+                 *
+                 * Caso ainda não exista SND_ALIEN_FIRE no enum
+                 * de sons, crie esse identificador em defs.h
+                 * e carregue o áudio correspondente em sound.c.
+                 */
+                playerSound(SND_ALIEN_FIRE, CH_ALIEN_FIRE);
             }
         }
     }
 }
-
 
 
 /*==============================================================================
@@ -161,7 +171,8 @@ void doEnemies(SDL_Texture *alienBulletTexture){
  * - Aplicar velocidade do projétil
  * - Reiniciar temporizador de recarga do inimigo
  *============================================================================*/
-void fireAlienBullet(Entity *e, SDL_Texture *texture) {
+void fireAlienBullet(Entity *e, SDL_Texture *texture)
+{
     Entity *bullet;
 
     /* Impede disparo caso jogador esteja fora do ângulo permitido */
@@ -171,6 +182,12 @@ void fireAlienBullet(Entity *e, SDL_Texture *texture) {
 
     /* Aloca memória para o projétil inimigo */
     bullet = malloc(sizeof(Entity));
+
+    /* Verifica falha de alocação */
+    if (bullet == NULL) {
+        SDL_Log("malloc falhou em fireAlienBullet");
+        exit(1);
+    }
 
     /* Inicializa estrutura com zero */
     memset(bullet, 0, sizeof(Entity));
@@ -190,8 +207,7 @@ void fireAlienBullet(Entity *e, SDL_Texture *texture) {
     bullet->type = ET_ALIEN_BULLET;
 
     /* Obtém dimensões da textura */
-    SDL_QueryTexture(bullet->texture, NULL, NULL,
-                     &bullet->w, &bullet->h);
+    SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
 
     /*
      * Centraliza projétil em relação ao inimigo
@@ -223,7 +239,6 @@ void fireAlienBullet(Entity *e, SDL_Texture *texture) {
 }
 
 
-
 /*==============================================================================
  * Verifica se o inimigo possui ângulo válido para disparar no jogador.
  *
@@ -237,7 +252,8 @@ void fireAlienBullet(Entity *e, SDL_Texture *texture) {
  * - 1 : jogador está dentro do ângulo permitido
  * - 0 : jogador está fora do ângulo permitido
  *============================================================================*/
-int canAlienShootPlayer(Entity *e) {
+int canAlienShootPlayer(Entity *e)
+{
     float enemyCenterX;
     float enemyCenterY;
 
@@ -248,7 +264,6 @@ int canAlienShootPlayer(Entity *e) {
     float dy;
 
     float length;
-
     float dot;
     float cosAngle;
 
@@ -279,32 +294,35 @@ int canAlienShootPlayer(Entity *e) {
      * Evita divisão por zero caso
      * inimigo e jogador estejam sobrepostos.
      */
-    if (length == 0) {
+    if (length == 0.0f) {
         return 1;
     }
 
     /*
-     * Vetor frontal do inimigo.
+     * Produto escalar entre:
      *
-     * Neste caso:
-     * (-1, 0) = olhando para esquerda
+     * - vetor direção até o jogador: (dx, dy)
+     * - vetor frontal do inimigo:     (-1, 0)
+     *
+     * Neste jogo, os inimigos se movem da direita para a esquerda,
+     * então consideramos que sua frente aponta para o eixo X negativo.
      */
     dot = (dx * -1.0f) + (dy * 0.0f);
 
     /*
      * Produto escalar normalizado.
      *
-     * Resultado representa o cosseno do ângulo
-     * entre direção do inimigo e direção do jogador.
+     * O resultado representa o cosseno do ângulo entre
+     * a frente do inimigo e a direção até o jogador.
      */
     cosAngle = dot / length;
 
     /*
-     * Permite disparo apenas dentro
-     * do campo de visão frontal.
+     * Permite disparo apenas quando o jogador está no campo
+     * frontal de 180 graus do inimigo.
      *
-     * Quanto menor o valor permitido,
-     * maior o ângulo de disparo aceito.
+     * cosAngle >= 0.0f significa que o jogador está à frente
+     * ou nas laterais do inimigo, mas não atrás dele.
      */
-    return cosAngle >= -0.0f;
+    return cosAngle >= 0.0f;
 }

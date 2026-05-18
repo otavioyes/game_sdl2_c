@@ -8,11 +8,15 @@
 #include "sound.h"
 #include "bullet.h"
 
-
 extern Stage stage;
 extern App app;
 
-
+/*
+ * Ponteiro global da entidade do jogador.
+ *
+ * O player é tratado como uma entidade persistente da fase,
+ * permitindo acesso simplificado pelos demais módulos.
+ */
 Entity *player;
 
 
@@ -23,27 +27,32 @@ Entity *player;
  * - Alocar memória para o player
  * - Inserir o player na lista de entidades da fase
  * - Configurar atributos iniciais
- * - Associar a textura do jogador
- * - Obter largura e altura da textura
+ * - Associar textura do jogador
+ * - Obter dimensões do sprite
+ * - Definir tipo e lado da entidade
  *============================================================================*/
-void initPlayer(SDL_Texture *texture) {
+void initPlayer(SDL_Texture *texture)
+{
     /* Aloca memória para a entidade do jogador */
     player = malloc(sizeof(Entity));
 
-    /* Verifica falha na alocação */
+    /* Valida falha de alocação */
     if (player == NULL) {
         SDL_Log("malloc falhou em initPlayer");
         exit(1);
     }
 
-    /* Zera todos os dados da estrutura */
+    /* Inicializa toda a estrutura com zero */
     memset(player, 0, sizeof(Entity));
 
-    /* Adiciona o jogador na lista de fighters da fase */
+    /*
+     * Insere o jogador no final da lista encadeada
+     * de fighters da fase.
+     */
     stage.fighterTail->next = player;
     stage.fighterTail = player;
 
-    /* Define atributos iniciais do jogador */
+    /* Configuração inicial do jogador */
     player->health = PLAYER_MAX_HEALTH;
     player->x = 100;
     player->y = 100;
@@ -51,16 +60,18 @@ void initPlayer(SDL_Texture *texture) {
     /* Associa textura do jogador */
     player->texture = texture;
 
-    /* Obtém dimensões da textura */
+    /*
+     * Obtém largura e altura do sprite
+     * diretamente da textura carregada.
+     */
     SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
 
-    /* Define o lado da entidade */
+    /* Define lado da entidade */
     player->side = SIDE_PLAYER;
 
     /* Define tipo da entidade */
     player->type = ET_PLAYER;
 }
-
 
 
 /*==============================================================================
@@ -69,20 +80,31 @@ void initPlayer(SDL_Texture *texture) {
  * Responsabilidades:
  * - Processar entrada do teclado
  * - Controlar movimentação
- * - Controlar tempo de recarga do tiro
+ * - Controlar rotação da nave
+ * - Atualizar recarga do disparo
  * - Disparar projéteis
- * - Atualizar rotação da nave
+ * - Normalizar ângulo da nave
  *============================================================================*/
-void doPlayer(SDL_Texture *bulletTexture) {
-    /* Garante que o jogador exista antes de processar lógica */
+void doPlayer(SDL_Texture *bulletTexture)
+{
+    /*
+     * Garante que a entidade do jogador exista
+     * antes de processar qualquer lógica.
+     */
     if (player == NULL) {
         return;
     }
 
-    /* Reinicia velocidade do jogador a cada frame */
-    player->dx = player->dy = 0;
+    /*
+     * Reinicia velocidade do jogador a cada frame.
+     *
+     * A movimentação é recalculada continuamente
+     * com base no input atual.
+     */
+    player->dx = 0;
+    player->dy = 0;
 
-    /* Atualiza temporizador de recarga do tiro */
+    /* Atualiza temporizador de recarga do disparo */
     if (player->reload > 0) {
         player->reload--;
     }
@@ -107,9 +129,16 @@ void doPlayer(SDL_Texture *bulletTexture) {
         player->dy = PLAYER_SPEED;
     }
 
-    /* Dispara projétil caso a recarga esteja disponível */
+    /*
+     * Dispara projéteis apenas quando o tempo
+     * de recarga estiver disponível.
+     */
     if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
+
+        /* Reproduz efeito sonoro do disparo */
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);
+
+        /* Cria projétil do jogador */
         fireBullet(bulletTexture);
     }
 
@@ -122,8 +151,22 @@ void doPlayer(SDL_Texture *bulletTexture) {
     if (app.keyboard[SDL_SCANCODE_E]) {
         player->angle += 4;
     }
-}
 
+    /*
+     * Mantém o ângulo da nave dentro do intervalo
+     * de 0 a 359 graus.
+     *
+     * Isso evita crescimento infinito do valor
+     * e possíveis problemas futuros de precisão.
+     */
+    if (player->angle >= 360) {
+        player->angle -= 360;
+    }
+
+    if (player->angle < 0) {
+        player->angle += 360;
+    }
+}
 
 
 /*==============================================================================
@@ -135,8 +178,9 @@ void doPlayer(SDL_Texture *bulletTexture) {
  * - Restringir movimentação vertical
  * - Garantir que o sprite permaneça totalmente visível
  *============================================================================*/
-void clipPlayer(void) {
-    /* Garante que o jogador exista antes de aplicar limites */
+void clipPlayer(void)
+{
+    /* Garante que o jogador exista */
     if (player == NULL) {
         return;
     }
@@ -153,8 +197,10 @@ void clipPlayer(void) {
 
     /*
      * Limite direito da tela.
-     * Subtrai a largura do sprite para evitar que o jogador
-     * ultrapasse parcialmente a área visível.
+     *
+     * Subtrai a largura do sprite para impedir
+     * que o jogador ultrapasse parcialmente
+     * a área visível.
      */
     if (player->x > SCREEN_WIDTH - player->w) {
         player->x = SCREEN_WIDTH - player->w;
@@ -162,8 +208,9 @@ void clipPlayer(void) {
 
     /*
      * Limite inferior da tela.
-     * Subtrai a altura do sprite para manter o jogador
-     * completamente visível dentro da janela.
+     *
+     * Subtrai a altura do sprite para manter
+     * o jogador completamente dentro da tela.
      */
     if (player->y > SCREEN_HEIGHT - player->h) {
         player->y = SCREEN_HEIGHT - player->h;
@@ -171,16 +218,15 @@ void clipPlayer(void) {
 }
 
 
-
 /*==============================================================================
  * Desenha a barra de vida segmentada do jogador.
  *
  * Responsabilidades:
- * - Validar existência da entidade do jogador
- * - Calcular quantidade atual de vida
- * - Renderizar fundo da barra de vida
+ * - Validar existência do jogador
+ * - Converter vida total em segmentos visuais
+ * - Renderizar fundo da barra
  * - Renderizar segmentos preenchidos e vazios
- * - Renderizar bordas de cada segmento
+ * - Renderizar bordas individuais
  *============================================================================*/
 void drawPlayerHealthBar(void)
 {
@@ -189,10 +235,10 @@ void drawPlayerHealthBar(void)
 
     int i;
 
-    /* Quantidade máxima de segmentos de vida */
+    /* Quantidade máxima de segmentos visuais */
     int maxLives = 10;
 
-    /* Quantidade atual de segmentos ativos */
+    /* Quantidade atual de segmentos preenchidos */
     int currentLives;
 
     /* Dimensões de cada segmento */
@@ -202,12 +248,23 @@ void drawPlayerHealthBar(void)
     /* Espaçamento entre segmentos */
     int gap = 4;
 
-    /* Garante que o jogador exista antes de desenhar a HUD */
+    /* Garante que o jogador exista */
     if (player == NULL) {
         return;
     }
 
-    /* Converte vida total em segmentos visuais */
+    /*
+     * Impede que valores negativos de vida
+     * afetem a renderização da HUD.
+     */
+    if (player->health < 0) {
+        player->health = 0;
+    }
+
+    /*
+     * Converte vida total em quantidade
+     * de segmentos ativos.
+     */
     currentLives = player->health / 10;
 
     /* Configuração do retângulo de fundo da barra */
@@ -220,7 +277,7 @@ void drawPlayerHealthBar(void)
     SDL_SetRenderDrawColor(app.renderer, 40, 40, 40, 255);
     SDL_RenderFillRect(app.renderer, &bg);
 
-    /* Renderiza cada segmento individual da barra */
+    /* Renderiza segmentos individuais da barra */
     for (i = 0; i < maxLives; i++) {
 
         /* Calcula posição do segmento atual */
@@ -229,7 +286,10 @@ void drawPlayerHealthBar(void)
         segment.w = segmentWidth;
         segment.h = segmentHeight;
 
-        /* Segmentos preenchidos representam vida disponível */
+        /*
+         * Segmentos preenchidos representam
+         * vida disponível.
+         */
         if (i < currentLives) {
 
             SDL_SetRenderDrawColor(app.renderer, 0, 255, 0, 255);
@@ -237,12 +297,15 @@ void drawPlayerHealthBar(void)
 
         } else {
 
-            /* Segmentos vazios representam vida perdida */
+            /*
+             * Segmentos vazios representam
+             * vida perdida.
+             */
             SDL_SetRenderDrawColor(app.renderer, 80, 80, 80, 255);
             SDL_RenderFillRect(app.renderer, &segment);
         }
 
-        /* Renderiza borda visual de cada segmento */
+        /* Renderiza borda visual do segmento */
         SDL_SetRenderDrawColor(app.renderer, 255, 255, 255, 255);
         SDL_RenderDrawRect(app.renderer, &segment);
     }

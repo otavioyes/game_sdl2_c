@@ -2,12 +2,11 @@
  * effects.c
  */
 
-
 #include "common.h"
+
 #include "draw.h"
 
 extern Stage stage;
-
 
 
 /*==============================================================================
@@ -15,49 +14,51 @@ extern Stage stage;
  *
  * Responsabilidades:
  * - Atualizar movimentação das explosões
- * - Atualizar transparência (fade out)
+ * - Reduzir transparência gradualmente
  * - Remover explosões finalizadas
  * - Liberar memória de efeitos expirados
  * - Manter integridade da lista encadeada
  *============================================================================*/
-void doExplosions(void) {
+void doExplosions(void)
+{
     Explosion *e;
     Explosion *prev;
 
-    /* Ponteiro auxiliar para manipulação segura da lista */
+    /* Ponteiro auxiliar para remoção segura na lista encadeada */
     prev = &stage.explosionHead;
 
-    /* Percorre lista de explosões ativas */
+    /* Percorre todas as explosões ativas */
     for (e = stage.explosionHead.next; e != NULL; e = e->next) {
 
-        /* Atualiza posição da explosão */
+        /* Atualiza posição da partícula */
         e->x += e->dx;
         e->y += e->dy;
 
         /*
-         * Reduz transparência gradualmente.
-         * Quando alpha chega a zero,
-         * a explosão é removida.
+         * Reduz o canal alpha gradualmente.
+         *
+         * Quando alpha chega a zero, a explosão
+         * é considerada finalizada e removida.
          */
         if (--e->a <= 0) {
 
             /*
-             * Atualiza ponteiro final da lista
-             * caso a explosão removida seja a última.
+             * Se o item removido for o último da lista,
+             * atualiza o ponteiro tail para o item anterior.
              */
             if (e == stage.explosionTail) {
                 stage.explosionTail = prev;
             }
 
-            /* Remove explosão da lista encadeada */
+            /* Remove explosão da lista */
             prev->next = e->next;
 
-            /* Libera memória da explosão */
+            /* Libera memória da explosão removida */
             free(e);
 
             /*
-             * Retorna uma posição no loop para manter
-             * iteração segura após remoção do elemento.
+             * Retorna o iterador para o item anterior
+             * para manter o loop seguro após o free.
              */
             e = prev;
         }
@@ -68,112 +69,106 @@ void doExplosions(void) {
 }
 
 
-
 /*==============================================================================
  * Renderiza efeitos de explosão ativos da fase.
  *
  * Responsabilidades:
- * - Configurar modo de blend aditivo
- * - Aplicar coloração dinâmica das explosões
- * - Aplicar transparência variável
- * - Renderizar explosões na tela
+ * - Configurar blend aditivo para brilho
+ * - Aplicar cor individual em cada explosão
+ * - Aplicar transparência individual
+ * - Renderizar partículas de explosão
  * - Restaurar estado padrão do renderer
  *============================================================================*/
-void drawExplosions(SDL_Renderer *renderer, SDL_Texture *explosionTexture) {
+void drawExplosions(SDL_Renderer *renderer, SDL_Texture *explosionTexture)
+{
     Explosion *e;
 
     /*
-     * Ativa modo de blend aditivo
-     * para criar efeito visual de brilho.
+     * Blend aditivo cria efeito de brilho,
+     * ideal para explosões, fogo e partículas luminosas.
      */
-    SDL_SetRenderDrawBlendMode(renderer,
-                               SDL_BLENDMODE_ADD);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    SDL_SetTextureBlendMode(explosionTexture, SDL_BLENDMODE_ADD);
 
-    /* Configura modo de transparência da textura */
-    SDL_SetTextureAlphaMod(explosionTexture,
-                           SDL_BLENDMODE_ADD);
+    /* Percorre todas as explosões ativas */
+    for (e = stage.explosionHead.next; e != NULL; e = e->next) {
 
-    /* Percorre lista de explosões ativas */
-    for (e = stage.explosionHead.next;
-         e != NULL;
-         e = e->next) {
+        /* Define cor individual da partícula */
+        SDL_SetTextureColorMod(explosionTexture, e->r, e->g, e->b);
 
-        /* Aplica coloração individual da explosão */
-        SDL_SetTextureColorMod(explosionTexture,
-                               e->r,
-                               e->g,
-                               e->b);
+        /* Define transparência atual da partícula */
+        SDL_SetTextureAlphaMod(explosionTexture, e->a);
 
-        /* Aplica nível atual de transparência */
-        SDL_SetTextureAlphaMod(explosionTexture,
-                               e->a);
-
-        /* Renderiza explosão */
-        blit(explosionTexture,
-             e->x,
-             e->y);
+        /* Renderiza explosão na posição atual */
+        blit(explosionTexture, e->x, e->y);
     }
 
-    /* Restaura modo padrão de renderização */
-    SDL_SetRenderDrawBlendMode(renderer,
-                               SDL_BLENDMODE_NONE);
+    /*
+     * Restaura o estado padrão para evitar que outros
+     * elementos do jogo herdem o blend aditivo.
+     */
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+    SDL_SetTextureBlendMode(explosionTexture, SDL_BLENDMODE_BLEND);
 }
 
 
-
 /*==============================================================================
- * Atualiza fragmentos (debris) ativos da fase.
+ * Atualiza fragmentos ativos da fase.
  *
  * Responsabilidades:
- * - Atualizar movimentação dos fragmentos
- * - Aplicar efeito de gravidade
- * - Atualizar tempo de vida dos debris
+ * - Atualizar posição dos debris
+ * - Aplicar gravidade simulada
+ * - Reduzir tempo de vida
  * - Remover fragmentos expirados
  * - Liberar memória utilizada
  * - Manter integridade da lista encadeada
  *============================================================================*/
-void doDebris(void){
+void doDebris(void)
+{
     Debris *d;
     Debris *prev;
 
-    /* Ponteiro auxiliar para manipulação segura da lista */
+    /* Ponteiro auxiliar para remoção segura na lista encadeada */
     prev = &stage.debrisHead;
 
-    /* Percorre lista de debris ativos */
+    /* Percorre todos os fragmentos ativos */
     for (d = stage.debrisHead.next; d != NULL; d = d->next) {
 
-        /* Atualiza posição baseada na velocidade atual */
+        /* Atualiza posição do fragmento */
         d->x += d->dx;
         d->y += d->dy;
 
         /*
-         * Aplica aceleração vertical simulando gravidade.
+         * Aplica aceleração vertical,
+         * simulando gravidade no fragmento.
          */
-        d->dy += 0.5;
+        /*d->dy += 0.5f;*/
 
         /*
-         * Reduz tempo de vida do fragmento.
-         * Quando chegar a zero, o debris é removido.
+         * Reduz tempo de vida.
+         *
+         * Quando life chega a zero, o fragmento
+         * é removido da fase.
          */
         if (--d->life <= 0) {
 
             /*
-             * Atualiza ponteiro final da lista
-             * caso o debris removido seja o último elemento.
+             * Se o debris removido for o último da lista,
+             * atualiza o ponteiro tail para o item anterior.
              */
             if (d == stage.debrisTail) {
                 stage.debrisTail = prev;
             }
 
-            /* Remove debris da lista encadeada */
+            /* Remove debris da lista */
             prev->next = d->next;
 
-            /* Libera memória do fragmento */
+            /* Libera memória do fragmento removido */
             free(d);
 
             /*
-             * Retorna uma posição no loop para manter
-             * iteração segura após remoção.
+             * Retorna o iterador para o item anterior
+             * para manter o loop seguro após o free.
              */
             d = prev;
         }
@@ -184,27 +179,30 @@ void doDebris(void){
 }
 
 
-
 /*==============================================================================
- * Renderiza fragmentos (debris) ativos da fase.
+ * Renderiza fragmentos ativos da fase.
  *
  * Responsabilidades:
- * - Percorrer lista de debris ativos
- * - Renderizar fragmentos individuais na tela
+ * - Percorrer lista de debris
+ * - Renderizar apenas a região correta da textura original
+ * - Exibir fragmentos visuais da entidade destruída
  *============================================================================*/
-void drawDebris(void){
+void drawDebris(void)
+{
     Debris *d;
 
-    /* Percorre lista de fragmentos ativos */
-    for (d = stage.debrisHead.next;
-         d != NULL;
-         d = d->next) {
+    /* Percorre todos os fragmentos ativos */
+    for (d = stage.debrisHead.next; d != NULL; d = d->next) {
 
-        /* Renderiza fragmento na posição atual */
-        blit(d->texture, d->x, d->y);
+        /*
+         * Renderiza apenas o recorte da textura original.
+         *
+         * Isso cria o efeito visual de sprite quebrado
+         * em pedaços menores.
+         */
+        blitRect(d->texture, &d->rect, d->x, d->y);
     }
 }
-
 
 
 /*==============================================================================
@@ -213,17 +211,17 @@ void drawDebris(void){
  * Responsabilidades:
  * - Alocar memória para partículas de explosão
  * - Inserir explosões na lista encadeada
- * - Configurar posição inicial das partículas
+ * - Configurar posição inicial
  * - Aplicar movimentação aleatória
  * - Configurar coloração visual
- * - Definir duração do efeito
+ * - Definir duração do efeito via alpha
  *============================================================================*/
-void addExplosions(int x, int y, int num)/*ass. em stage.h*/ {
+void addExplosions(int x, int y, int num)
+{
     Explosion *e;
-
     int i;
 
-    /* Cria quantidade solicitada de partículas */
+    /* Cria a quantidade solicitada de partículas */
     for (i = 0; i < num; i++) {
 
         /* Aloca memória para nova explosão */
@@ -238,27 +236,25 @@ void addExplosions(int x, int y, int num)/*ass. em stage.h*/ {
         /* Inicializa estrutura com zero */
         memset(e, 0, sizeof(Explosion));
 
-        /* Adiciona explosão na lista encadeada */
+        /* Adiciona explosão ao final da lista encadeada */
         stage.explosionTail->next = e;
         stage.explosionTail = e;
 
         /*
-         * Aplica pequena variação de posição
-         * para criar espalhamento visual da explosão.
+         * Aplica pequena variação de posição,
+         * criando espalhamento visual da explosão.
          */
         e->x = x + (rand() % 8) - (rand() % 8);
         e->y = y + (rand() % 8) - (rand() % 8);
 
         /*
-         * Define movimentação aleatória das partículas
-         * para simular dispersão da explosão.
+         * Define movimentação aleatória.
+         *
+         * A divisão por 10.0f força cálculo em ponto flutuante,
+         * evitando perda de movimento por divisão inteira.
          */
-        e->dx = (rand() % 6) - (rand() % 6);
-        e->dy = (rand() % 6) - (rand() % 6);
-
-        /* Reduz intensidade da movimentação */
-        e->dx /= 10;
-        e->dy /= 10;
+        e->dx = ((rand() % 6) - (rand() % 6)) / 10.0f;
+        e->dy = ((rand() % 6) - (rand() % 6)) / 10.0f;
 
         /*
          * Define coloração aleatória da explosão.
@@ -293,28 +289,30 @@ void addExplosions(int x, int y, int num)/*ass. em stage.h*/ {
         }
 
         /*
-         * Define duração da explosão
-         * utilizando canal alpha.
+         * Define duração visual da explosão.
+         *
+         * O valor alpha também controla o tempo
+         * até a partícula desaparecer.
          */
         e->a = 40 + (rand() % 60);
     }
 }
 
 
-
 /*==============================================================================
- * Cria fragmentos (debris) a partir de uma entidade destruída.
+ * Cria fragmentos a partir de uma entidade destruída.
  *
  * Responsabilidades:
- * - Dividir sprite da entidade em fragmentos
- * - Alocar memória para debris
+ * - Dividir sprite da entidade em regiões menores
+ * - Alocar memória para cada fragmento
  * - Inserir debris na lista encadeada
- * - Configurar posição inicial dos fragmentos
+ * - Configurar posição inicial
  * - Aplicar movimentação aleatória
- * - Definir tempo de vida dos debris
- * - Configurar região da textura utilizada
+ * - Definir tempo de vida
+ * - Armazenar recorte da textura original
  *============================================================================*/
-void addDebris(Entity *e) /*ass. em stage.h*/{
+void addDebris(Entity *e)
+{
     Debris *d;
 
     int x;
@@ -324,54 +322,64 @@ void addDebris(Entity *e) /*ass. em stage.h*/{
     int h;
 
     /*
-     * Divide sprite da entidade em 4 partes.
+     * Divide o sprite da entidade em 4 partes.
      */
-    w = e->w / 2;
-    h = e->h / 2;
+    w = e->w / 4;
+    h = e->h / 4;
 
     /*
-     * Percorre regiões da textura para gerar
-     * múltiplos fragmentos da entidade destruída.
+     * Percorre as regiões da textura original
+     * para gerar múltiplos fragmentos visuais.
      */
-    for (y = 0; y <= h; y += h) {
+    for (y = 0; y < e->h; y += h) {
 
-        for (x = 0; x <= w; x += w) {
+        for (x = 0; x < e->w; x += w) {
 
             /* Aloca memória para novo debris */
             d = malloc(sizeof(Debris));
 
+            /* Verifica falha de alocação */
+            if (d == NULL) {
+                SDL_Log("malloc falhou em addDebris");
+                exit(1);
+            }
+
             /* Inicializa estrutura com zero */
             memset(d, 0, sizeof(Debris));
 
-            /* Adiciona debris na lista encadeada */
+            /* Adiciona debris ao final da lista encadeada */
             stage.debrisTail->next = d;
             stage.debrisTail = d;
 
             /*
-             * Posiciona fragmento no centro
-             * da entidade destruída.
+             * Usa a mesma textura da entidade destruída.
+             *
+             * O debris renderiza apenas uma região dessa textura,
+             * definida pelo SDL_Rect abaixo.
+             */
+            d->texture = e->texture;
+
+            /*
+             * Posiciona fragmento no centro da entidade destruída.
              */
             d->x = e->x + e->w / 2;
             d->y = e->y + e->h / 2;
 
             /*
-             * Define movimentação aleatória
-             * para efeito de explosão.
+             * Aplica pequeno deslocamento aleatório,
+             * mantendo os destroços próximos da explosão.
+             * */
+            d->dx = ((rand() % 5) - 2) / 2.0f;
+            d->dy = ((rand() % 5) - 2) / 2.0f;
+
+            /* Define duração menor do fragmento
+             * evitando poluicao visual na tela
              */
-            d->dx = (rand() % 5) - (rand() % 5);
+            d->life = FPS * 1;
 
             /*
-             * Impulsiona debris para cima
-             * simulando dispersão da explosão.
-             */
-            d->dy = -(5 + (rand() % 12));
-
-            /* Define duração do fragmento */
-            d->life = FPS * 2;
-
-            /*
-             * Define região da textura original
-             * utilizada pelo fragmento.
+             * Define qual parte da textura original
+             * será renderizada por este debris.
              */
             d->rect.x = x;
             d->rect.y = y;

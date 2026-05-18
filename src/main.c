@@ -1,16 +1,6 @@
 /*
  * main.c
  */
-/**
-## Próximo passo é criar um entity.c para
-## as seguintes responsabilidades:
- * Fighter
- * Player
- * Enemy
- *
- * NOME: Classificação de entidades OU tipo de entidade (Entity Typing)
-
-*/
 
 
 #include "common.h"
@@ -122,7 +112,7 @@ int main(int argc, char *argv[])
  * - Corrigir erro acumulado de tempo
  * - Manter sincronização estável do loop
  *============================================================================*/
-void capFrameRate(long *then, float *remainder)
+static void capFrameRate(long *then, float *remainder)
 {
     long wait;
 

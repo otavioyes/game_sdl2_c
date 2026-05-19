@@ -1,12 +1,6 @@
 /*
  * bullet.c
  */
-/*
- ** hud.c
-- drawHud()
- * */
-
-
 
 #include "common.h"
 
@@ -21,7 +15,6 @@
 extern Stage stage;
 
 
-
 /*==============================================================================
  * Cria um novo projétil disparado pelo jogador.
  *
@@ -33,10 +26,9 @@ extern Stage stage;
  * - Posicionar projétil no centro do jogador
  * - Aplicar tempo de recarga do disparo
  *============================================================================*/
-void fireBullet(SDL_Texture *texture) {
+void fireBullet(SDL_Texture *texture)
+{
     Entity *bullet;
-
-    /* Ângulo convertido para radianos */
     float angleRad;
 
     /* Aloca memória para a nova bala */
@@ -74,8 +66,8 @@ void fireBullet(SDL_Texture *texture) {
      * Calcula velocidade horizontal e vertical
      * baseada no ângulo atual da nave.
      *
-     * cos() controla eixo X
-     * sin() controla eixo Y
+     * cosf() controla o eixo X.
+     * sinf() controla o eixo Y.
      */
     bullet->dx = cosf(angleRad) * PLAYER_BULLET_SPEED;
     bullet->dy = sinf(angleRad) * PLAYER_BULLET_SPEED;
@@ -95,7 +87,6 @@ void fireBullet(SDL_Texture *texture) {
 }
 
 
-
 /*==============================================================================
  * Atualiza lógica dos projéteis ativos.
  *
@@ -106,7 +97,8 @@ void fireBullet(SDL_Texture *texture) {
  * - Liberar memória de projéteis destruídos
  * - Manter integridade da lista encadeada
  *============================================================================*/
-void doBullet(SDL_Texture *pointsTexture) {
+void doBullet(SDL_Texture *pointsTexture)
+{
     Entity *b;
     Entity *prev;
 
@@ -158,8 +150,6 @@ void doBullet(SDL_Texture *pointsTexture) {
 }
 
 
-
-
 /*==============================================================================
  * Renderiza todos os projéteis ativos da fase.
  *
@@ -177,14 +167,11 @@ void drawBullets(void)
 
         /*
          * Projéteis do jogador utilizam rotação
-         * baseada no ângulo atual do disparo.
+         * baseada no ângulo do disparo.
          */
         if (b->side == SIDE_PLAYER) {
-
             blitRotated(b->texture, b->x, b->y, b->angle);
-
         } else {
-
             /* Projéteis inimigos utilizam renderização padrão */
             blit(b->texture, b->x, b->y);
         }
@@ -192,23 +179,24 @@ void drawBullets(void)
 }
 
 
-
 /*==============================================================================
- * Verifica colisão entre um projétil e entidades da fase.
+ * Verifica e processa colisão entre um projétil e entidades da fase.
  *
  * Responsabilidades:
  * - Detectar colisão entre projétil e fighters
  * - Aplicar dano na entidade atingida
- * - Gerar efeitos visuais da colisão
- * - Gerar debris da entidade destruída
- * - Reproduzir efeitos sonoros
- * - Criar cápsulas de pontuação para inimigos
+ * - Remover projétil após impacto
+ * - Gerar efeito visual de impacto
+ * - Gerar debris apenas quando a entidade for destruída
+ * - Criar cápsula de pontuação apenas ao destruir inimigos
+ * - Reproduzir efeitos sonoros de morte quando necessário
  *
  * Retorno:
  * - 1 : colisão detectada
  * - 0 : nenhuma colisão
  *============================================================================*/
-int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture) {
+int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture)
+{
     Entity *e;
 
     /* Percorre lista de entidades da fase */
@@ -230,7 +218,6 @@ int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture) {
              * em relação aos inimigos.
              */
             if (e == player) {
-
                 e->health -= 10;
 
                 /* Impede valores negativos de vida */
@@ -239,36 +226,44 @@ int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture) {
                 }
 
             } else {
-
                 /* Inimigos recebem dano padrão */
                 e->health--;
             }
 
-            /* Cria efeito visual de explosão */
+            /*
+             * Cria efeito visual básico no ponto de impacto.
+             * Este efeito ocorre em qualquer colisão.
+             */
             addExplosions(e->x, e->y, 5);
 
-            /* Gera fragmentos da entidade destruída */
-            addDebris(e);
-
             /*
-             * Reproduz efeitos sonoros distintos
-             * para jogador e inimigos.
+             * Efeitos de destruição só acontecem quando
+             * a entidade atingida fica sem vida.
              */
-            if (e == player) {
+            if (e->health <= 0) {
 
-                playerSound(SND_ALIEN_DIE, CH_PLAYER);
+                /* Gera fragmentos da entidade destruída */
+                addDebris(e);
 
-            } else {
+                if (e == player) {
+                    /*
+                     * Reproduz som associado à morte/dano final
+                     * do jogador.
+                     */
+                    playerSound(SND_ALIEN_DIE, CH_PLAYER);
 
-                /*
-                 * Gera cápsula de pontos no centro
-                 * da entidade inimiga destruída.
-                 */
-                addPointsPod(e->x + e->w / 2,
-                             e->y + e->h / 2,
-                             pointsTexture);
+                } else {
+                    /*
+                     * Gera cápsula de pontos no centro
+                     * da entidade inimiga destruída.
+                     */
+                    addPointsPod(e->x + e->w / 2,
+                                 e->y + e->h / 2,
+                                 pointsTexture);
 
-                playerSound(SND_ALIEN_DIE, CH_ANY);
+                    /* Reproduz som de destruição do inimigo */
+                    playerSound(SND_ALIEN_DIE, CH_ANY);
+                }
             }
 
             /* Colisão detectada */

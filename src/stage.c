@@ -166,7 +166,7 @@ static void logic(void)
     doDebris();
     doPointsPods();
 
-    spawnsEnemies(enemyTexture);
+    spawnEnemies(enemyTexture);
     clipPlayer();
 
     /*

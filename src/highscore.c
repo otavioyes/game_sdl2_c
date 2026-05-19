@@ -9,7 +9,6 @@
 #include "stage.h"
 #include "text.h"
 #include "title.h"
-#include "time.h"
 
 extern App        app;
 extern Highscores highscores;
@@ -22,11 +21,21 @@ static void doNameInput(void);
 static void drawNameInput(void);
 
 static Highscore *newHighscore;
-static int cursorBlink;
-static int lastScore;
+static int        cursorBlink;
+static int        lastScore;
 
 
-void initHighscoreTable(void) {
+/*==============================================================================
+ * Inicializa a tabela de highscores.
+ *
+ * Responsabilidades:
+ * - Zerar a estrutura global de pontuações
+ * - Inicializar todos os scores como vazios
+ * - Limpar marcação de score recente
+ * - Reiniciar estado de input de nome
+ *============================================================================*/
+void initHighscoreTable(void)
+{
     int i;
 
     memset(&highscores, 0, sizeof(highscores));
@@ -42,34 +51,78 @@ void initHighscoreTable(void) {
     lastScore    = 0;
 }
 
+
+/*==============================================================================
+ * Inicializa a tela de highscores.
+ *
+ * Responsabilidades:
+ * - Definir delegates de lógica e renderização
+ * - Limpar estado atual do teclado
+ * - Reiniciar cursor visual de input
+ *============================================================================*/
 void initHighscores(void)
 {
     app.delegate.logic = logic;
     app.delegate.draw  = draw;
 
+    /*
+     * Limpa teclado para evitar que um ENTER vindo da fase
+     * seja reaproveitado automaticamente nesta tela.
+     */
     memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
 
     cursorBlink = 0;
 }
 
-static void logic(void){
+
+/*==============================================================================
+ * Atualiza a lógica da tela de highscores.
+ *
+ * Responsabilidades:
+ * - Atualizar background e starfield
+ * - Processar input de nome quando houver novo highscore
+ * - Permitir retorno para nova partida após exibir ranking
+ * - Atualizar animação do cursor piscante
+ *============================================================================*/
+static void logic(void)
+{
     doBackground();
     doStarfield();
 
     if (newHighscore != NULL) {
         doNameInput();
+
     } else {
+        /*
+         * Após o nome ser confirmado, ENTER inicia nova partida.
+         */
         if (app.keyboard[SDL_SCANCODE_RETURN]) {
             app.keyboard[SDL_SCANCODE_RETURN] = 0;
             initStage();
         }
     }
 
+    /*
+     * Atualiza contador usado para piscar o cursor
+     * durante a digitação do nome.
+     */
     if (++cursorBlink >= FPS) {
         cursorBlink = 0;
     }
 }
 
+
+/*==============================================================================
+ * Processa entrada de texto para o nome do jogador.
+ *
+ * Responsabilidades:
+ * - Ler caracteres digitados via app.inputText
+ * - Converter caracteres para maiúsculo
+ * - Respeitar limite máximo do nome
+ * - Processar BACKSPACE
+ * - Confirmar nome com ENTER
+ * - Usar nome padrão caso o jogador confirme vazio
+ *============================================================================*/
 static void doNameInput(void)
 {
     int  i;
@@ -86,15 +139,28 @@ static void doNameInput(void)
     n = strlen(newHighscore->name);
     inputLen = strlen(app.inputText);
 
+    /*
+     * Processa todos os caracteres recebidos neste frame.
+     */
     for (i = 0; i < inputLen; i++) {
         c = toupper(app.inputText[i]);
 
+        /*
+         * Aceita caracteres imprimíveis básicos e impede
+         * escrita além do limite do buffer.
+         */
         if (n < MAX_SCORE_NAME_LENGTH - 1 && c >= ' ' && c <= 'Z') {
             newHighscore->name[n++] = c;
             newHighscore->name[n] = '\0';
         }
     }
 
+    /*
+     * Remove último caractere digitado.
+     *
+     * A tecla é consumida para evitar múltiplas remoções
+     * em apenas um frame de input.
+     */
     if (n > 0 && app.keyboard[SDL_SCANCODE_BACKSPACE]) {
         newHighscore->name[--n] = '\0';
         app.keyboard[SDL_SCANCODE_BACKSPACE] = 0;
@@ -102,29 +168,52 @@ static void doNameInput(void)
 
     /*
      * ENTER confirma o nome.
-     * Depois disso, newHighscore vira NULL e a tela passa
-     * automaticamente para drawHighscores().
+     *
+     * O controle enterPressed evita múltiplas confirmações
+     * enquanto a tecla estiver pressionada.
      */
     if (app.keyboard[SDL_SCANCODE_RETURN]) {
         if (!enterPressed) {
+
+            /*
+             * Nome padrão usado quando o jogador confirma
+             * sem digitar nenhum caractere.
+             */
             if (n == 0) {
                 STRNCPY(newHighscore->name, "PLAYER", MAX_SCORE_NAME_LENGTH);
             }
 
+            /*
+             * Finaliza modo de input.
+             *
+             * A partir daqui, a tela passa a desenhar
+             * diretamente a tabela de highscores.
+             */
             newHighscore = NULL;
 
             /*
-             * Consome o ENTER para evitar que o mesmo ENTER
+             * Consome ENTER para impedir que a mesma tecla
              * confirme o nome e já inicie uma nova partida.
              */
             app.keyboard[SDL_SCANCODE_RETURN] = 0;
         }
 
         enterPressed = 1;
+
     } else {
         enterPressed = 0;
     }
 }
+
+
+/*==============================================================================
+ * Renderiza a tela de highscores.
+ *
+ * Responsabilidades:
+ * - Desenhar background e starfield
+ * - Exibir input de nome quando houver novo score
+ * - Exibir tabela de highscores após confirmação
+ *============================================================================*/
 static void draw(void)
 {
     drawBackground();
@@ -137,6 +226,17 @@ static void draw(void)
     }
 }
 
+
+/*==============================================================================
+ * Renderiza interface de digitação do nome.
+ *
+ * Responsabilidades:
+ * - Exibir título de novo recorde
+ * - Exibir instruções para o jogador
+ * - Exibir nome digitado
+ * - Renderizar cursor piscante
+ * - Informar confirmação por ENTER
+ *============================================================================*/
 static void drawNameInput(void)
 {
     SDL_Rect r;
@@ -156,6 +256,9 @@ static void drawNameInput(void)
              TEXT_CENTER,
              newHighscore->name);
 
+    /*
+     * Desenha cursor piscante ao final do nome.
+     */
     if (cursorBlink < FPS / 2) {
         r.x = ((SCREEN_WIDTH / 2) +
                (strlen(newHighscore->name) * GLYPH_WIDTH) / 2) + 5;
@@ -170,13 +273,28 @@ static void drawNameInput(void)
     drawText(SCREEN_WIDTH / 2, 625,
              255, 255, 255,
              TEXT_CENTER,
-             "PRESSIONE ENTER QUANDO TERMINAR");
+             "PRESSIONE ENTER PARA CONFIRMAR");
 }
 
-static void drawHighscores(void){
+
+/*==============================================================================
+ * Renderiza a tabela de highscores.
+ *
+ * Responsabilidades:
+ * - Exibir título da tela
+ * - Mostrar score da última partida
+ * - Listar pontuações registradas
+ * - Destacar pontuação mais recente
+ * - Exibir mensagem quando não houver pontuações
+ * - Exibir instrução para iniciar nova partida
+ *============================================================================*/
+static void drawHighscores(void)
+{
     int i;
     int y;
-    int r, g, b;
+    int r;
+    int g;
+    int b;
     int hasScore;
 
     y = 180;
@@ -193,6 +311,9 @@ static void drawHighscores(void){
              "SCORE DA PARTIDA: %03d",
              lastScore);
 
+    /*
+     * Percorre a tabela exibindo apenas pontuações válidas.
+     */
     for (i = 0; i < NUM_HIGHSCORES; i++) {
         if (highscores.highscore[i].score <= 0) {
             continue;
@@ -204,6 +325,9 @@ static void drawHighscores(void){
         g = 255;
         b = 255;
 
+        /*
+         * Destaca visualmente o score mais recente.
+         */
         if (highscores.highscore[i].recent) {
             b = 0;
         }
@@ -232,43 +356,98 @@ static void drawHighscores(void){
              "PRESSIONE ENTER PARA JOGAR NOVAMENTE");
 }
 
+
+/*==============================================================================
+ * Adiciona uma nova pontuação à tabela de highscores.
+ *
+ * Responsabilidades:
+ * - Guardar score da última partida
+ * - Copiar scores atuais para uma tabela temporária
+ * - Inserir novo score
+ * - Ordenar pontuações em ordem decrescente
+ * - Manter apenas os melhores resultados
+ * - Marcar o score recém-adicionado como recente
+ *============================================================================*/
 void addHighscore(int score)
 {
     int i;
-    Highscore newHighscores[NUM_HIGHSCORES + 1];
+    Highscore tempHighscores[NUM_HIGHSCORES + 1];
 
     lastScore = score;
 
-    memset(newHighscores, 0, sizeof(Highscore) * (NUM_HIGHSCORES + 1));
+    memset(tempHighscores, 0, sizeof(Highscore) * (NUM_HIGHSCORES + 1));
 
+    /*
+     * Copia highscores existentes para tabela temporária.
+     * A marcação recent é limpa para que apenas o novo score
+     * seja destacado após a ordenação.
+     */
     for (i = 0; i < NUM_HIGHSCORES; i++) {
-        newHighscores[i] = highscores.highscore[i];
-        newHighscores[i].recent = 0;
+        tempHighscores[i] = highscores.highscore[i];
+        tempHighscores[i].recent = 0;
     }
 
-    newHighscores[NUM_HIGHSCORES].score = score;
-    newHighscores[NUM_HIGHSCORES].recent = 1;
+    /*
+     * Insere novo score no slot extra.
+     *
+     * O nome será preenchido posteriormente pela tela
+     * de input, caso o score entre no top ranking.
+     */
+    tempHighscores[NUM_HIGHSCORES].score = score;
+    tempHighscores[NUM_HIGHSCORES].name[0] = '\0';
+    tempHighscores[NUM_HIGHSCORES].recent = 1;
 
-    qsort(newHighscores,
+    /*
+     * Ordena do maior score para o menor score.
+     */
+    qsort(tempHighscores,
           NUM_HIGHSCORES + 1,
           sizeof(Highscore),
           highscoreComparator);
 
     newHighscore = NULL;
 
+    /*
+     * Copia apenas os melhores scores de volta
+     * para a tabela principal.
+     */
     for (i = 0; i < NUM_HIGHSCORES; i++) {
-        highscores.highscore[i] = newHighscores[i];
+        highscores.highscore[i] = tempHighscores[i];
 
+        /*
+         * Se o novo score ficou dentro do ranking,
+         * entra no modo de digitação de nome.
+         */
         if (highscores.highscore[i].recent) {
             newHighscore = &highscores.highscore[i];
         }
     }
 }
 
+
+/*==============================================================================
+ * Compara duas pontuações para ordenação decrescente.
+ *
+ * Retorno:
+ * - positivo : segundo score vem antes do primeiro
+ * - negativo : primeiro score vem antes do segundo
+ * - zero     : scores equivalentes
+ *============================================================================*/
 static int highscoreComparator(const void *a, const void *b)
 {
-    const Highscore *h1 = (const Highscore *)a;
-    const Highscore *h2 = (const Highscore *)b;
+    const Highscore *h1;
+    const Highscore *h2;
 
-    return h2->score - h1->score;
+    h1 = (const Highscore *)a;
+    h2 = (const Highscore *)b;
+
+    if (h2->score > h1->score) {
+        return 1;
+    }
+
+    if (h2->score < h1->score) {
+        return -1;
+    }
+
+    return 0;
 }

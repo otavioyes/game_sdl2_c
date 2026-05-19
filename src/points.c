@@ -13,15 +13,15 @@ extern Stage stage;
 
 
 /*==============================================================================
- * Atualiza cápsulas de pontos (points pods) da fase.
+ * Atualiza cápsulas de pontos ativas da fase.
  *
  * Responsabilidades:
  * - Atualizar movimentação das cápsulas
  * - Aplicar colisão com limites da tela
  * - Detectar coleta pelo jogador
- * - Atualizar pontuação
- * - Reproduzir efeitos sonoros
- * - Remover cápsulas expiradas
+ * - Atualizar pontuação da fase
+ * - Reproduzir efeito sonoro de coleta
+ * - Remover cápsulas expiradas ou coletadas
  * - Liberar memória utilizada
  * - Manter integridade da lista encadeada
  *============================================================================*/
@@ -30,15 +30,21 @@ void doPointsPods(void)
     Entity *e;
     Entity *prev;
 
-    /* Ponteiro auxiliar para manipulação segura da lista */
+    /* Ponteiro auxiliar para manipulação segura da lista encadeada */
     prev = &stage.pointsHead;
 
-    /* Percorre lista de cápsulas ativas */
+    /* Percorre todas as cápsulas de pontos ativas */
     for (e = stage.pointsHead.next; e != NULL; e = e->next) {
+
+        /* Atualiza posição da cápsula */
+        e->x += e->dx;
+        e->y += e->dy;
 
         /*
          * Colisão com limite esquerdo da tela.
-         * Inverte direção horizontal ao colidir.
+         *
+         * Quando a cápsula encosta na borda,
+         * sua direção horizontal é invertida.
          */
         if (e->x < 0) {
             e->x = 0;
@@ -69,10 +75,6 @@ void doPointsPods(void)
             e->dy = -e->dy;
         }
 
-        /* Atualiza posição da cápsula */
-        e->x += e->dx;
-        e->y += e->dy;
-
         /*
          * Detecta coleta da cápsula pelo jogador.
          */
@@ -93,7 +95,9 @@ void doPointsPods(void)
 
         /*
          * Reduz tempo de vida da cápsula.
-         * Remove quando chegar a zero.
+         *
+         * Quando health chega a zero, a cápsula
+         * é removida da lista.
          */
         if (--e->health <= 0) {
 
@@ -108,12 +112,12 @@ void doPointsPods(void)
             /* Remove cápsula da lista encadeada */
             prev->next = e->next;
 
-            /* Libera memória da entidade */
+            /* Libera memória da entidade removida */
             free(e);
 
             /*
              * Retorna uma posição no loop para manter
-             * iteração segura após remoção.
+             * iteração segura após remoção do elemento.
              */
             e = prev;
         }
@@ -124,78 +128,86 @@ void doPointsPods(void)
 }
 
 
-
 /*==============================================================================
- * Renderiza cápsulas de pontos (points pods) ativas da fase.
+ * Renderiza cápsulas de pontos ativas da fase.
  *
  * Responsabilidades:
  * - Percorrer lista de cápsulas ativas
- * - Aplicar efeito visual de piscagem
+ * - Aplicar efeito visual de piscagem próximo do fim da vida
  * - Renderizar cápsulas visíveis na tela
  *============================================================================*/
-void drawPointsPods(void) {
+void drawPointsPods(void)
+{
     Entity *e;
 
-    /* Percorre lista de cápsulas de pontos */
-    for (e = stage.pointsHead.next;
-         e != NULL;
-         e = e->next) {
+    /* Percorre todas as cápsulas de pontos ativas */
+    for (e = stage.pointsHead.next; e != NULL; e = e->next) {
 
         /*
          * Mantém cápsula sempre visível no início da vida
-         * e aplica efeito de piscagem próximo do desaparecimento.
+         * e aplica piscagem quando estiver próxima de expirar.
          */
         if (e->health > (FPS * 2) ||
             e->health % 12 < 6) {
 
             /* Renderiza cápsula na posição atual */
-            blit(e->texture,
-                 e->x,
-                 e->y);
+            blit(e->texture, e->x, e->y);
         }
     }
 }
 
 
-
 /*==============================================================================
- * Cria uma cápsula de pontos (points pod).
+ * Cria uma cápsula de pontos.
  *
  * Responsabilidades:
  * - Alocar memória para a entidade
+ * - Validar falha de alocação
  * - Inserir cápsula na lista de pontos
  * - Configurar posição inicial
- * - Definir movimentação aleatória
+ * - Definir movimentação leve e aleatória
  * - Configurar tempo de vida
  * - Associar textura da cápsula
  * - Centralizar renderização na posição informada
  *============================================================================*/
-void addPointsPod(int x, int y, SDL_Texture *pointsTexture) {
+void addPointsPod(int x, int y, SDL_Texture *pointsTexture)
+{
     Entity *e;
 
     /* Aloca memória para nova cápsula */
     e = malloc(sizeof(Entity));
 
+    /* Verifica falha de alocação */
+    if (e == NULL) {
+        SDL_Log("malloc falhou em addPointsPod");
+        exit(1);
+    }
+
     /* Inicializa estrutura com zero */
     memset(e, 0, sizeof(Entity));
 
-    /* Adiciona cápsula na lista encadeada */
+    /* Adiciona cápsula ao final da lista encadeada */
     stage.pointsTail->next = e;
     stage.pointsTail = e;
 
-    /* Define posição inicial */
+    /* Define posição inicial da cápsula */
     e->x = x;
     e->y = y;
 
     /*
-     * Define movimentação aleatória
-     * para criar dispersão visual.
+     * Define movimentação leve em todas as direções.
+     *
+     * Isso cria sensação de flutuação espacial,
+     * evitando movimento artificial apenas para a esquerda.
      */
-    e->dx = -(rand() % 5);
-    e->dy = (rand() % 5) - (rand() % 5);
+    e->dx = ((rand() % 5) - 2) / 2.0f;
+    e->dy = ((rand() % 5) - 2) / 2.0f;
 
     /* Define tempo de vida da cápsula */
     e->health = FPS * 10;
+
+    /* Define tipo da entidade, caso usado para debug ou lógica futura */
+    e->type = ET_POINTS_POD;
 
     /* Associa textura da cápsula */
     e->texture = pointsTexture;

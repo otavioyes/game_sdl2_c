@@ -1,39 +1,42 @@
 /*
  * structs.h
  *
- * Estruturas principais utilizadas pelo jogo.
+ * Define as estruturas centrais utilizadas pela aplicação.
  *
- * Responsabilidades:
- * - Definir entidades do gameplay
- * - Definir estruturas de renderização
- * - Definir gerenciamento de memória/listas
- * - Centralizar dados compartilhados do jogo
+ * Este arquivo representa a base de dados compartilhada
+ * entre os principais sistemas do jogo:
+ * - aplicação
+ * - entidades
+ * - fase
+ * - efeitos visuais
+ * - cache de texturas
+ * - highscores
  */
 
 
 /*==============================================================================
  * Forward declarations
+ *
+ * Permitem que ponteiros para estruturas sejam usados antes
+ * da definição completa da struct.
  *============================================================================*/
-
-/* Estrutura base de entidades do jogo */
 typedef struct Entity Entity;
-
-/* Estrutura de partículas de explosão */
 typedef struct Explosion Explosion;
-
-/* Estrutura de fragmentos visuais */
 typedef struct Debris Debris;
-
-/* Estrutura de cache de texturas */
 typedef struct Texture Texture;
-
 
 
 /*==============================================================================
  * Delegate
  *
- * Responsável por armazenar ponteiros de funções
- * do loop principal da aplicação.
+ * Armazena ponteiros para as funções principais do estado atual.
+ *
+ * Esse padrão permite alternar entre telas diferentes, como:
+ * - title screen
+ * - gameplay
+ * - highscore
+ *
+ * Cada estado define sua própria função de lógica e renderização.
  *============================================================================*/
 typedef struct
 {
@@ -43,122 +46,146 @@ typedef struct
 } Delegate;
 
 
-
 /*==============================================================================
  * Texture
  *
- * Estrutura utilizada para cache de texturas carregadas.
+ * Nó de lista encadeada utilizado para cache de texturas.
+ *
+ * Evita carregar a mesma imagem múltiplas vezes durante a execução.
  *============================================================================*/
 struct Texture
 {
-    char            name[MAX_NAME_LENGTH];
-    SDL_Texture     *texture;
-    Texture         *next;
+    char        name[MAX_NAME_LENGTH];
+    SDL_Texture *texture;
+    Texture    *next;
 };
-
 
 
 /*==============================================================================
  * App
  *
- * Estrutura principal da aplicação.
+ * Estrutura global da aplicação.
  *
  * Responsabilidades:
- * - Gerenciar janela e renderer SDL
- * - Controlar input do teclado
- * - Armazenar delegates do game loop
- * - Gerenciar cache de texturas
+ * - Armazenar janela SDL
+ * - Armazenar renderer SDL
+ * - Controlar estado atual via delegate
+ * - Guardar cache de texturas
+ * - Guardar texto digitado no frame atual
+ * - Guardar estado das teclas
  *============================================================================*/
 typedef struct
 {
-    SDL_Renderer    *renderer;
-    SDL_Window      *window;
-    Delegate        delegate;
-    int             keyboard[MAX_KEYBOARD_KEYS];
-    Texture         textureHead;
-    Texture         *textureTail;
-    char            inputText[MAX_LINE_LENGTH];
-} App;
+    SDL_Renderer *renderer;
+    SDL_Window   *window;
 
+    Delegate     delegate;
+
+    Texture      textureHead;
+    Texture      *textureTail;
+
+    char         inputText[MAX_LINE_LENGTH];
+
+    /*
+     * Array de estado do teclado.
+     *
+     * Cada índice representa um SDL_Scancode.
+     * Valor 1 = tecla pressionada.
+     * Valor 0 = tecla solta.
+     */
+    int          keyboard[MAX_KEYBOARD_KEYS];
+
+} App;
 
 
 /*==============================================================================
  * Entity
  *
- * Estrutura base de entidades do jogo.
+ * Estrutura base reutilizada por múltiplos sistemas de gameplay.
  *
- * Utilizada por:
+ * Dependendo do campo "type", uma Entity pode representar:
  * - jogador
- * - inimigos
- * - projéteis
- * - cápsulas de pontos
+ * - inimigo
+ * - projétil
+ * - cápsula de pontos
+ *
+ * O campo "side" define a facção da entidade, permitindo lógica
+ * de colisão entre lados opostos.
  *============================================================================*/
 struct Entity
 {
-    /* Posição */
+    /* Posição no mundo/tela */
     float       x;
     float       y;
 
-    /* Dimensões */
-    int         w;
-    int         h;
-
-    /* Velocidade */
+    /* Velocidade aplicada por frame */
     float       dx;
     float       dy;
 
-    /* Estado */
+    /* Rotação em graus */
+    float       angle;
+
+    /* Dimensões do sprite */
+    int         w;
+    int         h;
+
+    /* Estado de gameplay */
     int         health;
     int         reload;
 
-    /* Identificação */
+    /* Identificação lógica */
     int         type;
     int         side;
 
-    /* Rotação */
-    float       angle;
-
-    /* Renderização */
+    /* Textura usada na renderização */
     SDL_Texture *texture;
 
-    /* Próxima entidade da lista */
+    /* Próxima entidade da lista encadeada */
     Entity      *next;
 };
-
 
 
 /*==============================================================================
  * Explosion
  *
- * Estrutura de partículas de explosão.
+ * Partícula visual usada para efeitos de explosão/impacto.
+ *
+ * Cada explosão possui:
+ * - posição
+ * - velocidade
+ * - cor
+ * - alpha
+ *
+ * O alpha também é usado como tempo de vida visual.
  *============================================================================*/
 struct Explosion
 {
     /* Posição */
-    float       x;
-    float       y;
+    float      x;
+    float      y;
 
     /* Velocidade */
-    float       dx;
-    float       dy;
+    float      dx;
+    float      dy;
 
     /* Cor e transparência */
-    int         r;
-    int         g;
-    int         b;
-    int         a;
+    int        r;
+    int        g;
+    int        b;
+    int        a;
 
-    /* Próxima explosão da lista */
-    Explosion   *next;
+    /* Próxima explosão da lista encadeada */
+    Explosion *next;
 };
-
 
 
 /*==============================================================================
  * Debris
  *
- * Estrutura de fragmentos gerados após destruição
- * de entidades.
+ * Fragmento visual gerado quando uma entidade é destruída.
+ *
+ * Usa uma região da textura original para simular pedaços
+ * do sprite quebrando após a explosão.
  *============================================================================*/
 struct Debris
 {
@@ -170,19 +197,18 @@ struct Debris
     float       dx;
     float       dy;
 
-    /* Região da textura original */
+    /* Região da textura original usada pelo fragmento */
     SDL_Rect    rect;
 
-    /* Textura do fragmento */
+    /* Textura original da entidade destruída */
     SDL_Texture *texture;
 
-    /* Tempo de vida */
+    /* Tempo de vida em frames */
     int         life;
 
-    /* Próximo debris da lista */
+    /* Próximo debris da lista encadeada */
     Debris      *next;
 };
-
 
 
 /*==============================================================================
@@ -191,73 +217,81 @@ struct Debris
  * Estrutura principal da fase.
  *
  * Responsabilidades:
- * - Gerenciar entidades ativas
- * - Gerenciar listas encadeadas
- * - Armazenar pontuação da fase
+ * - Armazenar listas de entidades ativas
+ * - Armazenar listas de efeitos visuais
+ * - Controlar pontuação atual
+ *
+ * Cada lista usa o padrão head/tail para inserção eficiente no final.
  *============================================================================*/
 typedef struct
 {
-    /* Fighters */
-    Entity      fighterHead;
-    Entity      *fighterTail;
+    /* Lista de jogador e inimigos */
+    Entity    fighterHead;
+    Entity    *fighterTail;
 
-    /* Projéteis */
-    Entity      bulletHead;
-    Entity      *bulletTail;
+    /* Lista de projéteis */
+    Entity    bulletHead;
+    Entity    *bulletTail;
 
-    /* Cápsulas de pontos */
-    Entity      pointsHead;
-    Entity      *pointsTail;
+    /* Lista de cápsulas de pontos */
+    Entity    pointsHead;
+    Entity    *pointsTail;
 
-    /* Explosões */
-    Explosion   explosionHead;
-    Explosion   *explosionTail;
+    /* Lista de partículas de explosão */
+    Explosion explosionHead;
+    Explosion *explosionTail;
 
-    /* Debris */
-    Debris      debrisHead;
-    Debris      *debrisTail;
+    /* Lista de fragmentos visuais */
+    Debris    debrisHead;
+    Debris    *debrisTail;
 
-    /* Pontuação atual */
-    int         score;
+    /* Pontuação atual da fase */
+    int       score;
 
 } Stage;
-
 
 
 /*==============================================================================
  * Star
  *
- * Estrutura utilizada no sistema de starfield.
+ * Representa uma estrela do starfield.
+ *
+ * Utilizada para criar sensação de profundidade e movimento
+ * no background espacial.
  *============================================================================*/
 typedef struct
 {
     int x;
     int y;
     int speed;
-} Star;
 
+} Star;
 
 
 /*==============================================================================
  * Highscore
  *
- * Estrutura de pontuação individual.
+ * Representa uma pontuação individual da tabela.
+ *
+ * O campo "recent" indica se esse score foi registrado
+ * na partida atual, permitindo destaque visual na tela.
  *============================================================================*/
 typedef struct
 {
+    int  score;
+    int  recent;
     char name[MAX_SCORE_NAME_LENGTH];
-    int recent;
-    int score;
-} Highscore;
 
+} Highscore;
 
 
 /*==============================================================================
  * Highscores
  *
- * Estrutura da tabela de highscores.
+ * Tabela fixa contendo os melhores scores do jogo.
  *============================================================================*/
 typedef struct
 {
     Highscore highscore[NUM_HIGHSCORES];
+
 } Highscores;

@@ -3,12 +3,12 @@
  */
 
 #include "common.h"
+
 #include "text.h"
 #include "player.h"
 
-extern Stage stage;
+extern Stage      stage;
 extern Highscores highscores;
-
 
 
 /*==============================================================================
@@ -22,6 +22,10 @@ extern Highscores highscores;
  *============================================================================*/
 void drawHud(void)
 {
+    int currentHighscore;
+
+    currentHighscore = highscores.highscore[0].score;
+
     /* Renderiza pontuação atual */
     drawText(10,
              10,
@@ -36,10 +40,12 @@ void drawHud(void)
     drawPlayerHealthBar();
 
     /*
-     * Exibe highscore padrão enquanto
-     * jogador não ultrapassar recorde atual.
+     * Exibe o highscore atual.
+     *
+     * Quando a pontuação da partida ultrapassa o recorde,
+     * o HUD passa a exibir o score atual em destaque.
      */
-    if (stage.score < highscores.highscore[0].score) {
+    if (stage.score < currentHighscore) {
 
         drawText(SCREEN_WIDTH - 10,
                  10,
@@ -48,14 +54,10 @@ void drawHud(void)
                  255,
                  TEXT_RIGHT,
                  "HIGHSCORE: %03d",
-                 highscores.highscore[0].score);
+                 currentHighscore);
 
     } else {
 
-        /*
-         * Destaca novo recorde utilizando
-         * coloração verde.
-         */
         drawText(SCREEN_WIDTH - 10,
                  10,
                  0,

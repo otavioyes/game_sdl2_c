@@ -14,6 +14,7 @@ Focused on:
 # Gameplay
 
 ![Gameplay GIF](docs/gameplay.gif)
+- recording gif
 
 ---
 
@@ -60,3 +61,26 @@ src/
 ├── text.c
 ├── title.c
 └── util.c
+
+```text
+include/
+├── background.h
+├── bullet.h
+├── common.h
+├── defs.h
+├── draw.h
+├── effects.h
+├── enemy.h
+├── highscore.h
+├── hud.h
+├── init.h
+├── input.h
+├── main.h
+├── player.h
+├── points.h
+├── sound.h
+├── stage.h
+├── structs.h
+├── text.h
+├── title.h
+└── util.h

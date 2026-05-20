@@ -56,10 +56,9 @@ game_sld2_c/
         ├── points.png
         ├── sdl2.png
         ├── shooter.png
-├── CMakeLists.txt
+├── CMakeLists.txt/
 ├── Makefile
 ├── README.md
-
 
 src/
 ├── background.c
@@ -79,8 +78,6 @@ src/
 ├── text.c
 ├── title.c
 └── util.c
-
-
 include/
 ├── background.h
 ├── bullet.h

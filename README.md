@@ -62,7 +62,7 @@ src/
 ├── title.c
 └── util.c
 
-```text
+
 include/
 ├── background.h
 ├── bullet.h

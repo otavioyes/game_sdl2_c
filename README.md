@@ -14,7 +14,7 @@ Focused on:
 # Gameplay
 
 ![Gameplay GIF](docs/gameplay.gif)
-- recording gif
+- recording gif...
 
 ---
 
@@ -43,6 +43,24 @@ Focused on:
 The project is separated into independent gameplay systems:
 
 ```text
+game_sld2_c/
+├── assets/
+    ├── gfx/
+        ├── alienBullet.png
+        ├── background.png
+        ├── enemy.png
+        ├── explosion.png
+        ├── font.png
+        ├── player1.png
+        ├── playerBullet.png
+        ├── points.png
+        ├── sdl2.png
+        ├── shooter.png
+├── CMakeLists.txt
+├── Makefile
+├── README.md
+
+
 src/
 ├── background.c
 ├── bullet.c

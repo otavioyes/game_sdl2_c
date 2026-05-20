@@ -44,58 +44,57 @@ The project is separated into independent gameplay systems:
 
 ```text
 game_sld2_c/
-├── assets/
-    ├── gfx/
-        ├── alienBullet.png
-        ├── background.png
-        ├── enemy.png
-        ├── explosion.png
-        ├── font.png
-        ├── player1.png
-        ├── playerBullet.png
-        ├── points.png
-        ├── sdl2.png
-        ├── shooter.png
-├── CMakeLists.txt/
-├── Makefile
-├── README.md
-
-src/
-├── background.c
-├── bullet.c
-├── draw.c
-├── effects.c
-├── enemy.c
-├── highscore.c
-├── hud.c
-├── init.c
-├── input.c
-├── main.c
-├── player.c
-├── points.c
-├── sound.c
-├── stage.c
-├── text.c
-├── title.c
-└── util.c
-include/
-├── background.h
-├── bullet.h
-├── common.h
-├── defs.h
-├── draw.h
-├── effects.h
-├── enemy.h
-├── highscore.h
-├── hud.h
-├── init.h
-├── input.h
-├── main.h
-├── player.h
-├── points.h
-├── sound.h
-├── stage.h
-├── structs.h
-├── text.h
-├── title.h
-└── util.h
+    ├── assets/
+        ├── gfx/
+            ├── alienBullet.png
+            ├── background.png
+            ├── enemy.png
+            ├── explosion.png
+            ├── font.png
+            ├── player1.png
+            ├── playerBullet.png
+            ├── points.png
+            ├── sdl2.png
+            ├── shooter.png
+    ├── CMakeLists.txt/
+    ├── Makefile
+    ├── README.md
+    src/
+    ├── background.c
+    ├── bullet.c
+    ├── draw.c
+    ├── effects.c
+    ├── enemy.c
+    ├── highscore.c
+    ├── hud.c
+    ├── init.c
+    ├── input.c
+    ├── main.c
+    ├── player.c
+    ├── points.c
+    ├── sound.c
+    ├── stage.c
+    ├── text.c
+    ├── title.c
+    └── util.c
+    include/
+    ├── background.h
+    ├── bullet.h
+    ├── common.h
+    ├── defs.h
+    ├── draw.h
+    ├── effects.h
+    ├── enemy.h
+    ├── highscore.h
+    ├── hud.h
+    ├── init.h
+    ├── input.h
+    ├── main.h
+    ├── player.h
+    ├── points.h
+    ├── sound.h
+    ├── stage.h
+    ├── structs.h
+    ├── text.h
+    ├── title.h
+    └── util.h

@@ -91,6 +91,7 @@ void doPlayer(SDL_Texture *bulletTexture)
      * Garante que a entidade do jogador exista
      * antes de processar qualquer lógica.
      */
+
     if (player == NULL) {
         return;
     }
@@ -133,7 +134,9 @@ void doPlayer(SDL_Texture *bulletTexture)
      * Dispara projéteis apenas quando o tempo
      * de recarga estiver disponível.
      */
-    if (app.keyboard[SDL_SCANCODE_SPACE] && player->reload <= 0) {
+    if ((app.keyboard[SDL_SCANCODE_SPACE] ||
+         (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))) &&
+        player->reload <= 0) {
 
         /* Reproduz efeito sonoro do disparo */
         playerSound(SND_PLAYER_FIRE, CH_PLAYER);

@@ -60,6 +60,11 @@ struct Texture
     Texture    *next;
 };
 
+/**/
+typedef struct{
+    int x;
+    int y;
+} Mouse;
 
 /*==============================================================================
  * App
@@ -94,6 +99,7 @@ typedef struct
      * Valor 0 = tecla solta.
      */
     int          keyboard[MAX_KEYBOARD_KEYS];
+    Mouse        mouse;
 
 } App;
 

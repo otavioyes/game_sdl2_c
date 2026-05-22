@@ -96,4 +96,10 @@ void doInput(void)
                 break;
         }
     }
+
+    /*
+     * Funcao recebe 2 valores referencias que armazena
+     * o estado do mouse e as coodernadas de x y
+     */
+    SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 }

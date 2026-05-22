@@ -48,6 +48,9 @@ static SDL_Texture *alienBulletTexture;
 static SDL_Texture *playerTexture;
 static SDL_Texture *explosionTexture;
 static SDL_Texture *pointsTexture;
+/*IMPLEMENTANDO*/
+static SDL_Texture *targetterTexture;
+
 
 /*
  * Inicializa a fase principal do jogo.
@@ -66,9 +69,13 @@ void initStage(void)
     playerTexture      = loadTexture("assets/gfx/player1.png");
     explosionTexture   = loadTexture("assets/gfx/explosion.png");
     pointsTexture      = loadTexture("assets/gfx/points.png");
+    /*IMPLEMENTANDO*/
+    targetterTexture   = loadTexture("assests/gxf/aindaNaoTenhoImagemPNG");
+
 
     if (!bulletTexture || !enemyTexture || !alienBulletTexture ||
-        !playerTexture || !explosionTexture || !pointsTexture) {
+        !playerTexture || !explosionTexture || !pointsTexture ||
+        targetterTexture) {
         SDL_Log("Erro ao carregar uma ou mais texturas da fase");
         exit(1);
     }

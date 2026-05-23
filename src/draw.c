@@ -145,7 +145,7 @@ SDL_Texture *loadTexture(char *filename)
  * - Configurar retângulo de destino
  * - Renderizar textura sem rotação
  *============================================================================*/
-void blit(SDL_Texture *texture, int x, int y)
+void blit(SDL_Texture *texture, int x, int y, int center)
 {
     SDL_Rect dest;
 
@@ -158,7 +158,14 @@ void blit(SDL_Texture *texture, int x, int y)
 
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
+    if (center){
+        dest.x -= dest.w / 2;
+        dest.y -= dest.y / 2;
+    }
+
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+
+
 }
 
 

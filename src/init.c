@@ -35,6 +35,8 @@ void initSDL(void)
     int imgFlags;
     int imgInitialized;
 
+    SDL_ShowCursor(0);
+
     rendererFlags = SDL_RENDERER_ACCELERATED;
     windowFlags = 0;
 

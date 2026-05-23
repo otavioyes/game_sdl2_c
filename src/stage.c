@@ -248,7 +248,7 @@ static void draw(void)
 
     drawHud();
 
-    blit(targetterTexture, app.mouse.x, app.mouse.y);
+    blit(targetterTexture, app.mouse.x, app.mouse.y, 1);
 
 }
 
@@ -266,7 +266,7 @@ static void drawFighters(void)
         if (e == player) {
             blitRotated(e->texture, e->x, e->y, e->angle);
         } else {
-            blit(e->texture, e->x, e->y);
+            blit(e->texture, e->x, e->y, 0);
         }
     }
 }

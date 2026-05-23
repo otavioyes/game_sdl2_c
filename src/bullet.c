@@ -173,7 +173,7 @@ void drawBullets(void)
             blitRotated(b->texture, b->x, b->y, b->angle);
         } else {
             /* Projéteis inimigos utilizam renderização padrão */
-            blit(b->texture, b->x, b->y);
+            blit(b->texture, b->x, b->y, 0);
         }
     }
 }

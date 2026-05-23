@@ -100,7 +100,7 @@ void drawExplosions(SDL_Renderer *renderer, SDL_Texture *explosionTexture)
         SDL_SetTextureAlphaMod(explosionTexture, e->a);
 
         /* Renderiza explosão na posição atual */
-        blit(explosionTexture, e->x, e->y);
+        blit(explosionTexture, e->x, e->y, 1);
     }
 
     /*

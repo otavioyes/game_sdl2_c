@@ -150,8 +150,8 @@ void drawPointsPods(void)
         if (e->health > (FPS * 2) ||
             e->health % 12 < 6) {
 
-            /* Renderiza cápsula na posição atual */
-            blit(e->texture, e->x, e->y);
+            /* Renderiza cápsula centralizada na posição atual */
+            blit(e->texture, e->x, e->y, 1);
         }
     }
 }

@@ -158,14 +158,15 @@ void blit(SDL_Texture *texture, int x, int y, int center)
 
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
+    /*Ttestando a variável central e deslocando a textura
+     * pela metade de sua largura e altura se
+     * necessário para centralizá-la em torno das coordenadas de entrada.*/
     if (center){
         dest.x -= dest.w / 2;
-        dest.y -= dest.y / 2;
+        dest.y -= dest.h / 2;
     }
 
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
-
-
 }
 
 

@@ -247,6 +247,9 @@ static void draw(void)
     drawBullets();
 
     drawHud();
+
+    blit(targetterTexture, app.mouse.x, app.mouse.y);
+
 }
 
 /*

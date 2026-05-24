@@ -254,6 +254,9 @@ typedef struct
     /* Pontuação atual da fase */
     int       score;
 
+    /*rmazenar uma lista encadeada de entidades*/
+    Entity entityHead, *entityTail;
+
 } Stage;
 
 

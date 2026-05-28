@@ -63,3 +63,15 @@ void calcSlop(int x1, int y1, int x2, int y2, float *dx, float *dy)
     *dx = (float)(x1 - x2) / steps;
     *dy = (float)(y1 - y2) / steps;
 }
+
+
+
+/*==============================================================================
+ * A função utiliza nossa definição de PI
+ * 
+ *============================================================================*/
+float getAngle(int x1, int y1, int x2, int y2)
+{
+    float angle = -90 + atan2(y1 - y2, x1 - x2) * (180 / PI);
+    return angle >= 0 ? angle : 360 + angle;
+}

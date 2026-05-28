@@ -68,7 +68,7 @@ void calcSlop(int x1, int y1, int x2, int y2, float *dx, float *dy)
 
 /*==============================================================================
  * A função utiliza nossa definição de PI
- * 
+ *
  *============================================================================*/
 float getAngle(int x1, int y1, int x2, int y2)
 {

@@ -216,21 +216,24 @@ void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
  *============================================================================*/
 void blitRotated(SDL_Texture *texture, float x, float y, float angle)
 {
-    SDL_Rect dest;
+    SDL_Rect dstRect;
 
     if (texture == NULL) {
         return;
     }
 
-    dest.x = x;
-    dest.y = y;
+    dstRect.x = x;
+    dstRect.y = y;
 
-    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+    SDL_QueryTexture(texture, NULL, NULL, &dstRect.w, &dstRect.h);
+
+    dstRect.x -= (dstRect.w / 2);
+    dstRect.y -= (dstRect.h / 2);
 
     SDL_RenderCopyEx(app.renderer,
                      texture,
                      NULL,
-                     &dest,
+                     &dstRect,
                      angle,
                      NULL,
                      SDL_FLIP_NONE);

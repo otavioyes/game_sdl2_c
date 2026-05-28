@@ -164,6 +164,11 @@ static void logic(void)
     doStarfield();
 
     doPlayer(bulletTexture);
+
+    /*implementando*
+    doEntities();
+    */
+
     doEnemies(alienBulletTexture);
 
     doFighters();

@@ -7,6 +7,8 @@
 #include "player.h"
 #include "sound.h"
 #include "bullet.h"
+#include "util.h"
+
 
 extern Stage stage;
 extern App app;
@@ -102,8 +104,8 @@ void doPlayer(SDL_Texture *bulletTexture)
      * A movimentação é recalculada continuamente
      * com base no input atual.
      */
-    player->dx = 0;
-    player->dy = 0;
+    player->dx *= (float) 0.85;
+    player->dy *= (float) 0.85;
 
     /* Atualiza temporizador de recarga do disparo */
     if (player->reload > 0) {
@@ -169,6 +171,8 @@ void doPlayer(SDL_Texture *bulletTexture)
     if (player->angle < 0) {
         player->angle += 360;
     }
+
+    player->angle = getAngle(player->x, player->y, app.mouse.x, app.mouse.y);
 }
 
 

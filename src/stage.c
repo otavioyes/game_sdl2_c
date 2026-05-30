@@ -71,8 +71,8 @@ void initStage(void)
     explosionTexture   = loadTexture("assets/gfx/explosion.png");
     pointsTexture      = loadTexture("assets/gfx/points.png");
     /*IMPLEMENTANDO*/
-    targetterTexture   = loadTexture("assests/gxf/aindaNaoTenhoImagemPNG");
-    donkTexture        = loadTexture("assets/gfx/aindaNaoTenhoDonkPng");
+    targetterTexture   = loadTexture("assests/gxf/aindaNaoTenhoImagem.png");
+    donkTexture        = loadTexture("assets/gfx/aindaNaoTenhoDonk.png");
 
 
     if (!bulletTexture || !enemyTexture || !alienBulletTexture ||

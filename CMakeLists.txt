@@ -28,6 +28,7 @@ add_executable(game
         src/hud.c
         include/hud.h
         src/entity.c
+        include/entity.h
 )
 
 target_include_directories(game PRIVATE include)

@@ -50,6 +50,7 @@ static SDL_Texture *explosionTexture;
 static SDL_Texture *pointsTexture;
 /*IMPLEMENTANDO*/
 static SDL_Texture *targetterTexture;
+static SDL_Texture *donkTexture;
 
 
 /*
@@ -71,6 +72,7 @@ void initStage(void)
     pointsTexture      = loadTexture("assets/gfx/points.png");
     /*IMPLEMENTANDO*/
     targetterTexture   = loadTexture("assests/gxf/aindaNaoTenhoImagemPNG");
+    donkTexture        = loadTexture("assets/gfx/aindaNaoTenhoDonkPng");
 
 
     if (!bulletTexture || !enemyTexture || !alienBulletTexture ||

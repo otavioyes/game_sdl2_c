@@ -4,6 +4,7 @@
 
 #include "common.h"
 
+#include "entity.h"
 #include "stage.h"
 #include "player.h"
 #include "draw.h"

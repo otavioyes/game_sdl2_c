@@ -82,7 +82,21 @@ void doInput(void)
                 doKeyUp(&event.key);
                 break;
 
-            case SDL_TEXTINPUT:
+            case SDL_MOUSEBUTTONDOWN:
+                doMouseButtonDown(&event. button);
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                doMouseButtonUp(&event.button);
+                break;
+
+            case SDL_MOUSEWHEEL:
+                app.mouse.wheel = event.wheel.y;
+                break;
+
+
+
+         case SDL_TEXTINPUT:
                 /*
                  * Armazena texto digitado neste frame.
                  *
@@ -102,4 +116,10 @@ void doInput(void)
      * o estado do mouse e as coodernadas de x y
      */
     SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
+}
+
+
+void doMouseButtonUp(SDL_MouseButtonEvent *event)
+{
+    app.mouse.button[event->button] = 0;
 }

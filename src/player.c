@@ -173,6 +173,48 @@ void doPlayer(SDL_Texture *bulletTexture)
     }
 
     player->angle = getAngle(player->x, player->y, app.mouse.x, app.mouse.y);
+
+/*==============================================================================
+ * NÃO COMPILA
+ *============================================================================*/
+
+    if (player->reload == 0 && stage.ammo[player->weaponType] > 0 && app.mouse.button[SDL_BUTTON_LEFT])
+    {
+        fireDonkBullet();
+
+        stage.ammo[player->weaponType]--;
+    }
+
+    if (app.mouse.wheel < 0)
+    {
+        if (--player->weaponType < WPN_PISTOL)
+        {
+            player->weaponType = WPN_MAX - 1;
+        }
+
+        app.mouse.wheel = 0;
+    }
+
+    if (app.mouse.wheel > 0)
+    {
+        if (++player->weaponType >= WPN_MAX)
+        {
+            player->weaponType = WPN_PISTOL;
+        }
+
+        app.mouse.wheel = 0;
+    }
+
+    if (app.mouse.button[SDL_BUTTON_RIGHT])
+    {
+        if (player->weaponType == WPN_PISTOL && stage.ammo[WPN_PISTOL] == 0)
+        {
+            stage.ammo[WPN_PISTOL] = 12;
+        }
+
+        app.mouse.button[SDL_BUTTON_RIGHT] = 0;
+    }
+}
 }
 
 

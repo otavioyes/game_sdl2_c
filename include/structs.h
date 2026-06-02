@@ -255,7 +255,7 @@ typedef struct
     int       score;
 
     /*rmazenar uma lista encadeada de entidades*/
-    Entity entityHead, *entityTail;
+    //Entity entityHead, *entityTail;
 
 } Stage;
 

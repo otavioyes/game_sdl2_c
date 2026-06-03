@@ -16,6 +16,8 @@
 
 #include "common.h"
 
+#include "entity.h"
+
 #include "background.h"
 #include "draw.h"
 #include "highscore.h"
@@ -31,14 +33,14 @@
 #include "points.h"
 #include "hud.h"
 
+
 extern App app;
 extern Highscores highscores;
 extern Stage stage;
 
 static void logic(void);
 static void draw(void);
-static void doFighters(void);
-static void drawFighters(void);
+
 static void resetStage(void);
 
 static int          stageResetTimer;

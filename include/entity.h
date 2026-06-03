@@ -2,5 +2,5 @@
  * entity.h
  */
 
-void doEntities(void);
-static void drawEntities(void);
+static void doFighters(void);
+static void drawFighters(void);

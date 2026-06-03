@@ -15,7 +15,7 @@ extern Stage stage;
  * Move jogador e inimigos, remove inimigos que saíram da tela
  * e libera entidades sem vida.
  */
-static void doFighters(void)
+void doFighters(void)
 {
     Entity *e;
     Entity *prev;
@@ -56,7 +56,7 @@ static void doFighters(void)
  * O jogador usa rotação, enquanto os inimigos ainda são
  * desenhados sem rotação.
  */
-static void drawFighters(void)
+void drawFighters(void)
 {
     Entity *e;
 

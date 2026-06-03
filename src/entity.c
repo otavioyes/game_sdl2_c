@@ -4,42 +4,67 @@
 
 #include "common.h"
 
-#include "entity.h"
-#include "stage.h"
 #include "player.h"
 #include "draw.h"
 
 extern Stage stage;
 
-/*==============================================================================
- * Verificar se a entidade é o jogador
- * e impedir que ele saia da tela
- * Os cálculos dos valores de 'x' e 'y', suando
- * as macros MIN e MAX, garante que o jogador nunca
- * ultrapasse os limites da tela
- *============================================================================*/
-
-
-void doEntities(void)
+/*
+ * Atualiza as entidades da lista de lutadores.
+ *
+ * Move jogador e inimigos, remove inimigos que saíram da tela
+ * e libera entidades sem vida.
+ */
+static void doFighters(void)
 {
     Entity *e;
-    for(e = stage.entityHead.next; e != NULL; e = e->next){
+    Entity *prev;
+
+    prev = &stage.fighterHead;
+
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
         e->x += e->dx;
         e->y += e->dy;
 
-        if (e == player){
-            e->x = MIN(MAX(e->x, e->w / 2), SCREEN_WIDTH - e->w / 2);
-            e->y = MIN(MAX(e->y, e->h / 2), SCREEN_HEIGHT - e->h /2);
+        if (e != player && e->x < -e->w) {
+            e->health = 0;
         }
+
+        if (e->health == 0) {
+            if (e == player) {
+                player = NULL;
+            }
+
+            if (e == stage.fighterTail) {
+                stage.fighterTail = prev;
+            }
+
+            prev->next = e->next;
+            free(e);
+            e = prev;
+        }
+
+        prev = e;
     }
 }
 
-static void drawEntities(void)
+
+
+/*
+ * Desenha jogador e inimigos.
+ *
+ * O jogador usa rotação, enquanto os inimigos ainda são
+ * desenhados sem rotação.
+ */
+static void drawFighters(void)
 {
     Entity *e;
 
-    for (e = stage.entityHead.next; e != NULL; e = e->next){
-        blitRotated(e->texture, e->x, e->y, e->angle);
+    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+        if (e == player) {
+            blitRotated(e->texture, e->x, e->y, e->angle);
+        } else {
+            blit(e->texture, e->x, e->y, 0);
+        }
     }
 }
-

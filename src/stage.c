@@ -193,44 +193,6 @@ static void logic(void)
     }
 }
 
-/*
- * Atualiza as entidades da lista de lutadores.
- *
- * Move jogador e inimigos, remove inimigos que saíram da tela
- * e libera entidades sem vida.
- */
-static void doFighters(void)
-{
-    Entity *e;
-    Entity *prev;
-
-    prev = &stage.fighterHead;
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
-        e->x += e->dx;
-        e->y += e->dy;
-
-        if (e != player && e->x < -e->w) {
-            e->health = 0;
-        }
-
-        if (e->health == 0) {
-            if (e == player) {
-                player = NULL;
-            }
-
-            if (e == stage.fighterTail) {
-                stage.fighterTail = prev;
-            }
-
-            prev->next = e->next;
-            free(e);
-            e = prev;
-        }
-
-        prev = e;
-    }
-}
 
 /*
  * Renderiza todos os elementos visuais da fase.
@@ -257,23 +219,4 @@ static void draw(void)
 
     blit(targetterTexture, app.mouse.x, app.mouse.y, 1);
 
-}
-
-/*
- * Desenha jogador e inimigos.
- *
- * O jogador usa rotação, enquanto os inimigos ainda são
- * desenhados sem rotação.
- */
-static void drawFighters(void)
-{
-    Entity *e;
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
-        if (e == player) {
-            blitRotated(e->texture, e->x, e->y, e->angle);
-        } else {
-            blit(e->texture, e->x, e->y, 0);
-        }
-    }
 }

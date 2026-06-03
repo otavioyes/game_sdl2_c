@@ -173,7 +173,7 @@ void doPlayer(SDL_Texture *bulletTexture)
     }
 
     player->angle = getAngle(player->x, player->y, app.mouse.x, app.mouse.y);
-    
+
 }
 
 

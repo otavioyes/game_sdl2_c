@@ -111,6 +111,7 @@ static void resetStage(void)
     Explosion *ex;
     Debris    *d;
 
+
     while (stage.fighterHead.next) {
         e = stage.fighterHead.next;
         stage.fighterHead.next = e->next;
@@ -146,6 +147,9 @@ static void resetStage(void)
      * todos os recursos dinâmicos associados às listas.
      */
     memset(&stage, 0, sizeof(Stage));
+
+    /*unificando entidades - migracao futura*/
+    stage.entityTail    = &stage.entityHead;
 
     stage.fighterTail   = &stage.fighterHead;
     stage.bulletTail    = &stage.bulletHead;

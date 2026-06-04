@@ -82,6 +82,7 @@ void doInput(void)
                 doKeyUp(&event.key);
                 break;
 
+            /*
             case SDL_MOUSEBUTTONDOWN:
                 doMouseButtonDown(&event. button);
                 break;
@@ -93,8 +94,7 @@ void doInput(void)
             case SDL_MOUSEWHEEL:
                 app.mouse.wheel = event.wheel.y;
                 break;
-
-
+            */
 
          case SDL_TEXTINPUT:
                 /*
@@ -118,8 +118,9 @@ void doInput(void)
     SDL_GetMouseState(&app.mouse.x, &app.mouse.y);
 }
 
-
+/*
 void doMouseButtonUp(SDL_MouseButtonEvent *event)
 {
     app.mouse.button[event->button] = 0;
 }
+*/

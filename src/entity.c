@@ -9,6 +9,17 @@
 
 extern Stage stage;
 
+
+
+void addEntity(Entity *e)
+{
+    stage.entityTail->next = e;
+    stage.entityTail = e;
+}
+
+
+
+
 /*
  * Atualiza as entidades da lista de lutadores.
  *

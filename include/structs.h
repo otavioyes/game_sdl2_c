@@ -231,6 +231,10 @@ struct Debris
  *============================================================================*/
 typedef struct
 {
+    /* Lista unificada de entidades - migracao futura*/
+    Entity    entityHead;
+    Entity    *entityTail;
+
     /* Lista de jogador e inimigos */
     Entity    fighterHead;
     Entity    *fighterTail;
@@ -254,8 +258,6 @@ typedef struct
     /* Pontuação atual da fase */
     int       score;
 
-    /*rmazenar uma lista encadeada de entidades*/
-    //Entity entityHead, *entityTail;
 
 } Stage;
 

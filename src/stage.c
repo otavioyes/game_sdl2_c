@@ -173,10 +173,6 @@ static void logic(void)
 
     doPlayer(bulletTexture);
 
-    /*implementando*
-    doEntities();
-    */
-
     doEnemies(alienBulletTexture);
 
     doFighters();

@@ -19,6 +19,20 @@ void addEntity(Entity *e)
 
 
 
+void drawEntities(void)
+{
+    Entity *e;
+
+    for (e = stage.entityHead.next; e != NULL; e = e->next) {
+        if (e->type == ET_PLAYER) {
+            blitRotated(e->texture, e->x, e->y, e->angle);
+        } else if (e->type == ET_ENEMY) {
+            blit(e->texture, e->x, e->y, 0);
+        }
+    }
+}
+
+
 
 /*
  * Atualiza as entidades da lista de lutadores.

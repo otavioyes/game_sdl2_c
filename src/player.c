@@ -4,6 +4,8 @@
 
 #include "common.h"
 
+#include "entity.h"
+
 #include "player.h"
 #include "sound.h"
 #include "bullet.h"
@@ -47,34 +49,20 @@ void initPlayer(SDL_Texture *texture)
     /* Inicializa toda a estrutura com zero */
     memset(player, 0, sizeof(Entity));
 
-    /*
-     * Insere o jogador no final da lista encadeada
-     * de fighters da fase.
-     */
-    stage.fighterTail->next = player;
-    stage.fighterTail = player;
-
     /* Configuração inicial do jogador */
     player->health = PLAYER_MAX_HEALTH;
     player->x = 100;
     player->y = 100;
-
-    /* Associa textura do jogador */
     player->texture = texture;
+    player->side = SIDE_PLAYER;
+    player->type = ET_PLAYER;
 
-    /*
-     * Obtém largura e altura do sprite
-     * diretamente da textura carregada.
-     */
+    /* Obtém dimensões do sprite */
     SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
 
-    /* Define lado da entidade */
-    player->side = SIDE_PLAYER;
-
-    /* Define tipo da entidade */
-    player->type = ET_PLAYER;
+    /* Insere jogador na lista unificada de entidades */
+    addEntity(player);
 }
-
 
 /*==============================================================================
  * Atualiza a lógica do jogador.

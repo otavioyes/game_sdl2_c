@@ -4,12 +4,13 @@
 
 #include "common.h"
 
-#include "entity.h"
 
 #include "player.h"
 #include "sound.h"
 #include "bullet.h"
 #include "util.h"
+#include "entity.h"
+
 
 
 extern Stage stage;

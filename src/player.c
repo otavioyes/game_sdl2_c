@@ -4,7 +4,6 @@
 
 #include "common.h"
 
-
 #include "player.h"
 #include "sound.h"
 #include "bullet.h"

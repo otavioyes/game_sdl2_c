@@ -79,7 +79,7 @@ void initStage(void)
 
     if (!bulletTexture || !enemyTexture || !alienBulletTexture ||
         !playerTexture || !explosionTexture || !pointsTexture ||
-        targetterTexture) {
+        !targetterTexture || !donkTexture) {
         SDL_Log("Erro ao carregar uma ou mais texturas da fase");
         exit(1);
     }
@@ -210,8 +210,7 @@ static void draw(void)
     drawBackground();
     drawStarfield();
 
-    drawPointsPods();
-    drawFighters();
+    drawEntities();
 
     drawDebris();
     drawExplosions(app.renderer, explosionTexture);

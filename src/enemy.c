@@ -8,6 +8,7 @@
 #include "util.h"
 #include "enemy.h"
 #include "player.h"
+#include "entity.h"
 
 extern Stage stage;
 
@@ -42,69 +43,34 @@ void spawnEnemies(SDL_Texture *enemyTexture)
 {
     Entity *enemy;
 
-    /* Atualiza temporizador de geração de inimigos */
     if (--enemySpawnTimer <= 0) {
 
-        /* Aloca memória para nova entidade inimiga */
         enemy = malloc(sizeof(Entity));
 
-        /* Verifica falha de alocação */
         if (enemy == NULL) {
             SDL_Log("malloc falhou em spawnEnemies");
             exit(1);
         }
 
-        /* Inicializa estrutura com zero */
         memset(enemy, 0, sizeof(Entity));
 
-        /* Adiciona inimigo na lista encadeada de fighters */
-        stage.fighterTail->next = enemy;
-        stage.fighterTail = enemy;
-
-        /* Define posição inicial fora da tela, no lado direito */
         enemy->x = SCREEN_WIDTH;
         enemy->y = rand() % SCREEN_HEIGHT;
-
-        /* Configura textura do inimigo */
         enemy->texture = enemyTexture;
 
-        /* Obtém dimensões da textura */
         SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->w, &enemy->h);
 
-        /*
-         * Velocidade horizontal negativa
-         * faz o inimigo se mover para esquerda.
-         */
         enemy->dx = -(2 + (rand() % 4));
-
-        /*
-         * Pequena variação vertical aleatória
-         * para criar movimentação menos previsível.
-         *
-         * O uso de 100.0f força divisão em ponto flutuante,
-         * evitando perda de precisão por divisão inteira.
-         */
         enemy->dy = (-100 + (rand() % 200)) / 100.0f;
 
-        /* Define facção da entidade */
         enemy->side = SIDE_ALIEN;
-
-        /* Define tipo da entidade */
         enemy->type = ET_ENEMY;
-
-        /* Vida inicial do inimigo */
         enemy->health = 1;
-
-        /*
-         * Temporizador inicial de disparo.
-         * Cria intervalo aleatório entre tiros.
-         */
         enemy->reload = FPS * (1 + (rand() % 3));
 
-        /*
-         * Define novo tempo para o próximo spawn.
-         * Mantém frequência variável de inimigos.
-         */
+        /* Insere inimigo na lista unificada de entidades */
+        addEntity(enemy);
+
         enemySpawnTimer = 30 + (rand() % FPS);
     }
 }

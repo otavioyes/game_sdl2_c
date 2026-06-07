@@ -2,6 +2,9 @@
  * main.c
  */
 
+/*
+ * NAO ESTA RODANDO NO MAC - 06/06/2026 - 21:24
+ */
 
 #include "common.h"
 
@@ -10,6 +13,7 @@
 #include "input.h"
 #include "main.h"
 #include "title.h"
+
 
 App          app;
 Highscores   highscores;

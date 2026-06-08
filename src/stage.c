@@ -175,7 +175,9 @@ static void logic(void)
 
     doEnemies(alienBulletTexture);
 
-    doFighters();
+    doEntities();
+    drawEntities();
+
     doBullet(pointsTexture);
 
     doExplosions();
@@ -211,7 +213,7 @@ static void draw(void)
     drawStarfield();
 
     drawEntities();
-    drawFighters();
+    
 
     drawDebris();
     drawExplosions(app.renderer, explosionTexture);

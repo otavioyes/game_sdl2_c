@@ -4,19 +4,17 @@
 
 #include "common.h"
 
+#include "entity.h"
 #include "player.h"
 #include "draw.h"
 
 extern Stage stage;
-
 
 void addEntity(Entity *e)
 {
     stage.entityTail->next = e;
     stage.entityTail = e;
 }
-
-
 
 void drawEntities(void)
 {
@@ -31,26 +29,18 @@ void drawEntities(void)
     }
 }
 
-
-
-/*
- * Atualiza as entidades da lista de lutadores.
- *
- * Move jogador e inimigos, remove inimigos que saíram da tela
- * e libera entidades sem vida.
- */
-void doFighters(void)
+void doEntities(void)
 {
     Entity *e;
     Entity *prev;
 
-    prev = &stage.fighterHead;
+    prev = &stage.entityHead;
 
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+    for (e = stage.entityHead.next; e != NULL; e = e->next) {
         e->x += e->dx;
         e->y += e->dy;
 
-        if (e != player && e->x < -e->w) {
+        if (e->type == ET_ENEMY && e->x < -e->w) {
             e->health = 0;
         }
 
@@ -59,8 +49,8 @@ void doFighters(void)
                 player = NULL;
             }
 
-            if (e == stage.fighterTail) {
-                stage.fighterTail = prev;
+            if (e == stage.entityTail) {
+                stage.entityTail = prev;
             }
 
             prev->next = e->next;
@@ -69,26 +59,5 @@ void doFighters(void)
         }
 
         prev = e;
-    }
-}
-
-
-
-/*
- * Desenha jogador e inimigos.
- *
- * O jogador usa rotação, enquanto os inimigos ainda são
- * desenhados sem rotação.
- */
-void drawFighters(void)
-{
-    Entity *e;
-
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
-        if (e == player) {
-            blitRotated(e->texture, e->x, e->y, e->angle);
-        } else {
-            blit(e->texture, e->x, e->y, 0);
-        }
     }
 }

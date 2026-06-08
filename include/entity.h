@@ -3,6 +3,5 @@
  */
 
 void addEntity(Entity *e);
+void doEntities(void);
 void drawEntities(void);
-void doFighters(void);
-void drawFighters(void);

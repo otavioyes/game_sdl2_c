@@ -10,7 +10,6 @@
 extern Stage stage;
 
 
-
 void addEntity(Entity *e)
 {
     stage.entityTail->next = e;

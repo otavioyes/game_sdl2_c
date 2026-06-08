@@ -73,7 +73,7 @@ void initStage(void)
     explosionTexture   = loadTexture("assets/gfx/explosion.png");
     pointsTexture      = loadTexture("assets/gfx/points.png");
     /*IMPLEMENTANDO*/
-    targetterTexture   = loadTexture("assests/gxf/aindaNaoTenhoImagem.png");
+    targetterTexture   = loadTexture("assests/gfx/aindaNaoTenhoImagem.png");
     donkTexture        = loadTexture("assets/gfx/aindaNaoTenhoDonk.png");
 
 
@@ -211,6 +211,7 @@ static void draw(void)
     drawStarfield();
 
     drawEntities();
+    drawFighters();
 
     drawDebris();
     drawExplosions(app.renderer, explosionTexture);

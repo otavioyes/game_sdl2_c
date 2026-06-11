@@ -12,6 +12,10 @@ extern Stage stage;
 
 void addEntity(Entity *e)
 {
+    if (e == NULL) {
+        return;
+    }
+
     stage.entityTail->next = e;
     stage.entityTail = e;
 }
@@ -21,10 +25,17 @@ void drawEntities(void)
     Entity *e;
 
     for (e = stage.entityHead.next; e != NULL; e = e->next) {
-        if (e->type == ET_PLAYER) {
-            blitRotated(e->texture, e->x, e->y, e->angle);
-        } else if (e->type == ET_ENEMY) {
-            blit(e->texture, e->x, e->y, 0);
+        switch (e->type) {
+            case ET_PLAYER:
+                blitRotated(e->texture, e->x, e->y, e->angle);
+                break;
+
+            case ET_ENEMY:
+                blit(e->texture, e->x, e->y, 0);
+                break;
+
+            default:
+                break;
         }
     }
 }
@@ -44,7 +55,7 @@ void doEntities(void)
             e->health = 0;
         }
 
-        if (e->health == 0) {
+        if (e->health <= 0) {
             if (e == player) {
                 player = NULL;
             }

@@ -3,7 +3,7 @@
  */
 
 /*
- * NAO ESTA RODANDO NO MAC - 06/06/2026 - 21:24
+ * NÃO ESTOU FAZENDO DA FORMA CORRETA
  */
 
 #include "common.h"

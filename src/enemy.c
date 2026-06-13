@@ -91,10 +91,10 @@ void doEnemies(SDL_Texture *alienBulletTexture)
     Entity *e;
 
     /* Percorre lista de fighters ativos */
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+    for (e = stage.entityHead.next; e != NULL; e = e->next){
 
         /* Ignora entidade do jogador */
-        if (e != player) {
+        if (e->type == ET_ENEMY) {
 
             /*
              * Mantém inimigo dentro dos limites verticais da tela.

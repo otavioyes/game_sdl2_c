@@ -3,7 +3,8 @@
  */
 
 /*
- * NÃO ESTOU FAZENDO DA FORMA CORRETA
+ * PRECISA AJUSTAR AS BALAS
+ * RODA NO MAC - 14/06/206
  */
 
 #include "common.h"

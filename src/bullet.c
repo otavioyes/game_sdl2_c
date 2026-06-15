@@ -15,18 +15,6 @@
 
 extern Stage stage;
 
-
-/*==============================================================================
- * Cria um novo projétil disparado pelo jogador.
- *
- * Responsabilidades:
- * - Alocar memória para o projétil
- * - Inserir projétil na lista de balas da fase
- * - Configurar propriedades iniciais do disparo
- * - Calcular direção baseada no ângulo da nave
- * - Posicionar projétil no centro do jogador
- * - Aplicar tempo de recarga do disparo
- *============================================================================*/
 void fireBullet(SDL_Texture *texture)
 {
     Entity *bullet;
@@ -63,191 +51,110 @@ void fireBullet(SDL_Texture *texture)
     player->reload = 8;
 }
 
-
-/*==============================================================================
- * Atualiza lógica dos projéteis ativos.
- *
- * Responsabilidades:
- * - Atualizar posição das balas
- * - Detectar colisões com entidades
- * - Remover projéteis fora da tela
- * - Liberar memória de projéteis destruídos
- * - Manter integridade da lista encadeada
- *============================================================================*/
 void doBullet(SDL_Texture *pointsTexture)
 {
     Entity *b;
     Entity *prev;
 
-    /* Ponteiro auxiliar para manipulação segura da lista encadeada */
-    prev = &stage.bulletHead;
+    prev = &stage.entityHead;
 
-    /* Percorre todos os projéteis ativos */
-    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+    for (b = stage.entityHead.next; b != NULL; b = b->next) {
 
-        /* Atualiza posição baseada na velocidade atual */
+        if (b->type != ET_PLAYER_BULLET &&
+            b->type != ET_ALIEN_BULLET) {
+            prev = b;
+            continue;
+        }
+
         b->x += b->dx;
         b->y += b->dy;
 
-        /*
-         * Remove projétil caso:
-         * - atinja uma entidade
-         * - saia dos limites visíveis da tela
-         */
         if (bulletHitFighter(b, pointsTexture) ||
             b->x < -b->w ||
             b->y < -b->h ||
             b->x > SCREEN_WIDTH ||
             b->y > SCREEN_HEIGHT) {
 
-            /*
-             * Atualiza ponteiro final da lista
-             * caso o projétil removido seja o último elemento.
-             */
-            if (b == stage.bulletTail) {
-                stage.bulletTail = prev;
+            if (b == stage.entityTail) {
+                stage.entityTail = prev;
             }
 
-            /* Remove projétil da lista encadeada */
             prev->next = b->next;
-
-            /* Libera memória da entidade removida */
             free(b);
-
-            /*
-             * Retorna uma posição no loop para manter
-             * iteração segura após remoção do elemento.
-             */
             b = prev;
         }
 
-        /* Avança ponteiro auxiliar */
         prev = b;
     }
 }
 
-
-/*==============================================================================
- * Renderiza todos os projéteis ativos da fase.
- *
- * Responsabilidades:
- * - Percorrer lista de projéteis
- * - Renderizar disparos do jogador com rotação
- * - Renderizar disparos inimigos sem rotação
- *============================================================================*/
 void drawBullets(void)
 {
     Entity *b;
 
-    /* Percorre lista de projéteis ativos */
-    for (b = stage.bulletHead.next; b != NULL; b = b->next) {
+    for (b = stage.entityHead.next; b != NULL; b = b->next) {
 
-        /*
-         * Projéteis do jogador utilizam rotação
-         * baseada no ângulo do disparo.
-         */
-        if (b->side == SIDE_PLAYER) {
+        if (b->type == ET_PLAYER_BULLET) {
             blitRotated(b->texture, b->x, b->y, b->angle);
-        } else {
-            /* Projéteis inimigos utilizam renderização padrão */
+
+        } else if (b->type == ET_ALIEN_BULLET) {
             blit(b->texture, b->x, b->y, 0);
         }
     }
 }
 
-
-/*==============================================================================
- * Verifica e processa colisão entre um projétil e entidades da fase.
- *
- * Responsabilidades:
- * - Detectar colisão entre projétil e fighters
- * - Aplicar dano na entidade atingida
- * - Remover projétil após impacto
- * - Gerar efeito visual de impacto
- * - Gerar debris apenas quando a entidade for destruída
- * - Criar cápsula de pontuação apenas ao destruir inimigos
- * - Reproduzir efeitos sonoros de morte quando necessário
- *
- * Retorno:
- * - 1 : colisão detectada
- * - 0 : nenhuma colisão
- *============================================================================*/
 int bulletHitFighter(Entity *b, SDL_Texture *pointsTexture)
 {
     Entity *e;
 
-    /* Percorre lista de entidades da fase */
-    for (e = stage.fighterHead.next; e != NULL; e = e->next) {
+    for (e = stage.entityHead.next; e != NULL; e = e->next) {
 
-        /*
-         * Detecta colisão apenas entre entidades
-         * de lados opostos.
-         */
+        if (e == b) {
+            continue;
+        }
+
+        if (e->type != ET_PLAYER &&
+            e->type != ET_ENEMY) {
+            continue;
+        }
+
         if (e->side != b->side &&
             collision(b->x, b->y, b->w, b->h,
                       e->x, e->y, e->w, e->h)) {
 
-            /* Marca projétil para remoção */
             b->health = 0;
 
-            /*
-             * Jogador recebe dano maior
-             * em relação aos inimigos.
-             */
-            if (e == player) {
+            if (e->type == ET_PLAYER) {
                 e->health -= 10;
 
-                /* Impede valores negativos de vida */
                 if (e->health < 0) {
                     e->health = 0;
                 }
 
-            } else {
-                /* Inimigos recebem dano padrão */
+            } else if (e->type == ET_ENEMY) {
                 e->health--;
             }
 
-            /*
-             * Cria efeito visual básico no ponto de impacto.
-             * Este efeito ocorre em qualquer colisão.
-             */
             addExplosions(e->x, e->y, 5);
 
-            /*
-             * Efeitos de destruição só acontecem quando
-             * a entidade atingida fica sem vida.
-             */
             if (e->health <= 0) {
-
-                /* Gera fragmentos da entidade destruída */
                 addDebris(e);
 
-                if (e == player) {
-                    /*
-                     * Reproduz som associado à morte/dano final
-                     * do jogador.
-                     */
+                if (e->type == ET_PLAYER) {
                     playerSound(SND_ALIEN_DIE, CH_PLAYER);
 
-                } else {
-                    /*
-                     * Gera cápsula de pontos no centro
-                     * da entidade inimiga destruída.
-                     */
+                } else if (e->type == ET_ENEMY) {
                     addPointsPod(e->x + e->w / 2,
                                  e->y + e->h / 2,
                                  pointsTexture);
 
-                    /* Reproduz som de destruição do inimigo */
                     playerSound(SND_ALIEN_DIE, CH_ANY);
                 }
             }
 
-            /* Colisão detectada */
             return 1;
         }
     }
 
-    /* Nenhuma colisão detectada */
     return 0;
 }

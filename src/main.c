@@ -3,8 +3,7 @@
  */
 
 /*
- * PRECISA AJUSTAR AS BALAS
- * RODA NO MAC - 14/06/206
+ * O PLAYER NÃO MORRE SEDNDO ATINGIDO POR BALAS 
  */
 
 #include "common.h"

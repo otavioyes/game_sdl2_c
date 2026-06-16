@@ -3,7 +3,7 @@
  */
 
 /*
- * O PLAYER NÃO MORRE SEDNDO ATINGIDO POR BALAS 
+ * A VIRADA ESTA NO MOUSE AGORA
  */
 
 #include "common.h"

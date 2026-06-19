@@ -1,5 +1,7 @@
 /*
  * draw.c
+ *
+ * Funções auxiliares de renderização e carregamento de texturas.
  */
 
 #include <SDL2/SDL_image.h>
@@ -9,14 +11,8 @@
 
 extern App app;
 
-
 /*==============================================================================
- * Prepara a cena para um novo frame.
- *
- * Responsabilidades:
- * - Definir cor base do renderer
- * - Limpar o frame anterior
- * - Preparar o buffer para novos desenhos
+ * Prepara o renderer para um novo frame.
  *============================================================================*/
 void prepareScene(void)
 {
@@ -24,31 +20,16 @@ void prepareScene(void)
     SDL_RenderClear(app.renderer);
 }
 
-
 /*==============================================================================
- * Apresenta o frame renderizado na tela.
- *
- * Responsabilidades:
- * - Enviar o back buffer para a janela
- * - Finalizar o ciclo visual do frame atual
+ * Apresenta o frame renderizado na janela.
  *============================================================================*/
 void presentScene(void)
 {
     SDL_RenderPresent(app.renderer);
 }
 
-
 /*==============================================================================
- * Busca uma textura previamente carregada no cache.
- *
- * Responsabilidades:
- * - Percorrer a lista de texturas carregadas
- * - Comparar o nome solicitado com os nomes armazenados
- * - Retornar textura existente caso encontrada
- *
- * Retorno:
- * - SDL_Texture* : textura encontrada
- * - NULL         : textura não encontrada no cache
+ * Busca uma textura já carregada no cache.
  *============================================================================*/
 static SDL_Texture *getTexture(char *name)
 {
@@ -63,19 +44,16 @@ static SDL_Texture *getTexture(char *name)
     return NULL;
 }
 
-
 /*==============================================================================
- * Adiciona uma textura ao cache global da aplicação.
- *
- * Responsabilidades:
- * - Alocar nó de cache
- * - Armazenar nome da textura
- * - Armazenar ponteiro da SDL_Texture
- * - Inserir textura no final da lista encadeada
+ * Adiciona uma textura carregada ao cache.
  *============================================================================*/
 static void addTextureToCache(char *name, SDL_Texture *sdlTexture)
 {
     Texture *texture;
+
+    if (sdlTexture == NULL) {
+        return;
+    }
 
     texture = malloc(sizeof(Texture));
 
@@ -86,29 +64,15 @@ static void addTextureToCache(char *name, SDL_Texture *sdlTexture)
 
     memset(texture, 0, sizeof(Texture));
 
+    STRNCPY(texture->name, name, MAX_NAME_LENGTH);
+    texture->texture = sdlTexture;
+
     app.textureTail->next = texture;
     app.textureTail = texture;
-
-    STRNCPY(texture->name, name, MAX_NAME_LENGTH);
-
-    /*
-     * Armazena a textura carregada.
-     *
-     * Sem esta atribuição, o cache guarda apenas o nome,
-     * mas perde o ponteiro real da SDL_Texture.
-     */
-    texture->texture = sdlTexture;
 }
 
-
 /*==============================================================================
- * Carrega uma textura a partir de arquivo.
- *
- * Responsabilidades:
- * - Verificar se a textura já existe no cache
- * - Carregar textura com SDL_image quando necessário
- * - Armazenar textura carregada no cache
- * - Retornar ponteiro para uso nos módulos do jogo
+ * Carrega uma textura de arquivo ou retorna uma versão já cacheada.
  *============================================================================*/
 SDL_Texture *loadTexture(char *filename)
 {
@@ -116,34 +80,33 @@ SDL_Texture *loadTexture(char *filename)
 
     texture = getTexture(filename);
 
-    if (texture == NULL) {
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
-                       SDL_LOG_PRIORITY_INFO,
-                       "Loading texture: %s", filename);
-
-        texture = IMG_LoadTexture(app.renderer, filename);
-
-        if (texture == NULL) {
-            SDL_Log("IMG_LoadTexture falhou para '%s': %s",
-                    filename,
-                    IMG_GetError());
-            return NULL;
-        }
-
-        addTextureToCache(filename, texture);
+    if (texture != NULL) {
+        return texture;
     }
+
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION,
+                   SDL_LOG_PRIORITY_INFO,
+                   "Loading texture: %s", filename);
+
+    texture = IMG_LoadTexture(app.renderer, filename);
+
+    if (texture == NULL) {
+        SDL_Log("IMG_LoadTexture falhou para '%s': %s",
+                filename,
+                IMG_GetError());
+        return NULL;
+    }
+
+    addTextureToCache(filename, texture);
 
     return texture;
 }
 
-
 /*==============================================================================
- * Renderiza uma textura inteira na posição informada.
+ * Renderiza uma textura inteira.
  *
- * Responsabilidades:
- * - Obter dimensões reais da textura
- * - Configurar retângulo de destino
- * - Renderizar textura sem rotação
+ * Se center for verdadeiro, x/y representam o centro da textura.
+ * Caso contrário, x/y representam o canto superior esquerdo.
  *============================================================================*/
 void blit(SDL_Texture *texture, int x, int y, int center)
 {
@@ -158,10 +121,7 @@ void blit(SDL_Texture *texture, int x, int y, int center)
 
     SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
-    /*Ttestando a variável central e deslocando a textura
-     * pela metade de sua largura e altura se
-     * necessário para centralizá-la em torno das coordenadas de entrada.*/
-    if (center){
+    if (center) {
         dest.x -= dest.w / 2;
         dest.y -= dest.h / 2;
     }
@@ -169,20 +129,8 @@ void blit(SDL_Texture *texture, int x, int y, int center)
     SDL_RenderCopy(app.renderer, texture, NULL, &dest);
 }
 
-
 /*==============================================================================
  * Renderiza uma região específica de uma textura.
- *
- * Responsabilidades:
- * - Usar um SDL_Rect de origem
- * - Renderizar apenas parte da textura
- * - Manter tamanho original do recorte
- *
- * Usado principalmente para:
- * - debris
- * - spritesheets
- * - animações
- * - tiles
  *============================================================================*/
 void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
 {
@@ -200,40 +148,31 @@ void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
     SDL_RenderCopy(app.renderer, texture, src, &dest);
 }
 
-
 /*==============================================================================
  * Renderiza uma textura inteira com rotação.
  *
- * Responsabilidades:
- * - Obter dimensões reais da textura
- * - Configurar retângulo de destino
- * - Aplicar rotação em graus
- * - Renderizar usando SDL_RenderCopyEx
- *
- * Observação:
- * - A rotação ocorre em torno do centro da textura,
- *   pois o parâmetro center está como NULL.
+ * A rotação ocorre em torno do centro da textura.
  *============================================================================*/
 void blitRotated(SDL_Texture *texture, float x, float y, float angle)
 {
-    SDL_Rect dstRect;
+    SDL_Rect dest;
 
     if (texture == NULL) {
         return;
     }
 
-    dstRect.x = x;
-    dstRect.y = y;
+    dest.x = x;
+    dest.y = y;
 
-    SDL_QueryTexture(texture, NULL, NULL, &dstRect.w, &dstRect.h);
+    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
 
-    dstRect.x -= (dstRect.w / 2);
-    dstRect.y -= (dstRect.h / 2);
+    dest.x -= dest.w / 2;
+    dest.y -= dest.h / 2;
 
     SDL_RenderCopyEx(app.renderer,
                      texture,
                      NULL,
-                     &dstRect,
+                     &dest,
                      angle,
                      NULL,
                      SDL_FLIP_NONE);

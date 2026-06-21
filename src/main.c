@@ -2,8 +2,8 @@
  * main.c
  *
  * Ponto de entrada da aplicação.
- * ta rodando
- * .
+ * PRECISA COLOCAR:
+ * MIRA NO MOUSE
  */
 
 #include "common.h"

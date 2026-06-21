@@ -2,9 +2,8 @@
  * main.c
  *
  * Ponto de entrada da aplicação.
- *
- * Responsável por inicializar os sistemas principais,
- * executar o game loop e controlar a taxa de frames.
+ * ta rodando
+ * .
  */
 
 #include "common.h"

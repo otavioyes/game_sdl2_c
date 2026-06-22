@@ -1,9 +1,7 @@
 /*
  * main.c
  *
- * Ponto de entrada da aplicação.
- * PRECISA COLOCAR:
- * MIRA NO MOUSE
+ * COLOCAR A MIRA NO MOUSE
  */
 
 #include "common.h"

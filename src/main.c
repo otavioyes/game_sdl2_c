@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- * COLOCAR A MIRA NO MOUSE
+ * DESCOBRIR DE ONDE ESTA SAINDO A MIRA DO MOUSE
  */
 
 #include "common.h"

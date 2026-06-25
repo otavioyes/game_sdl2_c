@@ -2,7 +2,8 @@
  * main.c
  *
  * DESCOBRIR DE ONDE ESTA SAINDO A MIRA DO MOUSE
- * Continuar tutorial da SDL2 
+ * Continuar tutorial da SDL2
+ * TIRA O BUG DO LADO ESQUERDO DO JOGO
  */
 
 #include "common.h"

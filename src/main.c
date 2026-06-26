@@ -4,6 +4,7 @@
  * DESCOBRIR DE ONDE ESTA SAINDO A MIRA DO MOUSE
  * Continuar tutorial da SDL2
  * TIRA O BUG DO LADO ESQUERDO DO JOGO
+ * COPA 2026
  */
 
 #include "common.h"

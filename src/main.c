@@ -5,6 +5,7 @@
  * Continuar tutorial da SDL2
  * TIRA O BUG DO LADO ESQUERDO DO JOGO
  * COPA 2026
+ * JOGO MATA-MATA: BRASIL VS JAPÃO
  */
 
 #include "common.h"
